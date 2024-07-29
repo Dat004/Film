@@ -5,7 +5,6 @@ import { useDispatch } from "react-redux";
 
 import { setStatusMovie } from "../../../../../redux/slices/videoPlayerSlice";
 import { FlexContainer, FlexItems } from "../../../../../components/Flex";
-import { BackWardsIcon, ForWardsIcon } from "../../../../../icons";
 import InputSlider from "../../../../../components/InputSlider";
 import Button from "../../../../../components/Button";
 import { useVideoTime } from "../../../../../hooks";
@@ -37,6 +36,7 @@ function BarControls({
   };
 
   const handleDrag = () => {
+    dispatch(setStatusMovie({ key: "currentTime", value: currentTime }));
     dispatch(setStatusMovie({ key: "isSeeked", value: true }));
     dispatch(setStatusMovie({ key: "isPlay", value: false }));
   };

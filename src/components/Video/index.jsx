@@ -280,6 +280,10 @@ function Video({ className, src, ...props }) {
   return (
     <div
       onClick={handleClickInside}
+      onTouchStart={handleShowController}
+      onTouchEnd={handleHideController}
+      onTouchCancel={handleHideController}
+      onTouchMove={handleShowController}
       onMouseEnter={handleShowController}
       onMouseLeave={handleHideController}
       onMouseMove={handleCheckMousePointerPosition}
