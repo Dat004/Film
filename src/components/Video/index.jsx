@@ -252,7 +252,6 @@ function Video({ className, src, ...props }) {
     }, 2500); // 1 giây
   };
 
-
   const handleClickInside = () => {
     if (clickTimeoutRef.current) {
       clearTimeout(clickTimeoutRef.current);
@@ -292,8 +291,11 @@ function Video({ className, src, ...props }) {
         className={videoStyles}
         onTimeUpdate={handleTimeUpdate}
         onLoadStart={() => setIsLoading(true)}
-        onCanPlay={() => setIsLoading(false)}
         onWaiting={() => setIsLoading(true)}
+        onCanPlay={() => {
+          setIsLoading(false);
+          dispatch(setStatusMovie({ key: "isPlay", value: true }));
+        }}
         crossOrigin="anonymous"
         muted={isMuted}
         preload="auto"
@@ -301,7 +303,7 @@ function Video({ className, src, ...props }) {
         {...props}
       ></video>
       {isLoading && (
-        <div className="absolute flex items-center justify-center inset-0 z-[999] bg-bg-layout-loading pointer-events-none">
+        <div className="absolute flex items-center justify-center inset-0 z-[999] bg-bg-layout-loading cursor-default">
           <div className="loader"></div>
         </div>
       )}
