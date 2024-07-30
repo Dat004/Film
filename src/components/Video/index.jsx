@@ -200,11 +200,9 @@ function Video({ className, src, ...props }) {
 
   useEffect(() => {
     const handleLoadeddata = () => {
-      if (videoRef.current.readyState >= 3) {
-        dispatch(
-          setStatusMovie({ key: "duration", value: videoRef.current.duration })
-        );
-      }
+      dispatch(
+        setStatusMovie({ key: "duration", value: videoRef.current.duration })
+      );
     };
 
     videoRef.current.addEventListener("loadeddata", handleLoadeddata);
@@ -215,14 +213,6 @@ function Video({ className, src, ...props }) {
       }
     };
   }, []);
-
-  useEffect(() => {
-    if (isFullScreen) {
-      if (videoRef.current.requestFullscreen) {
-        videoRef.current.requestFullscreen();
-      }
-    }
-  }, [isFullScreen]);
 
   useEffect(() => {
     videoRef.current.volume = currentVolume;
@@ -247,9 +237,7 @@ function Video({ className, src, ...props }) {
   };
 
   const handleHideController = () => {
-    if (showController && isPlay) {
-      setShowController(false);
-    }
+    setShowController(false);
   };
 
   const handleCheckMousePointerPosition = () => {
@@ -263,6 +251,7 @@ function Video({ className, src, ...props }) {
       handleHideController();
     }, 2500); // 1 giây
   };
+
 
   const handleClickInside = () => {
     if (clickTimeoutRef.current) {
@@ -280,13 +269,22 @@ function Video({ className, src, ...props }) {
   return (
     <div
       onClick={handleClickInside}
-      onTouchStart={handleShowController}
-      onTouchEnd={handleHideController}
-      onTouchCancel={handleHideController}
-      onTouchMove={handleShowController}
-      onMouseEnter={handleShowController}
-      onMouseLeave={handleHideController}
-      onMouseMove={handleCheckMousePointerPosition}
+      onTouchStart={handleCheckMousePointerPosition}
+      onPointerEnter={(e) => {
+        if (e.pointerType === "mouse") {
+          handleShowController();
+        }
+      }}
+      onPointerMove={(e) => {
+        if (e.pointerType === "mouse") {
+          handleCheckMousePointerPosition();
+        }
+      }}
+      onPointerLeave={(e) => {
+        if (e.pointerType === "mouse") {
+          handleHideController();
+        }
+      }}
       className="relative w-[100%] h-[100%]"
     >
       <video
@@ -303,7 +301,7 @@ function Video({ className, src, ...props }) {
         {...props}
       ></video>
       {isLoading && (
-        <div className="absolute flex items-center justify-center inset-0 z-[999] bg-bg-layout-loading ">
+        <div className="absolute flex items-center justify-center inset-0 z-[999] bg-bg-layout-loading pointer-events-none">
           <div className="loader"></div>
         </div>
       )}

@@ -36,12 +36,15 @@ function InputSlider({
         max={max}
         step={step}
         value={value}
-        onTouchStart={(e) => handleDrag(+e.target.value)}
-        onTouchMove={(e) => handleDrag(+e.target.value)}
-        onTouchEnd={handleDrop}
-        onTouchCancel={handleDrop}
-        onMouseDown={(e) => handleDrag(+e.target.value)}
-        onMouseUp={handleDrop}
+
+        onPointerDown={(e) => handleDrag(+e.target.value)}
+        onPointerMove={(e) => {
+          if(e.pointerType === "touch") {
+            handleDrag(+e.target.value)
+          }
+        }}
+        onPointerUp={handleDrop}
+        onPointerCancel={handleDrop}
         onChange={(e) => onChange(+e.target.value)}
         disabled={disabled}
         {...props}
