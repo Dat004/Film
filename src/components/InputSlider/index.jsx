@@ -16,7 +16,7 @@ function InputSlider({
   ...props
 }) {
   const sliderStyles = classNames(
-    "relative items-center w-[100%] h-[4px] transition-transform bg-bg-slider-color group/slider",
+    "relative items-center w-[100%] h-[4px] transition-transform bg-bg-slider-color pointer-events-none select-none group/slider",
     {
       [className]: className,
     }
@@ -29,22 +29,21 @@ function InputSlider({
     >
       <input
         style={{ borderRadius: borderRadius + "px" }}
-        className="w-[100%]"
+        className="w-[100%] pointer-events-auto cursor-pointer"
         name="slider"
         type="range"
         min={min}
         max={max}
         step={step}
         value={value}
-
-        onPointerDown={(e) => handleDrag(+e.target.value)}
+        onTouchEnd={handleDrop}
+        onPointerDown={handleDrag}
         onPointerMove={(e) => {
-          if(e.pointerType === "touch") {
-            handleDrag(+e.target.value)
+          if (e.pointerType === "touch") {
+            onChange(+e.target.value);
           }
         }}
         onPointerUp={handleDrop}
-        onPointerCancel={handleDrop}
         onChange={(e) => onChange(+e.target.value)}
         disabled={disabled}
         {...props}
@@ -54,14 +53,14 @@ function InputSlider({
           width: `calc(${(value / max) * 100}%)`,
           borderRadius: borderRadius + "px",
         }}
-        className="track-cls absolute top-0 left-0 h-[100%] cursor-pointer pointer-events-none select-none z-[5]"
+        className="track-cls absolute top-0 left-0 h-[100%] cursor-default pointer-events-none select-none z-[5]"
       ></span>
       <span
         style={{
           left: `calc(${(value / max) * 100}%)`,
           borderRadius: borderRadius + "px",
         }}
-        className="thumb-cls opacity-0 absolute top-[50%] translate-x-[-50%] transition-opacity duration-[250ms] size-[12px] rounded-[50%] translate-y-[-50%] cursor-pointer pointer-events-none group-hover/slider:opacity-[100] select-none z-[10]"
+        className="thumb-cls opacity-0 absolute top-[50%] translate-x-[-50%] transition-opacity duration-[250ms] size-[12px] rounded-[50%] translate-y-[-50%] cursor-default pointer-events-none group-hover/slider:opacity-[100] select-none z-[10]"
       ></span>
     </FlexContainer>
   );

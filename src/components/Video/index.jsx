@@ -327,7 +327,7 @@ function Video({ className, src, ...props }) {
       </div>
       <div
         onClick={(e) => e.stopPropagation()}
-        className="absolute bottom-0 left-0 w-[100%] h-[20%] mdm:h-[55px] flex items-end z-[150] overflow-hidden"
+        className="absolute bottom-0 left-0 w-[100%] h-[20%] mdm:h-[60px] flex items-end z-[150] overflow-hidden"
       >
         <motion.div
           variants={controllerVariants}

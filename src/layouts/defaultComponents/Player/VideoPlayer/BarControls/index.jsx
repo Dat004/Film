@@ -36,7 +36,6 @@ function BarControls({
   };
 
   const handleDrag = () => {
-    dispatch(setStatusMovie({ key: "currentTime", value: currentTime }));
     dispatch(setStatusMovie({ key: "isSeeked", value: true }));
     dispatch(setStatusMovie({ key: "isPlay", value: false }));
   };
