@@ -5,13 +5,9 @@ const initialState = {
     isMuted: false,
     isSeeked: false,
     isPlay: false,
-    isError: false,
+    isFullScreen: false,
     autoPlay: false,
     autoNext: false,
-    currentTime: 0,
-    duration: 0,
-    totalTime: 0,
-    isFullScreen: false,
     currentVolume: 1,
   },
   episode: {
@@ -43,6 +39,10 @@ const videoPlayerSlice = createSlice({
     setCurrentEpisode: (state, action) => {
       state.episode.currentEpisode = action.payload;
     },
+    resetStatus: (state) => {
+      state.statusMovie.isFullScreen = false;
+      state.statusMovie.isPlay = false;
+    },
     resetEpisode: (state) => {
       state.episode.episodeArray.splice(0);
       state.episode.splitEpisodes.splice(0);
@@ -59,6 +59,7 @@ export const {
   setSplitEpisodes,
   setCurrentIndexSplitEpisodes,
   setCurrentEpisode,
+  resetStatus,
   resetEpisode,
 } = actions;
 export default videoPlayerSlice;

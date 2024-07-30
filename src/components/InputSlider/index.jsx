@@ -22,6 +22,11 @@ function InputSlider({
     }
   );
 
+  const handleChange = (e) => {
+    onChange(+e.target.value);
+    handleDrag();
+  };
+
   return (
     <FlexContainer
       style={{ borderRadius: borderRadius + "px" }}
@@ -36,12 +41,12 @@ function InputSlider({
         max={max}
         step={step}
         value={value}
-        onPointerDown={(e) => {
-          onChange(+e.target.value);
-          handleDrag();
-        }}
-        onChange={(e) => onChange(+e.target.value)}
+        onChange={handleChange}
+        onTouchStart={handleChange}
+        onTouchMove={handleChange}
+        onPointerDown={handleChange}
         onPointerUp={handleDrop}
+        onTouchEnd={handleDrop}
         disabled={disabled}
         {...props}
       />

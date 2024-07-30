@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 // import ReactPlayer from "react-player";
 
 import BarControls from "../../layouts/defaultComponents/Player/VideoPlayer/BarControls";
-import { setStatusMovie } from "../../redux/slices/videoPlayerSlice";
+import { setStatusMovie, resetStatus } from "../../redux/slices/videoPlayerSlice";
 import { videoPlayerSelector } from "../../redux/selectors";
 
 function Video({ className, src, ...props }) {
@@ -18,14 +18,14 @@ function Video({ className, src, ...props }) {
   const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [showController, setShowController] = useState(false);
   const [clickDetected, setClickDetected] = useState(false);
 
   const videoPlayerStatus = useSelector(videoPlayerSelector);
   const { statusMovie } = videoPlayerStatus;
   const {
-    duration,
-    currentTime,
     currentVolume,
     isMuted,
     isSeeked,
@@ -167,12 +167,15 @@ function Video({ className, src, ...props }) {
       video.src = src;
     }
 
+    setCurrentTime(0);
+    setDuration(0);
+
     return () => {
       if (hls) {
         hls.destroy();
       }
 
-      dispatch(setStatusMovie({ key: "isPlay", value: false }));
+      dispatch(resetStatus());
     };
   }, [src]);
 
@@ -200,9 +203,7 @@ function Video({ className, src, ...props }) {
 
   useEffect(() => {
     const handleLoadeddata = () => {
-      dispatch(
-        setStatusMovie({ key: "duration", value: videoRef.current.duration })
-      );
+      setDuration(+videoRef.current.duration);
     };
 
     videoRef.current.addEventListener("loadeddata", handleLoadeddata);
@@ -223,9 +224,11 @@ function Video({ className, src, ...props }) {
   });
 
   const handleTimeUpdate = (e) => {
-    dispatch(
-      setStatusMovie({ key: "currentTime", value: e.target.currentTime })
-    );
+    setCurrentTime(+e.target.currentTime);
+  };
+
+  const handleChangeTime = (currentTime) => {
+    setCurrentTime(currentTime);
   };
 
   const handleTogglePlay = () => {
@@ -292,10 +295,7 @@ function Video({ className, src, ...props }) {
         onTimeUpdate={handleTimeUpdate}
         onLoadStart={() => setIsLoading(true)}
         onWaiting={() => setIsLoading(true)}
-        onCanPlay={() => {
-          setIsLoading(false);
-          dispatch(setStatusMovie({ key: "isPlay", value: true }));
-        }}
+        onCanPlay={() => setIsLoading(false)}
         crossOrigin="anonymous"
         muted={isMuted}
         preload="auto"
@@ -350,6 +350,7 @@ function Video({ className, src, ...props }) {
             isPlay={isPlay}
             isMuted={isMuted}
             handlePlay={handleTogglePlay}
+            handleChangeTime={handleChangeTime}
           />
         </motion.div>
       </div>

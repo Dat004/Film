@@ -16,14 +16,11 @@ function BarControls({
   currentVolume = 0,
   duration = 0,
   handlePlay = () => {},
+  handleChangeTime = () => {},
 }) {
   const dispatch = useDispatch();
   const currentTimeValue = useVideoTime(currentTime);
   const durationValue = useVideoTime(duration);
-
-  const handleChangeTime = (currentTime) => {
-    dispatch(setStatusMovie({ key: "currentTime", value: currentTime }));
-  };
 
   const handleChangeVolume = (currentVolume) => {
     dispatch(
