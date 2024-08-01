@@ -7,12 +7,17 @@ import { useDispatch, useSelector } from "react-redux";
 // import ReactPlayer from "react-player";
 
 import BarControls from "../../layouts/defaultComponents/Player/VideoPlayer/BarControls";
-import { setStatusMovie, resetStatus } from "../../redux/slices/videoPlayerSlice";
+import {
+  setStatusMovie,
+  resetStatus,
+} from "../../redux/slices/videoPlayerSlice";
 import { videoPlayerSelector } from "../../redux/selectors";
 
 function Video({ className, src, ...props }) {
   const clickTimeoutRef = useRef(null);
   const mouseMoveTimeoutRef = useRef(null);
+  const changeTimeoutRef = useRef(null);
+  const videoWrapperRef = useRef(null);
   const videoRef = useRef(null);
 
   const dispatch = useDispatch();
@@ -25,14 +30,8 @@ function Video({ className, src, ...props }) {
 
   const videoPlayerStatus = useSelector(videoPlayerSelector);
   const { statusMovie } = videoPlayerStatus;
-  const {
-    currentVolume,
-    isMuted,
-    isSeeked,
-    isPlay,
-    autoPlay,
-    isFullScreen,
-  } = statusMovie;
+  const { currentVolume, isMuted, isPlay, autoPlay, isFullScreen } =
+    statusMovie;
 
   const controllerVariants = {
     hide: {
@@ -47,80 +46,12 @@ function Video({ className, src, ...props }) {
 
   useEffect(() => {
     const config = {
-      autoStartLoad: true,
-      startPosition: -1,
-      debug: false,
-      capLevelOnFPSDrop: false,
-      capLevelToPlayerSize: false,
-      defaultAudioCodec: undefined,
-      initialLiveManifestSize: 1,
       maxBufferLength: 60, // Tăng kích thước bộ đệm
       maxMaxBufferLength: 1200, // Tăng kích thước bộ đệm tối đa
       backBufferLength: Infinity,
       frontBufferFlushThreshold: Infinity,
       maxBufferSize: 120 * 1000 * 1000, // Tăng kích thước bộ đệm
       maxBufferHole: 0.1, // Giảm kích thước lỗ hổng bộ đệm
-      highBufferWatchdogPeriod: 2,
-      nudgeOffset: 0.1,
-      nudgeMaxRetry: 3,
-      maxFragLookUpTolerance: 0.25,
-      liveSyncDurationCount: 3,
-      liveSyncOnStallIncrease: 1,
-      liveMaxLatencyDurationCount: Infinity,
-      liveDurationInfinity: false,
-      preferManagedMediaSource: false,
-      enableWorker: true,
-      enableSoftwareAES: true,
-      fragLoadPolicy: {
-        default: {
-          maxTimeToFirstByteMs: 5000, // Giảm thời gian tối đa để nhận byte đầu tiên
-          maxLoadTimeMs: 50000, // Giảm thời gian tải tối đa
-          timeoutRetry: {
-            maxNumRetry: 5, // Tăng số lần thử lại khi hết thời gian chờ
-            retryDelayMs: 500,
-            maxRetryDelayMs: 2000,
-          },
-          errorRetry: {
-            maxNumRetry: 10, // Tăng số lần thử lại khi gặp lỗi
-            retryDelayMs: 1000,
-            maxRetryDelayMs: 5000,
-            backoff: "linear",
-          },
-        },
-      },
-      startLevel: undefined,
-      startFragPrefetch: false,
-      testBandwidth: true, // Bật kiểm tra băng thông
-      progressive: false,
-      lowLatencyMode: true, // Bật chế độ độ trễ thấp
-      fpsDroppedMonitoringPeriod: 5000,
-      fpsDroppedMonitoringThreshold: 0.2,
-      appendErrorMaxRetry: 5,
-      enableDateRangeMetadataCues: true,
-      enableEmsgMetadataCues: true,
-      enableID3MetadataCues: true,
-      enableWebVTT: true,
-      enableIMSC1: true,
-      enableCEA708Captions: true,
-      stretchShortVideoTrack: false,
-      maxAudioFramesDrift: 1,
-      forceKeyFrameOnDiscontinuity: true,
-      abrEwmaFastLive: 3.0,
-      abrEwmaSlowLive: 9.0,
-      abrEwmaFastVoD: 3.0,
-      abrEwmaSlowVoD: 9.0,
-      abrEwmaDefaultEstimate: 500000,
-      abrEwmaDefaultEstimateMax: 5000000,
-      abrBandWidthFactor: 0.95,
-      abrBandWidthUpFactor: 0.7,
-      abrMaxWithRealBitrate: false,
-      maxStarvationDelay: 4,
-      maxLoadingDelay: 4,
-      minAutoBitrate: 0,
-      emeEnabled: false,
-      licenseXhrSetup: undefined,
-      drmSystems: {},
-      drmSystemOptions: {},
     };
 
     const hls = new Hls(config);
@@ -180,12 +111,6 @@ function Video({ className, src, ...props }) {
   }, [src]);
 
   useEffect(() => {
-    if (isSeeked) {
-      videoRef.current.currentTime = currentTime;
-    }
-  }, [isSeeked, currentTime]);
-
-  useEffect(() => {
     const video = videoRef.current;
     if (isPlay || autoPlay) {
       const videoPromise = video.play();
@@ -206,14 +131,75 @@ function Video({ className, src, ...props }) {
       setDuration(+videoRef.current.duration);
     };
 
-    videoRef.current.addEventListener("loadeddata", handleLoadeddata);
+    videoRef.current.addEventListener("loadedmetadata", handleLoadeddata);
 
     return () => {
       if (videoRef.current) {
-        videoRef.current.addEventListener("loadeddata", handleLoadeddata);
+        videoRef.current.addEventListener("loadedmetadata", handleLoadeddata);
       }
     };
   }, []);
+
+  useEffect(() => {
+    const enterFullScreen = () => {
+      if (videoWrapperRef.current.requestFullscreen) {
+        videoWrapperRef.current.requestFullscreen();
+      } else if (videoWrapperRef.current.webkitEnterFullscreen) {
+        videoWrapperRef.current.webkitEnterFullscreen();
+      } else if (videoWrapperRef.current.mozRequestFullScreen) {
+        videoWrapperRef.current.mozRequestFullScreen();
+      } else if (videoWrapperRef.current.webkitRequestFullscreen) {
+        videoWrapperRef.current.webkitRequestFullscreen();
+      } else if (videoWrapperRef.current.msRequestFullscreen) {
+        videoWrapperRef.current.msRequestFullscreen();
+      }
+    };
+
+    const exitFullScreen = () => {
+      if (
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement
+      ) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      }
+    };
+
+    if (videoWrapperRef.current) {
+      if (isFullScreen) {
+        enterFullScreen();
+      } else {
+        exitFullScreen();
+      }
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.which === 13 || e.which === 122) {
+        e.preventDefault();
+
+        handleToggleFullScreen();
+      } else if (e.which === 27) {
+        e.preventDefault();
+
+        handleExitFullScreen();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isFullScreen]);
 
   useEffect(() => {
     videoRef.current.volume = currentVolume;
@@ -223,12 +209,38 @@ function Video({ className, src, ...props }) {
     [className]: className,
   });
 
-  const handleTimeUpdate = (e) => {
-    setCurrentTime(+e.target.currentTime);
+  const handleFullScreen = () => {
+    dispatch(setStatusMovie({ key: "isFullScreen", value: true }));
   };
 
-  const handleChangeTime = (currentTime) => {
-    setCurrentTime(currentTime);
+  const handleExitFullScreen = () => {
+    dispatch(setStatusMovie({ key: "isFullScreen", value: false }));
+  };
+
+  const handleToggleFullScreen = () => {
+    dispatch(setStatusMovie({ key: "isFullScreen", value: !isFullScreen }));
+  };
+
+  const handleTimeUpdate = (e) => {
+    if (videoRef.current.readyState > 3 && isPlay) {
+      setCurrentTime(+e.target.currentTime);
+    }
+  };
+
+  const handleChangeTime = (e, currentTimeVideo) => {
+    if (changeTimeoutRef.current) {
+      clearTimeout(changeTimeoutRef.current);
+    }
+
+    setCurrentTime(currentTimeVideo);
+    handleShowController();
+    handleSeeking();
+
+    changeTimeoutRef.current = setTimeout(() => {
+      videoRef.current.currentTime = currentTimeVideo;
+
+      handleSeeked();
+    }, 500);
   };
 
   const handleTogglePlay = () => {
@@ -268,8 +280,19 @@ function Video({ className, src, ...props }) {
     }, 1000); // 1 giây
   };
 
+  const handleSeeked = () => {
+    dispatch(setStatusMovie({ key: "isPlay", value: true }));
+    setIsLoading(true);
+  };
+
+  const handleSeeking = (e) => {
+    console.log("seeking", e);
+    dispatch(setStatusMovie({ key: "isPlay", value: false }));
+  };
+
   return (
     <div
+      ref={videoWrapperRef}
       onClick={handleClickInside}
       onTouchStart={handleCheckMousePointerPosition}
       onPointerEnter={(e) => {
@@ -287,19 +310,25 @@ function Video({ className, src, ...props }) {
           handleHideController();
         }
       }}
-      className="relative w-[100%] h-[100%]"
+      className="video-wrapper relative w-[100%] h-[100%]"
     >
       <video
         ref={videoRef}
         className={videoStyles}
+        onPlaying={() =>
+          dispatch(setStatusMovie({ key: "isPlay", value: true }))
+        }
+        onPause={() =>
+          dispatch(setStatusMovie({ key: "isPlay", value: false }))
+        }
         onTimeUpdate={handleTimeUpdate}
         onLoadStart={() => setIsLoading(true)}
         onWaiting={() => setIsLoading(true)}
-        onCanPlay={() => setIsLoading(false)}
+        onCanPlayThrough={() => setIsLoading(false)}
         crossOrigin="anonymous"
         muted={isMuted}
         preload="auto"
-        playsInline
+        // playsInline
         {...props}
       ></video>
       {isLoading && (
@@ -329,7 +358,7 @@ function Video({ className, src, ...props }) {
       </div>
       <div
         onClick={(e) => e.stopPropagation()}
-        className="absolute bottom-0 left-0 w-[100%] h-[20%] mdm:h-[60px] flex items-end z-[150] overflow-hidden"
+        className="controls absolute bottom-0 left-0 w-[100%] h-[20%] mdm:h-[60px] flex items-end z-[2147483647] overflow-hidden"
       >
         <motion.div
           variants={controllerVariants}
@@ -351,6 +380,7 @@ function Video({ className, src, ...props }) {
             isMuted={isMuted}
             handlePlay={handleTogglePlay}
             handleChangeTime={handleChangeTime}
+            handleFullScreen={handleToggleFullScreen}
           />
         </motion.div>
       </div>

@@ -10,8 +10,6 @@ function InputSlider({
   min = 0,
   step = 0.0001,
   disabled = false,
-  handleDrag = () => {},
-  handleDrop = () => {},
   onChange = () => {},
   ...props
 }) {
@@ -21,11 +19,6 @@ function InputSlider({
       [className]: className,
     }
   );
-
-  const handleChange = (e) => {
-    onChange(+e.target.value);
-    handleDrag();
-  };
 
   return (
     <FlexContainer
@@ -41,12 +34,7 @@ function InputSlider({
         max={max}
         step={step}
         value={value}
-        onChange={handleChange}
-        onTouchStart={handleChange}
-        onTouchMove={handleChange}
-        onPointerDown={handleChange}
-        onPointerUp={handleDrop}
-        onTouchEnd={handleDrop}
+        onChange={(e) => onChange(e, parseInt(e.target.value))}
         disabled={disabled}
         {...props}
       />

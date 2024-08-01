@@ -17,6 +17,7 @@ function BarControls({
   duration = 0,
   handlePlay = () => {},
   handleChangeTime = () => {},
+  handleFullScreen = () => {},
 }) {
   const dispatch = useDispatch();
   const currentTimeValue = useVideoTime(currentTime);
@@ -32,23 +33,9 @@ function BarControls({
     dispatch(setStatusMovie({ key: "currentVolume", value: currentVolume }));
   };
 
-  const handleDrag = () => {
-    dispatch(setStatusMovie({ key: "isSeeked", value: true }));
-    dispatch(setStatusMovie({ key: "isPlay", value: false }));
-  };
-
-  const handleDrop = () => {
-    dispatch(setStatusMovie({ key: "isSeeked", value: false }));
-    dispatch(setStatusMovie({ key: "isPlay", value: true }));
-  };
-
   const handleToggleMuteVideo = () => {
     dispatch(setStatusMovie({ key: "currentVolume", value: !isMuted ? 0 : 1 }));
     dispatch(setStatusMovie({ key: "isMuted", value: !isMuted }));
-  };
-
-  const handleFullScreen = () => {
-    // dispatch(setStatusMovie({ key: "isFullScreen", value: true }));
   };
 
   return (
@@ -58,8 +45,6 @@ function BarControls({
           value={currentTime}
           min={0}
           max={duration}
-          handleDrag={handleDrag}
-          handleDrop={handleDrop}
           onChange={handleChangeTime}
         />
       </div>
