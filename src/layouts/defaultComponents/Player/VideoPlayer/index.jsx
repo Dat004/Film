@@ -70,7 +70,7 @@ function VideoPlayer({ dataEpisodes = [], thumbUrl = "" }) {
           </FlexContainer>
         </div>
         <div className="absolute backdrop-blur-[20px] bg-[#ffffff0d] inset-0 z-[120]">
-          <Video src={dataEpisodes[currentEpisode]?.link_m3u8} />
+          <Video src={dataEpisodes[currentEpisode]?.link_m3u8} handleEndedVideo={handleNextEpisode} />
         </div>
       </div>
       <div className="bg-[#08090b] py-[5px]">

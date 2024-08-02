@@ -13,7 +13,7 @@ import {
 } from "../../redux/slices/videoPlayerSlice";
 import { videoPlayerSelector } from "../../redux/selectors";
 
-function Video({ className, src, ...props }) {
+function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
   const clickTimeoutRef = useRef(null);
   const mouseMoveTimeoutRef = useRef(null);
   const changeTimeoutRef = useRef(null);
@@ -23,6 +23,7 @@ function Video({ className, src, ...props }) {
   const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [showController, setShowController] = useState(false);
@@ -59,17 +60,12 @@ function Video({ className, src, ...props }) {
     hls.attachMedia(video);
     if (Hls.isSupported()) {
       hls.loadSource(src);
+      hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
-        const availableQualities = data?.map((level) => {
-          return {
-            bitrate: level.bitrate,
-            resolution: level.width + "x" + level.height,
-            url: level.url,
-          };
-        });
-
-        console.log("availableQualities: ", availableQualities);
-        console.log("is loading");
+        console.log(
+          "manifest loaded, found " + data.levels.length + " quality level: ",
+          data.levels
+        );
       });
       hls.on(Hls.Events.ERROR, (event, data) => {
         const type = data.type;
@@ -98,15 +94,14 @@ function Video({ className, src, ...props }) {
       video.src = src;
     }
 
-    setCurrentTime(0);
-    setDuration(0);
-
     return () => {
-      if (hls) {
-        hls.destroy();
-      }
+      if (hls) hls.destroy();
+      if (hls && video) hls.detachMedia(video);
 
       dispatch(resetStatus());
+      setIsError(false);
+      setCurrentTime(0);
+      setDuration(0);
     };
   }, [src]);
 
@@ -128,7 +123,7 @@ function Video({ className, src, ...props }) {
 
   useEffect(() => {
     const handleLoadeddata = () => {
-      setDuration(+videoRef.current.duration);
+      setIsError(false);
     };
 
     videoRef.current.addEventListener("loadedmetadata", handleLoadeddata);
@@ -285,9 +280,17 @@ function Video({ className, src, ...props }) {
     setIsLoading(true);
   };
 
-  const handleSeeking = (e) => {
-    console.log("seeking", e);
+  const handleSeeking = () => {
     dispatch(setStatusMovie({ key: "isPlay", value: false }));
+  };
+
+  const handleError = () => {
+    setIsLoading(false);
+    setIsError(true);
+  };
+
+  const handleChangeDuration = (e) => {
+    setDuration(+e.target.duration);
   };
 
   return (
@@ -315,16 +318,22 @@ function Video({ className, src, ...props }) {
       <video
         ref={videoRef}
         className={videoStyles}
+        onError={handleError}
+        onEnded={handleEndedVideo}
+        onTimeUpdate={handleTimeUpdate}
+        onDurationChange={handleChangeDuration}
+        onLoadStart={() => setIsLoading(true)}
+        onWaiting={() => setIsLoading(true)}
         onPlaying={() =>
           dispatch(setStatusMovie({ key: "isPlay", value: true }))
         }
         onPause={() =>
           dispatch(setStatusMovie({ key: "isPlay", value: false }))
         }
-        onTimeUpdate={handleTimeUpdate}
-        onLoadStart={() => setIsLoading(true)}
-        onWaiting={() => setIsLoading(true)}
-        onCanPlayThrough={() => setIsLoading(false)}
+        onCanPlayThrough={() => {
+          setIsLoading(false);
+          setIsError(false);
+        }}
         crossOrigin="anonymous"
         muted={isMuted}
         preload="auto"
