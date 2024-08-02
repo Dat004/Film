@@ -55,10 +55,10 @@ function MenuItems({ dataCategory = [], isShow = false }) {
 
   switch (finalMenu.data?.type) {
     case "categories":
-      path = "the-loai/";
+      path = "/the-loai/";
       break;
     case "countries":
-      path = "quoc-gia/";
+      path = "/quoc-gia/";
       break;
     default:
       break;
