@@ -23,7 +23,7 @@ function Button({
       "rounded-[4px] bg-bg-btn-primary": primary && !disabled,
       "bg-transparent border border-solid rounded-[4px]": outline,
       "rounded-[50%]": rounded,
-      "opacity-65 cursor-default": disabled,
+      "opacity-65 cursor-default pointer-events-none select-none": disabled,
     }
   );
 

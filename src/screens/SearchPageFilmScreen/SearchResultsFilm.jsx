@@ -14,7 +14,7 @@ function SearchResultsFilm({ data = {}, limit = 20 }) {
 
   return (
     <>
-      {!!items?.length && (
+      {!!items?.length ? (
         <>
           {/* <h1 className="text-[32px] text-primary font-medium">{titlePage}</h1> */}
           <FlexContainer className="w-[100%] !gap-y-0 flex-row 2xlm:flex-col">
@@ -59,6 +59,13 @@ function SearchResultsFilm({ data = {}, limit = 20 }) {
             endIndex={totalPages}
           />
         </>
+      ) : (
+        <div className="mt-[30px] select-none pointer-events-none">
+          <div className="relative h-[180px]">
+            <h1 className="notification-title">404</h1>
+            <h2 className="notification-content">Page not result</h2>
+          </div>
+        </div>
       )}
     </>
   );

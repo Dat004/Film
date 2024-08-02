@@ -17,14 +17,26 @@ function SearchPageFilmScreen() {
   const [limit, setLimit] = useState(+limitParams);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
+
   const searchRef = useRef();
+  const prevValueRef = useRef("");
 
   useEffect(() => {
-    handleSearchApi();
+    setSearchValue(valueParams);
+    setLimit(+limitParams);
+
+    if (!valueParams) return;
+
+    handleSearchApi(valueParams, limitParams);
   }, [valueParams, limitParams]);
+
+  useEffect(() => {
+    prevValueRef.current = searchValue;
+  }, [searchValue]);
 
   const handleChangeValue = (e) => {
     const value = e.target.value;
+
     if (value.startsWith(" ")) return;
 
     setSearchValue(value);
@@ -43,14 +55,14 @@ function SearchPageFilmScreen() {
     });
   };
 
-  const handleSearchApi = () => {
+  const handleSearchApi = (value, limit) => {
     setLoading(true);
     setData(null);
 
     (async () => {
-      if (!searchValue) return;
+      if (!value) return;
       const data = await services.searchFilmService({
-        keyword: searchValue,
+        keyword: value,
         limit: limit,
       });
 
@@ -71,52 +83,56 @@ function SearchPageFilmScreen() {
 
   return (
     <>
-      <section className="bg-search-form rounded-[4px] mb-[42px]">
-        <FlexContainer className="items-center py-[8px] px-[15px] clm:px-[12px]">
-          <FlexItems className=" flex-grow !flex-shrink">
-            <FlexContainer className="relative items-center">
-              <FlexItems className="!flex-grow-0">
-                <i className="text-primary text-[20px]">
-                  <IoSearchOutline />
-                </i>
-              </FlexItems>
-              <FlexItems className="w-[100%] !flex-shrink">
-                <div className="clm:px-[12px] px-[15px]">
-                  <input
-                    type="text"
-                    name="search"
-                    ref={searchRef}
-                    value={searchValue}
-                    autoComplete="off"
-                    onChange={handleChangeValue}
-                    className="w-[100%] text-[14px] text-primary"
-                    placeholder="Nhập tên phim, kênh, sự kiện..."
-                  />
-                </div>
-              </FlexItems>
-              {searchValue && (
-                <FlexItems className="flex-grow-0">
-                  <Button onClick={handleClearValue} type="button">
-                    <i>
-                      <MdClear />
-                    </i>
-                  </Button>
+      <div>
+        <form action="" className="pb-[42px]">
+          <FlexContainer className="items-center py-[8px] bg-search-form rounded-[4px] px-[15px] clm:px-[12px]">
+            <FlexItems className=" flex-grow !flex-shrink">
+              <FlexContainer className="relative items-center">
+                <FlexItems className="!flex-grow-0">
+                  <i className="text-primary text-[20px]">
+                    <IoSearchOutline />
+                  </i>
                 </FlexItems>
-              )}
-            </FlexContainer>
-          </FlexItems>
-          <FlexItems className="ml-[15px] clm:ml-[12px] !flex-grow-0 !flex-shrink-0">
-            <Button
-              type="button"
-              onClick={handleUpdateParams}
-              className="bg-bg-search-btn text-[14px] px-[24px] kdm:px-[16px] kdm:py-[8px] rounded-[4px] py-[10px]"
-              disabled={!searchValue}
-            >
-              Tìm kiếm
-            </Button>
-          </FlexItems>
-        </FlexContainer>
-      </section>
+                <FlexItems className="w-[100%] !flex-shrink">
+                  <div className="clm:px-[12px] px-[15px]">
+                    <input
+                      type="text"
+                      name="search"
+                      ref={searchRef}
+                      value={searchValue}
+                      autoComplete="off"
+                      onChange={handleChangeValue}
+                      className="w-[100%] text-[14px] text-primary"
+                      placeholder="Nhập tên phim, kênh, sự kiện..."
+                    />
+                  </div>
+                </FlexItems>
+                {searchValue && (
+                  <FlexItems className="flex-grow-0">
+                    <Button onClick={handleClearValue} type="button">
+                      <i>
+                        <MdClear />
+                      </i>
+                    </Button>
+                  </FlexItems>
+                )}
+              </FlexContainer>
+            </FlexItems>
+            <FlexItems className="ml-[15px] clm:ml-[12px] !flex-grow-0 !flex-shrink-0">
+              <Button
+                type="submit"
+                onClick={handleUpdateParams}
+                className="bg-bg-search-btn text-[14px] px-[24px] kdm:px-[16px] kdm:py-[8px] rounded-[4px] py-[10px]"
+                disabled={
+                  !searchValue || !(prevValueRef.current !== searchValue)
+                }
+              >
+                Tìm kiếm
+              </Button>
+            </FlexItems>
+          </FlexContainer>
+        </form>
+      </div>
       {!loading && !!data && <SearchResultsFilm data={data} limit={limit} />}
     </>
   );
