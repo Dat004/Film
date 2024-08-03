@@ -12,6 +12,7 @@ import {
   resetStatus,
 } from "../../redux/slices/videoPlayerSlice";
 import { videoPlayerSelector } from "../../redux/selectors";
+import { CustomToastContainer, ToastMessage } from "../Toastify";
 
 function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
   const clickTimeoutRef = useRef(null);
@@ -76,7 +77,7 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
             case Hls.ErrorTypes.NETWORK_ERROR:
               // try to recover network error
               console.log("fatal network error encountered, try to recover");
-              hls.startLoad();
+              // hls.startLoad();
               break;
             case Hls.ErrorTypes.MEDIA_ERROR:
               console.log("fatal media error encountered, try to recover");
@@ -222,7 +223,7 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
     }
   };
 
-  const handleChangeTime = (e, currentTimeVideo) => {
+  const handleChangeTime = (currentTimeVideo) => {
     if (changeTimeoutRef.current) {
       clearTimeout(changeTimeoutRef.current);
     }
@@ -287,6 +288,8 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
   const handleError = () => {
     setIsLoading(false);
     setIsError(true);
+
+    ToastMessage.warning("Đã có lỗi xảy ra với video này!");
   };
 
   const handleChangeDuration = (e) => {
@@ -318,11 +321,11 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
       <video
         ref={videoRef}
         className={videoStyles}
-        onError={handleError}
+        onLoadStart={() => setIsLoading(true)}
         onEnded={handleEndedVideo}
+        onError={handleError}
         onTimeUpdate={handleTimeUpdate}
         onDurationChange={handleChangeDuration}
-        onLoadStart={() => setIsLoading(true)}
         onWaiting={() => setIsLoading(true)}
         onPlaying={() =>
           dispatch(setStatusMovie({ key: "isPlay", value: true }))
@@ -330,6 +333,10 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
         onPause={() =>
           dispatch(setStatusMovie({ key: "isPlay", value: false }))
         }
+        onCanPlay={() => {
+          setIsLoading(false);
+          setIsError(false);
+        }}
         onCanPlayThrough={() => {
           setIsLoading(false);
           setIsError(false);
@@ -340,6 +347,7 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
         // playsInline
         {...props}
       ></video>
+      <CustomToastContainer />
       {isLoading && (
         <div className="absolute flex items-center justify-center inset-0 z-[999] bg-bg-layout-loading cursor-default">
           <div className="loader"></div>

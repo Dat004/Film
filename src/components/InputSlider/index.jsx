@@ -34,7 +34,7 @@ function InputSlider({
         max={max}
         step={step}
         value={value}
-        onChange={(e) => onChange(e, parseInt(e.target.value))}
+        onChange={(e) => onChange(parseInt(e.target.value))}
         disabled={disabled}
         {...props}
       />
