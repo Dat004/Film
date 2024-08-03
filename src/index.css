@@ -3,11 +3,14 @@
 @tailwind utilities;
 
 :root {
-  /* --swiper-navigation-color: #fff; */
-  /* --swiper-pagination-right: 10px;
-  --swiper-navigation-size: 28px;
-  --swiper-pagination-color: #fff;
-  --swiper-pagination-bullet-inactive-color: #fff; */
+  /* Toastify color */
+  --toastify-color-info: #29b6f6;
+  --toastify-color-success: #66bb6a;
+  --toastify-color-warning: #ffa726;
+  --toastify-color-error: #f44336;
+  --toastify-font-family: "Montserrat", sans-serif;
+
+  
   --width-layout-xl: 960px;
   --width-layout-2xl: 1180px;
   --width-layout-3xl: 70%;
@@ -60,6 +63,9 @@
   --hover-color: #ff6500;
   --title-color: #aaa;
   --dark-color: #333;
+}
+.Toastify__toast {
+  font-size: 14px;
 }
 
 ::-webkit-scrollbar {

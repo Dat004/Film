@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 // import ReactPlayer from "react-player";
 
 import BarControls from "../../layouts/defaultComponents/Player/VideoPlayer/BarControls";
+import { PlayDisabled } from "../../icons";
 import {
   setStatusMovie,
   resetStatus,
@@ -75,14 +76,15 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
         if (fatal) {
           switch (type) {
             case Hls.ErrorTypes.NETWORK_ERROR:
-              // try to recover network error
-              console.log("fatal network error encountered, try to recover");
+              handleError("Gặp lỗi mạng nghiêm trọng, hãy thử khôi phục");
               // hls.startLoad();
               break;
             case Hls.ErrorTypes.MEDIA_ERROR:
-              console.log("fatal media error encountered, try to recover");
-              hls.swapAudioCodec();
-              hls.recoverMediaError();
+              handleError(
+                "Gặp lỗi phương tiện nghiêm trọng, hãy thử khôi phục"
+              );
+              // hls.swapAudioCodec();
+              // hls.recoverMediaError();
               break;
             default:
               // cannot recover
@@ -111,11 +113,7 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
     if (isPlay || autoPlay) {
       const videoPromise = video.play();
       if (videoPromise !== undefined) {
-        videoPromise
-          .then(() => {})
-          .catch((error) => {
-            console.error(error);
-          });
+        videoPromise.then(() => {}).catch(() => {});
       }
     } else {
       video.pause();
@@ -214,6 +212,8 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
   };
 
   const handleToggleFullScreen = () => {
+    if (isError) return;
+
     dispatch(setStatusMovie({ key: "isFullScreen", value: !isFullScreen }));
   };
 
@@ -224,6 +224,8 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
   };
 
   const handleChangeTime = (currentTimeVideo) => {
+    if (isError) return;
+
     if (changeTimeoutRef.current) {
       clearTimeout(changeTimeoutRef.current);
     }
@@ -240,6 +242,8 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
   };
 
   const handleTogglePlay = () => {
+    if (isError) return;
+
     dispatch(setStatusMovie({ key: "isPlay", value: !isPlay }));
   };
 
@@ -285,15 +289,11 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
     dispatch(setStatusMovie({ key: "isPlay", value: false }));
   };
 
-  const handleError = () => {
+  const handleError = (message) => {
     setIsLoading(false);
     setIsError(true);
 
-    ToastMessage.warning("Đã có lỗi xảy ra với video này!");
-  };
-
-  const handleChangeDuration = (e) => {
-    setDuration(+e.target.duration);
+    ToastMessage.error(message);
   };
 
   return (
@@ -323,9 +323,11 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
         className={videoStyles}
         onLoadStart={() => setIsLoading(true)}
         onEnded={handleEndedVideo}
-        onError={handleError}
+        onError={() =>
+          handleError("Đã có lỗi xảy ra với video. Vui lòng thử lại!")
+        }
+        onDurationChange={(e) => setDuration(e.target.duration || 0)}
         onTimeUpdate={handleTimeUpdate}
-        onDurationChange={handleChangeDuration}
         onWaiting={() => setIsLoading(true)}
         onPlaying={() =>
           dispatch(setStatusMovie({ key: "isPlay", value: true }))
@@ -351,6 +353,16 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
       {isLoading && (
         <div className="absolute flex items-center justify-center inset-0 z-[999] bg-bg-layout-loading cursor-default">
           <div className="loader"></div>
+        </div>
+      )}
+      {isError && (
+        <div className="absolute flex items-center justify-center inset-0 z-[1000] bg-bg-layout-loading cursor-default">
+          <div className="max-w-[30%] flex flex-col items-center justify-center">
+            <div className="size-[96px] mdm:size-[72px] text-primary">
+              <PlayDisabled />
+            </div>
+            <span className="text-[14px] text-center text-primary whitespace-normal leading-[1.2] mt-[4px] font-normal">Rất tiếc vì sự cố này!</span>
+          </div>
         </div>
       )}
       <div className="absolute flex items-center justify-center inset-0 z-[100]">
