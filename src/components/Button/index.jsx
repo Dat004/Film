@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 
@@ -12,12 +13,16 @@ function Button({
   rounded = false,
   disabled = false,
   text = false,
+  onClick = () => {},
   ...passProps
 }) {
+  const btnRef = useRef();
+  const rippleRef = useRef();
+
   let Comp = "button";
 
   const btnStyles = classNames(
-    "flex items-center justify-center text-primary font-normal hover:text-hover transition-colors ease duration-300",
+    "relative flex items-center justify-center text-primary font-normal hover:text-hover transition-colors ease duration-300 overflow-hidden",
     {
       [className]: className,
       "rounded-[4px] bg-bg-btn-primary": primary && !disabled,
@@ -38,19 +43,41 @@ function Button({
   }
 
   const handleClick = (e) => {
-    e.preventDefault();
+    const positionLeft =
+      e.clientX - btnRef.current.getBoundingClientRect().left;
+    const positionTop = e.clientY - btnRef.current.getBoundingClientRect().top;
+
+    rippleRef.current.style.top = `${positionTop}px`;
+    rippleRef.current.style.left = `${positionLeft}px`;
+
+    rippleRef.current.classList.add("ripple-frame");
+
+    setTimeout(() => {
+      rippleRef.current.classList.remove("ripple-frame");
+    }, 400);
+
+    onClick(e);
   };
 
   return (
-    <Comp disabled={disabled} className={btnStyles} {...props}>
-      {leftIcon && <i className="pointer-events-none select-none" onClick={handleClick}>{leftIcon}</i>}
-      <span
-        onClick={handleClick}
-        className="transition-colors ease duration-300 select-none pointer-events-none"
-      >
+    <Comp
+      className={btnStyles}
+      ref={btnRef}
+      onClick={handleClick}
+      disabled={disabled}
+      {...props}
+    >
+      {leftIcon && <i className="pointer-events-none">{leftIcon}</i>}
+      <span className="transition-colors ease duration-300 pointer-events-none">
         {children}
       </span>
-      {rightIcon && <i className="pointer-events-none select-none" onClick={handleClick}>{rightIcon}</i>}
+      {rightIcon && <i className="">{rightIcon}</i>}
+      {!to && (
+        <span
+          ref={rippleRef}
+          className="absolute translate-x-[-50%] translate-y-[-50%] size-[50px] bg-bg-white opacity-0 rounded-[50%] pointer-events-none"
+        ></span>
+      )}
     </Comp>
   );
 }

@@ -49,7 +49,7 @@
   --bg-multiport: rgb(35, 37, 43);
   --bg-odd-color: rgb(43, 44, 48);
   --bg-select-color: rgb(74, 75, 81);
-  --bg-white: #2c2c2c;
+  --bg-white: #fff;
   --bg-linear-to-right: linear-gradient(270deg, #000000 20%, transparent 100%);
   --bg-linear-to-left: linear-gradient(90deg, #000000 20%, transparent 100%);
   --bg-btn-primary: linear-gradient(114.88deg, #fe592a 0%, #e93013 97.15%);
@@ -172,6 +172,16 @@
   src: url("./assets/fonts/Montserrat-Light.ttf");
 }
 
+@keyframes ripple {
+  to {
+    opacity: 0.55;
+    transform: scale(100);
+  } from {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -212,6 +222,10 @@ span {
   text-overflow: ellipsis;
   overflow: hidden;
   max-width: 100%;
+}
+
+.ripple-frame {
+  animation: ripple .95s linear 0s;
 }
 
 video {
