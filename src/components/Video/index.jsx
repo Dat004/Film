@@ -10,7 +10,6 @@ import BarControls from "../../layouts/defaultComponents/Player/VideoPlayer/BarC
 import { PlayDisabled } from "../../icons";
 import {
   setStatusMovie,
-  resetStatus,
 } from "../../redux/slices/videoPlayerSlice";
 import { videoPlayerSelector } from "../../redux/selectors";
 import { CustomToastContainer, ToastMessage } from "../Toastify";
@@ -104,8 +103,7 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
     return () => {
       if (hls) hls.destroy();
       if (hls && video) hls.detachMedia(video);
-
-      dispatch(resetStatus());
+      
       setIsError(false);
       setCurrentTime(0);
       setDuration(0);

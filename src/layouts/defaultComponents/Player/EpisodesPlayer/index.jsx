@@ -90,9 +90,6 @@ function EpisodesPlayer({ dataEpisodes = [] }) {
       items?.slug?.includes(slug)
     );
 
-    if (!autoPlay && isPlay) {
-      dispatch(setStatusMovie({ key: "isPlay", value: false }));
-    }
     dispatch(setCurrentEpisode(findEpisode));
   };
 
