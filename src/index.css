@@ -10,7 +10,6 @@
   --toastify-color-error: #f44336;
   --toastify-font-family: "Montserrat", sans-serif;
 
-  
   --width-layout-xl: 960px;
   --width-layout-2xl: 1180px;
   --width-layout-3xl: 70%;
@@ -173,12 +172,13 @@
 }
 
 @keyframes ripple {
-  to {
-    opacity: 0.55;
-    transform: scale(100);
-  } from {
-    opacity: 0;
+  from {
     transform: scale(0);
+    opacity: 1;
+  }
+  to {
+    transform: scale(4); /* Điều chỉnh scale để đạt được kích thước mong muốn */
+    opacity: 0;
   }
 }
 
@@ -225,7 +225,12 @@ span {
 }
 
 .ripple-frame {
-  animation: ripple .95s linear 0s;
+  position: absolute;
+  border-radius: 50%;
+  transform-origin: center;
+  animation: ripple 600ms linear;
+  background-color: rgba(255, 255, 255, 0.7);
+  pointer-events: none;
 }
 
 video {
@@ -461,7 +466,7 @@ video:fullscreen ~ .controls {
   .notification-title {
     font-size: 200px;
   }
-  
+
   .notification-content {
     font-size: 28px;
   }
@@ -476,7 +481,7 @@ video:fullscreen ~ .controls {
     width: 100%;
     text-align: center;
   }
-  
+
   .notification-content {
     font-size: 22px;
     letter-spacing: 8px;
@@ -493,7 +498,7 @@ video:fullscreen ~ .controls {
     width: 100%;
     text-align: center;
   }
-  
+
   .notification-content {
     font-size: 18px;
     letter-spacing: 8px;

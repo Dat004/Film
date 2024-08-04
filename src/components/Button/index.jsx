@@ -43,20 +43,29 @@ function Button({
   }
 
   const handleClick = (e) => {
-    const positionLeft =
-      e.clientX - btnRef.current.getBoundingClientRect().left;
-    const positionTop = e.clientY - btnRef.current.getBoundingClientRect().top;
+    if (rippleRef.current) {
+      const positionLeft =
+        e.clientX - btnRef.current.getBoundingClientRect().left;
+      const positionTop =
+        e.clientY - btnRef.current.getBoundingClientRect().top;
+      const diameter = Math.max(
+        btnRef.current.clientWidth,
+        btnRef.current.clientHeight
+      );
 
-    rippleRef.current.style.top = `${positionTop}px`;
-    rippleRef.current.style.left = `${positionLeft}px`;
+      rippleRef.current.style.width = diameter + "px";
+      rippleRef.current.style.height = diameter + "px";
 
-    rippleRef.current.classList.add("ripple-frame");
+      rippleRef.current.style.top = positionTop - diameter / 2 + "px";
+      rippleRef.current.style.left = positionLeft - diameter / 2 + "px";
 
-    setTimeout(() => {
-      rippleRef.current.classList.remove("ripple-frame");
-    }, 400);
+      rippleRef.current.classList.add("ripple-frame");
 
-    onClick(e);
+      setTimeout(() => {
+        rippleRef.current.classList.remove("ripple-frame");
+      }, 400); // Đảm bảo thời gian setTimeout khớp với thời gian animation
+    }
+    if (onClick) onClick(e);
   };
 
   return (
@@ -73,10 +82,7 @@ function Button({
       </span>
       {rightIcon && <i className="">{rightIcon}</i>}
       {!to && (
-        <span
-          ref={rippleRef}
-          className="absolute translate-x-[-50%] translate-y-[-50%] size-[50px] bg-bg-white opacity-0 rounded-[50%] pointer-events-none"
-        ></span>
+        <span ref={rippleRef} className="absolute pointer-events-none"></span>
       )}
     </Comp>
   );
