@@ -77,6 +77,7 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
           switch (type) {
             case Hls.ErrorTypes.NETWORK_ERROR:
               handleError("Gặp lỗi mạng nghiêm trọng, hãy thử khôi phục");
+              // console.log(type, data);
               // hls.startLoad();
               break;
             case Hls.ErrorTypes.MEDIA_ERROR:
@@ -94,7 +95,10 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
         }
       });
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      console.error("This device does not support HLS playback.");
       video.src = src;
+
+      video.addEventListener("loadedmetadata", handleStarting);
     }
 
     return () => {
@@ -203,8 +207,9 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
     [className]: className,
   });
 
-  const handleFullScreen = () => {
-    dispatch(setStatusMovie({ key: "isFullScreen", value: true }));
+  const handleStarting = () => {
+    setIsLoading(false);
+    setIsError(false);
   };
 
   const handleExitFullScreen = () => {
@@ -290,6 +295,7 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
   };
 
   const handleError = (message) => {
+    dispatch(setStatusMovie({ key: "isPlay", value: false }));
     setIsLoading(false);
     setIsError(true);
 
@@ -322,10 +328,8 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
         ref={videoRef}
         className={videoStyles}
         onLoadStart={() => setIsLoading(true)}
+        onError={() => handleError("Đã có lỗi xảy ra với video!")}
         onEnded={handleEndedVideo}
-        onError={() =>
-          handleError("Đã có lỗi xảy ra với video. Vui lòng thử lại!")
-        }
         onDurationChange={(e) => setDuration(e.target.duration || 0)}
         onTimeUpdate={handleTimeUpdate}
         onWaiting={() => setIsLoading(true)}
@@ -335,14 +339,8 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
         onPause={() =>
           dispatch(setStatusMovie({ key: "isPlay", value: false }))
         }
-        onCanPlay={() => {
-          setIsLoading(false);
-          setIsError(false);
-        }}
-        onCanPlayThrough={() => {
-          setIsLoading(false);
-          setIsError(false);
-        }}
+        onCanPlay={handleStarting}
+        onCanPlayThrough={handleStarting}
         crossOrigin="anonymous"
         muted={isMuted}
         preload="auto"
@@ -361,7 +359,9 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
             <div className="size-[96px] mdm:size-[72px] text-primary">
               <PlayDisabled />
             </div>
-            <span className="text-[14px] text-center text-primary whitespace-normal leading-[1.2] mt-[4px] font-normal">Rất tiếc vì sự cố này!</span>
+            <span className="text-[14px] text-center text-primary whitespace-normal leading-[1.2] mt-[4px] font-normal">
+              Rất tiếc vì sự cố này!
+            </span>
           </div>
         </div>
       )}
