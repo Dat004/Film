@@ -17,8 +17,8 @@ function PlayIconCustom({
   return (
     <Button
       style={{ width: widthContainer, height: heightContainer }}
-      rounded
       className="bg-bg-green"
+      rounded
       {...props}
     >
       {isPlay ? (

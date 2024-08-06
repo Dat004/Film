@@ -20,7 +20,7 @@ function Player({ data = {} }) {
   return (
     <div className="relative px-[15px] clm:px-0">
       <div className="mx-auto 2xlm:w-width-detail-film-layout-2xlm slm:w-width-detail-film-layout-slm clm:w-width-detail-film-layout-clm">
-        <div className="absolute inset-0 overflow-hidden z-[5]">
+        <div className="absolute inset-0 overflow-hidden">
           <div
             style={{
               backgroundImage: `url(${thumb_url})`,
@@ -29,7 +29,7 @@ function Player({ data = {} }) {
             className="w-[100%] h-full bg-no-repeat bg-cover bg-center opacity-60"
           ></div>
         </div>
-        <div className="relative pt-[20px] pb-[50px] slm:pt-0 2xlm:pb-[20px] slm:pb-[10px] z-[10]">
+        <div className="relative pt-[20px] pb-[50px] slm:pt-0 2xlm:pb-[20px] slm:pb-[10px]">
           <div className="slm:hidden mb-[16px]">
             <p className="text-[12px] font-normal text-primary">
               <span>Bạn đang xem</span>

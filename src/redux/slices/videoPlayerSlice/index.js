@@ -6,6 +6,7 @@ const initialState = {
     isSeeked: false,
     isPlay: false,
     isFullScreen: false,
+    isLight: false,
     autoPlay: false,
     autoNext: false,
     currentVolume: 1,

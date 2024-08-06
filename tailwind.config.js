@@ -64,6 +64,7 @@ export default {
       "bg-field": "var(--bg-field)",
       "bg-white": "var(--bg-white)",
       "bg-green": "var(--bg-green)",
+      "bg-dimmer": "var(--bg-dimmer)",
       "bg-player": "var(--bg-player)",
       "bg-footer": "var(--bg-footer)",
       "bg-layout": "var(--bg-layout)",

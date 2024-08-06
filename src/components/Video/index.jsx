@@ -8,13 +8,11 @@ import { useDispatch, useSelector } from "react-redux";
 
 import BarControls from "../../layouts/defaultComponents/Player/VideoPlayer/BarControls";
 import { PlayDisabled } from "../../icons";
-import {
-  setStatusMovie,
-} from "../../redux/slices/videoPlayerSlice";
+import { setStatusMovie } from "../../redux/slices/videoPlayerSlice";
 import { videoPlayerSelector } from "../../redux/selectors";
 import { CustomToastContainer, ToastMessage } from "../Toastify";
 
-function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
+function Video({ className, src, handleNext = () => {}, ...props }) {
   const clickTimeoutRef = useRef(null);
   const mouseMoveTimeoutRef = useRef(null);
   const changeTimeoutRef = useRef(null);
@@ -31,9 +29,16 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
   const [clickDetected, setClickDetected] = useState(false);
 
   const videoPlayerStatus = useSelector(videoPlayerSelector);
-  const { statusMovie } = videoPlayerStatus;
-  const { currentVolume, isMuted, isPlay, autoPlay, isFullScreen } =
-    statusMovie;
+  const { statusMovie, episode } = videoPlayerStatus;
+  const {
+    currentVolume,
+    isMuted,
+    isPlay,
+    autoPlay,
+    autoNext,
+    isFullScreen,
+  } = statusMovie;
+  const { currentEpisode } = episode;
 
   const controllerVariants = {
     hide: {
@@ -103,24 +108,12 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
     return () => {
       if (hls) hls.destroy();
       if (hls && video) hls.detachMedia(video);
-      
+
       setIsError(false);
       setCurrentTime(0);
       setDuration(0);
     };
   }, [src]);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (isPlay || autoPlay) {
-      const videoPromise = video.play();
-      if (videoPromise !== undefined) {
-        videoPromise.then(() => {}).catch(() => {});
-      }
-    } else {
-      video.pause();
-    }
-  }, [isPlay, autoPlay]);
 
   useEffect(() => {
     const handleLoadeddata = () => {
@@ -198,12 +191,36 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
   }, [isFullScreen]);
 
   useEffect(() => {
+    const video = videoRef.current;
+    if (isPlay) {
+      const videoPromise = video.play();
+      if (videoPromise !== undefined) {
+        videoPromise.then(() => {}).catch(() => {});
+      }
+    } else {
+      video.pause();
+    }
+  }, [isPlay, currentEpisode]);
+
+  useEffect(() => {
     videoRef.current.volume = currentVolume;
   }, [currentVolume]);
 
   const videoStyles = classNames("block w-[100%] h-[100%] select-none", {
     [className]: className,
   });
+
+  const handlePlayVideo = () => {
+    const video = videoRef.current;
+    if (isPlay || autoPlay) {
+      const videoPromise = video.play();
+      if (videoPromise !== undefined) {
+        videoPromise.then(() => {}).catch(() => {});
+      }
+    } else {
+      video.pause();
+    }
+  };
 
   const handleStarting = () => {
     setIsLoading(false);
@@ -290,6 +307,17 @@ function Video({ className, src, handleEndedVideo = () => {}, ...props }) {
 
   const handleSeeking = () => {
     dispatch(setStatusMovie({ key: "isPlay", value: false }));
+  };
+
+  const handleEndedVideo = () => {
+    if (!autoNext) {
+      dispatch(setStatusMovie({ key: "isPlay", value: false }));
+      dispatch(setStatusMovie({ key: "isFullScreen", value: false }));
+
+      return;
+    }
+
+    handleNext();
   };
 
   const handleError = (message) => {

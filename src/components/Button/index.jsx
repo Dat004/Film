@@ -43,28 +43,25 @@ function Button({
   }
 
   const handleClick = (e) => {
-    if (rippleRef.current) {
-      const positionLeft =
-        e.clientX - btnRef.current.getBoundingClientRect().left;
-      const positionTop =
-        e.clientY - btnRef.current.getBoundingClientRect().top;
-      const diameter = Math.max(
-        btnRef.current.clientWidth,
-        btnRef.current.clientHeight
-      );
+    const positionLeft =
+      e.clientX - btnRef.current.getBoundingClientRect().left;
+    const positionTop = e.clientY - btnRef.current.getBoundingClientRect().top;
+    const diameter = Math.max(
+      btnRef.current.clientWidth,
+      btnRef.current.clientHeight
+    );
 
-      rippleRef.current.style.width = diameter + "px";
-      rippleRef.current.style.height = diameter + "px";
+    rippleRef.current.style.width = diameter + "px";
+    rippleRef.current.style.height = diameter + "px";
 
-      rippleRef.current.style.top = positionTop - diameter / 2 + "px";
-      rippleRef.current.style.left = positionLeft - diameter / 2 + "px";
+    rippleRef.current.style.top = positionTop - diameter / 2 + "px";
+    rippleRef.current.style.left = positionLeft - diameter / 2 + "px";
 
-      rippleRef.current.classList.add("ripple-frame");
+    rippleRef.current.classList.add("ripple-frame");
 
-      setTimeout(() => {
-        rippleRef.current.classList.remove("ripple-frame");
-      }, 400); // Đảm bảo thời gian setTimeout khớp với thời gian animation
-    }
+    setTimeout(() => {
+      if (rippleRef.current) rippleRef.current.classList.remove("ripple-frame");
+    }, 400); // Đảm bảo thời gian setTimeout khớp với thời gian animation
     if (onClick) onClick(e);
   };
 
@@ -81,9 +78,7 @@ function Button({
         {children}
       </span>
       {rightIcon && <i className="">{rightIcon}</i>}
-      {!to && (
-        <span ref={rippleRef} className="absolute pointer-events-none"></span>
-      )}
+      <span ref={rippleRef} className="absolute pointer-events-none"></span>
     </Comp>
   );
 }
