@@ -30,14 +30,8 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
 
   const videoPlayerStatus = useSelector(videoPlayerSelector);
   const { statusMovie, episode } = videoPlayerStatus;
-  const {
-    currentVolume,
-    isMuted,
-    isPlay,
-    autoPlay,
-    autoNext,
-    isFullScreen,
-  } = statusMovie;
+  const { currentVolume, isMuted, isPlay, autoPlay, autoNext, isFullScreen } =
+    statusMovie;
   const { currentEpisode } = episode;
 
   const controllerVariants = {
@@ -107,7 +101,10 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
 
     return () => {
       if (hls) hls.destroy();
-      if (hls && video) hls.detachMedia(video);
+      if (hls && video) {
+        hls.detachMedia(video);
+        video.removeEventListener("loadedmetadata", handleStarting);
+      }
 
       setIsError(false);
       setCurrentTime(0);
@@ -141,6 +138,8 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
         videoWrapperRef.current.webkitRequestFullscreen();
       } else if (videoWrapperRef.current.msRequestFullscreen) {
         videoWrapperRef.current.msRequestFullscreen();
+      } else if(videoRef.current.webkitSupportsFullscreen) {
+        videoRef.current.webkitEnterFullscreen();
       }
     };
 
@@ -163,30 +162,60 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
       }
     };
 
-    if (videoWrapperRef.current) {
+    const handleFullScreenChange = () => {
+      if (
+        document.fullscreenElement ||
+        videoRef.current.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement
+      ) {
+        dispatch(setStatusMovie({ key: "isFullScreen", value: true }));
+      } else {
+        dispatch(setStatusMovie({ key: "isFullScreen", value: false }));
+      }
+    };
+
+    if (videoWrapperRef.current && videoRef.current) {
       if (isFullScreen) {
         enterFullScreen();
+        // videoRef.current.playsInline = false;
       } else {
         exitFullScreen();
+        // videoRef.current.playsInline = true;
       }
     }
 
     const handleKeyDown = (e) => {
       if (e.which === 13 || e.which === 122) {
         e.preventDefault();
-
         handleToggleFullScreen();
       } else if (e.which === 27) {
         e.preventDefault();
-
         handleExitFullScreen();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("fullscreenchange", handleFullScreenChange);
+    videoRef.current.addEventListener("webkitpresentationmodechanged", handleFullScreenChange);
+    document.addEventListener("mozfullscreenchange", handleFullScreenChange);
+    document.addEventListener("MSFullscreenChange", handleFullScreenChange);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("fullscreenchange", handleFullScreenChange);
+      document.removeEventListener(
+        "webkitfullscreenchange",
+        handleFullScreenChange
+      );
+      document.removeEventListener(
+        "mozfullscreenchange",
+        handleFullScreenChange
+      );
+      document.removeEventListener(
+        "MSFullscreenChange",
+        handleFullScreenChange
+      );
     };
   }, [isFullScreen]);
 
@@ -209,18 +238,6 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
   const videoStyles = classNames("block w-[100%] h-[100%] select-none", {
     [className]: className,
   });
-
-  const handlePlayVideo = () => {
-    const video = videoRef.current;
-    if (isPlay || autoPlay) {
-      const videoPromise = video.play();
-      if (videoPromise !== undefined) {
-        videoPromise.then(() => {}).catch(() => {});
-      }
-    } else {
-      video.pause();
-    }
-  };
 
   const handleStarting = () => {
     setIsLoading(false);
@@ -370,7 +387,7 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
         crossOrigin="anonymous"
         muted={isMuted}
         preload="auto"
-        // playsInline
+        playsInline
         {...props}
       ></video>
       <CustomToastContainer />
