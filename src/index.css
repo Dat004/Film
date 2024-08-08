@@ -463,6 +463,10 @@ video:fullscreen ~ .controls {
   margin: 0;
 }
 
+.btnLogin {
+  font-family: "Montserrat", sans-serif;
+}
+
 @media screen and (max-width: 850px) {
   .notification-title {
     font-size: 200px;
