@@ -1,4 +1,4 @@
-import routerConfig from "./routerConfig";
+import { routerConfig } from "./routerConfig";
 import keyConfig from "./keyConfig";
 
 const configs = {

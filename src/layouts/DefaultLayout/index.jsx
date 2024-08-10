@@ -10,19 +10,6 @@ import { BackToTopIcon } from "../../icons";
 function DefaultLayout({ children }) {
   const [isShowBtnBackToTop, setIsShowBtnBackToTop] = useState(false);
 
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const handleScrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
   const handleScroll = () => {
     if (window.scrollY >= 20) {
       setIsShowBtnBackToTop(true);

@@ -1,9 +1,10 @@
+import { dataMenu, dataUserMenu } from "./dataMenu";
 import dataFooter from "./dataFooter";
-import dataMenu from "./dataMenu";
 
 const data = {
-  dataMenu,
+  dataUserMenu,
   dataFooter,
+  dataMenu,
 };
 
 export default data;

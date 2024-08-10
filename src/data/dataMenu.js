@@ -1,6 +1,7 @@
+import { PersonIcon, SettingsIcon } from "../icons";
 import router from "../router";
 
-const dataMenu = [
+export const dataMenu = [
   {
     title: "Trang chủ",
     path: router.home,
@@ -28,4 +29,21 @@ const dataMenu = [
   },
 ];
 
-export default dataMenu;
+export const dataUserMenu = [
+  {
+    id: 1,
+    path: router.user_profile,
+    Icon: PersonIcon,
+    title: "Cá nhân",
+    // component: pages.Home,
+    // layout: DefaultLayout,
+  },
+  {
+    id: 2,
+    path: router.user_setting,
+    Icon: SettingsIcon,
+    title: "Cài đặt",
+    // component: pages.DetailsFilm,
+    // layout: DetailFilmLayout,
+  },
+];

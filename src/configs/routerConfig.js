@@ -3,7 +3,7 @@ import DefaultLayout from "../layouts/DefaultLayout";
 import router from "../router";
 import pages from "../pages";
 
-const routerConfig = [
+export const routerConfig = [
   {
     id: 1,
     path: router.home,
@@ -59,5 +59,3 @@ const routerConfig = [
     layout: DefaultLayout,
   },
 ];
-
-export default routerConfig;

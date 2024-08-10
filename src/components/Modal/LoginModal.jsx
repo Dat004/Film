@@ -1,11 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { RiCloseLargeFill } from "react-icons/ri";
 import { useGoogleLogin } from "@react-oauth/google";
 
-import { ToastMessage, CustomToastContainer } from "../Toastify";
 import GoogleButtonLogin from "../Button/GoogleButtonLogin";
+import { setAccessToken } from "../../redux/slices/authSlice";
 import { useLocalStorage } from "../../hooks";
 import Container from "../Container";
 import configs from "../../configs";
@@ -18,6 +19,8 @@ function LoginModal({ onClose = () => {}, isShowModal = false }) {
   const [isHandling, setIsHandling] = useState(false);
   const [usernameValue, setUsernameValueValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
+
+  const dispatch = useDispatch();
 
   const userNameRef = useRef();
   const passwordRef = useRef();
@@ -52,16 +55,16 @@ function LoginModal({ onClose = () => {}, isShowModal = false }) {
   const login = useGoogleLogin({
     onSuccess: async (CodeResponse) => {
       setIsHandling(true);
-      ToastMessage.success("Đăng nhập thành công");
-
       setItem(accessToken, CodeResponse.access_token);
+
+      dispatch(setAccessToken(CodeResponse.access_token));
+
       setTimeout(() => {
         setIsHandling(false);
         onClose();
       }, 1500);
     },
     onError: (errorResponse) => {
-      ToastMessage.success("Đăng nhập thất bại ");
       console.log(errorResponse);
     },
   });
@@ -74,11 +77,6 @@ function LoginModal({ onClose = () => {}, isShowModal = false }) {
     <AnimatePresence>
       {isShowModal && (
         <Modal isShowModal={isShowModal} onClose={onClose}>
-          {isHandling && (
-            <div className="fixed flex items-center justify-center inset-0 z-[1000] bg-bg-layout-loading">
-              <div className="loader"></div>
-            </div>
-          )}
           <motion.div
             variants={variants}
             initial="hide"
@@ -155,7 +153,6 @@ function LoginModal({ onClose = () => {}, isShowModal = false }) {
                     onClick={handleLogin}
                     className="h-[48px] w-[100%]"
                   />
-                  <CustomToastContainer />
                 </form>
               </div>
             </Container>

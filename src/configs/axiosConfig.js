@@ -1,14 +1,26 @@
 import axios from "axios";
 
 const BASE_URL = "https://phimapi.com/";
+const GOOGLE_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
 
 const defaultRequest = axios.create({
   baseURL: BASE_URL,
   timeout: 20000,
 });
 
-export const getRequest = async (path = "", options =  {}) => {
+const googleRequest = axios.create({
+  baseURL: GOOGLE_URL,
+  timeout: 20000,
+});
+
+export const getRequest = async (path = "", options = {}) => {
   const response = await defaultRequest.get(path, options);
+
+  return response;
+};
+
+export const getGoogleRequest = async (path = "", options = {}) => {
+  const response = await googleRequest.get(path, options);
 
   return response;
 };

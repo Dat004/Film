@@ -12,9 +12,11 @@ import {
   tvShowService,
 } from "./filmSevice";
 import { listCategoryService, countryCategoryService } from "./categoryService";
+import { infoAccountServices } from "./googleServices";
 
 const services = {
   countryCategoryService,
+  infoAccountServices,
   categoryFilmService,
   countryFilmService,
   listCategoryService,

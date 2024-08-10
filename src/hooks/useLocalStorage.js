@@ -6,14 +6,16 @@ const useLocalStorage = () => {
   };
 
   const setItem = (key, value) => {
-    if (typeof value === "string") {
+    if (
+      typeof value === "string" ||
+      typeof value === "boolean" ||
+      typeof value === "number" ||
+      typeof value === "undefined"
+    ) {
       localStorage.setItem(key, JSON.stringify(value));
-
-      return;
     }
 
-    const prevItem = getItem(key);
-    localStorage.setItem(key, JSON.stringify(Object.assign(prevItem, value)));
+    localStorage.setItem(key, JSON.stringify(value));
   };
 
   const removeItem = (key) => {
