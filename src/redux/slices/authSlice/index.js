@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  tokenStore: {},
   logged: false,
-  access_token: "",
   userInfo: {},
 };
 
@@ -13,8 +13,8 @@ const authSlice = createSlice({
     setLogin: (state, action) => {
       state.logged = action.payload;
     },
-    setAccessToken: (state, action) => {
-      state.access_token = action.payload;
+    setTokenStore: (state, action) => {
+      state.tokenStore = action.payload;
     },
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
@@ -24,5 +24,5 @@ const authSlice = createSlice({
 
 const { actions } = authSlice;
 
-export const { setLogin, setAccessToken, setUserInfo } = actions;
+export const { setLogin, setTokenStore, setUserInfo } = actions;
 export default authSlice;

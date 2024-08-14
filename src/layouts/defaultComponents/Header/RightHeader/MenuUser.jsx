@@ -1,29 +1,16 @@
+import { signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
 
 import { FlexContainer, FlexItems } from "../../../../components/Flex";
-import { setAccessToken } from "../../../../redux/slices/authSlice";
+import { auth } from "../../../../configs/firebaseConfig";
 import Container from "../../../../components/Container";
-import { useLocalStorage } from "../../../../hooks";
 import Button from "../../../../components/Button";
 import Image from "../../../../components/Image";
 import { LogoutIcon } from "../../../../icons";
-import configs from "../../../../configs";
 
 function MenuUser({ data = {}, dataMenu = [], onClose = () => {} }) {
-  const dispatch = useDispatch();
-
-  const {
-    keyConfig: {
-      localStorageKey: { accessToken },
-    },
-  } = configs;
-
-  const { removeItem } = useLocalStorage();
-
-  const handleLogout = () => {
-    removeItem(accessToken);
-    dispatch(setAccessToken(""));
+  const handleLogout = async () => {
+    await signOut(auth);
 
     onClose();
   };
@@ -33,10 +20,10 @@ function MenuUser({ data = {}, dataMenu = [], onClose = () => {} }) {
       <header className="py-[12px] px-[15px] border-b border-solid border-bd-filed-form-color">
         <FlexContainer className="items-center">
           <FlexItems className="size-[32px]">
-            <Image className="rounded-[50%]" src={data.picture} />
+            <Image className="rounded-[50%]" src={data.photoUrl} />
           </FlexItems>
           <FlexItems className="text-[14px] text-primary ml-[10px]">
-            <p className="font-medium leading-[1.18]">{data.name}</p>
+            <p className="font-medium leading-[1.18]">{data.displayName}</p>
             <p className="leading-[1.18]">{data.email}</p>
           </FlexItems>
         </FlexContainer>
@@ -46,9 +33,11 @@ function MenuUser({ data = {}, dataMenu = [], onClose = () => {} }) {
 
         return (
           <Link className="text-primary" key={item.id} to={item.path}>
-            <FlexContainer className="p-[12px] px-[15px] items-center">
+            <FlexContainer className="p-[12px] px-[15px] hover:bg-bg-multiport items-center">
               <FlexItems>
-                <Icon />
+                <i className="block size-[20px]">
+                  <Icon width="100%" height="100%" />
+                </i>
               </FlexItems>
               <FlexItems className="ml-[10px]">
                 <p className="text-[14px] font-normal">{item.title}</p>
@@ -57,10 +46,10 @@ function MenuUser({ data = {}, dataMenu = [], onClose = () => {} }) {
           </Link>
         );
       })}
-      <footer className="py-[12px] px-[15px] border-t border-solid border-bd-filed-form-color">
+      <footer className="border-t border-solid border-bd-filed-form-color">
         <Button
           onClick={handleLogout}
-          className="text-[14px] text-primary !justify-start w-[100%] gap-x-[10px] font-normal"
+          className="py-[12px] px-[15px] hover:bg-bg-multiport text-[14px] text-primary !justify-start w-[100%] gap-x-[10px] font-normal"
           leftIcon={<LogoutIcon />}
         >
           Đăng xuất

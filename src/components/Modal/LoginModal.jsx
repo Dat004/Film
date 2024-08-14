@@ -1,37 +1,24 @@
+import { signInWithPopup } from "firebase/auth";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { RiCloseLargeFill } from "react-icons/ri";
-import { useGoogleLogin } from "@react-oauth/google";
 
+import { CustomToastContainer, ToastMessage } from "../Toastify";
+import { auth, provider } from "../../configs/firebaseConfig";
 import GoogleButtonLogin from "../Button/GoogleButtonLogin";
-import { setAccessToken } from "../../redux/slices/authSlice";
-import { useLocalStorage } from "../../hooks";
 import Container from "../Container";
-import configs from "../../configs";
 import Button from "../Button";
 import Modal from "./";
 
 function LoginModal({ onClose = () => {}, isShowModal = false }) {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [disabledBtn, setDisabledBtn] = useState(true);
-  const [isHandling, setIsHandling] = useState(false);
   const [usernameValue, setUsernameValueValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
 
-  const dispatch = useDispatch();
-
   const userNameRef = useRef();
   const passwordRef = useRef();
-
-  const { setItem } = useLocalStorage();
-
-  const {
-    keyConfig: {
-      localStorageKey: { accessToken },
-    },
-  } = configs;
 
   useEffect(() => {
     setDisabledBtn(usernameValue && passwordValue ? false : true);
@@ -52,25 +39,18 @@ function LoginModal({ onClose = () => {}, isShowModal = false }) {
     setIsShowPassword((state) => !state);
   };
 
-  const login = useGoogleLogin({
-    onSuccess: async (CodeResponse) => {
-      setIsHandling(true);
-      setItem(accessToken, CodeResponse.access_token);
+  const onSuccess = () => {
+    ToastMessage.success("Đăng nhập thành công!");
+  };
 
-      dispatch(setAccessToken(CodeResponse.access_token));
-
-      setTimeout(() => {
-        setIsHandling(false);
-        onClose();
-      }, 1500);
-    },
-    onError: (errorResponse) => {
-      console.log(errorResponse);
-    },
-  });
+  const onError = () => {
+    ToastMessage.success("Đăng nhập không thành công. Vui lòng đăng nhập lại!");
+  };
 
   const handleLogin = () => {
-    login();
+    signInWithPopup(auth, provider)
+      .then(() => onSuccess())
+      .catch(() => onError());
   };
 
   return (
@@ -153,6 +133,7 @@ function LoginModal({ onClose = () => {}, isShowModal = false }) {
                     onClick={handleLogin}
                     className="h-[48px] w-[100%]"
                   />
+                  <CustomToastContainer />
                 </form>
               </div>
             </Container>

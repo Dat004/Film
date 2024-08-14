@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://phimapi.com/";
+const BASE_URL = import.meta.env.VITE_REACT_BASE_URL;
 const GOOGLE_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
 
 const defaultRequest = axios.create({

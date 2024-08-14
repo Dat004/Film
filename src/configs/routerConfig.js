@@ -1,5 +1,6 @@
 import DetailFilmLayout from "../layouts/DetailFilmLayout";
 import DefaultLayout from "../layouts/DefaultLayout";
+import ProfileLayout from "../layouts/ProfileLayout";
 import router from "../router";
 import pages from "../pages";
 
@@ -57,5 +58,29 @@ export const routerConfig = [
     path: router.quoc_gia,
     component: pages.QuocGia,
     layout: DefaultLayout,
+  },
+  {
+    id: 10,
+    path: router.user_profile,
+    component: pages.Profile,
+    layout: ProfileLayout,
+  },
+  {
+    id: 11,
+    path: router.user_setting,
+    component: pages.Setting,
+    layout: ProfileLayout,
+  },
+  {
+    id: 12,
+    path: router.continue_watching,
+    component: pages.ContinueWatching,
+    layout: ProfileLayout,
+  },
+  {
+    id: 13,
+    path: router.watch_list,
+    component: pages.WatchList,
+    layout: ProfileLayout,
   },
 ];

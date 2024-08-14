@@ -25,7 +25,7 @@ function RightHeader() {
     };
   }, [showMenu]);
 
-  const { logged, userInfo, access_token } = UserAuth();
+  const { lg, uf, tk } = UserAuth();
   const { isShowModal, handleToggleModal, handleCloseModal } =
     useControlModal();
 
@@ -42,7 +42,7 @@ function RightHeader() {
       <Button onClick={() => navigate("/search")}>
         <img src={images.searchIcon} alt="search" />
       </Button>
-      {logged ? (
+      {lg ? (
         <div className="relative">
           <Button
             onClick={(e) => {
@@ -52,12 +52,12 @@ function RightHeader() {
             rounded
             className="size-[35px]"
           >
-            <Image src={userInfo.picture} className="rounded-[50%]" />
+            <Image src={uf.photoUrl} className="rounded-[50%]" />
           </Button>
           {showMenu && (
             <div className="absolute right-0 top-[calc(100%+15px)]">
               <MenuUser
-                data={userInfo}
+                data={uf}
                 dataMenu={dataUserMenu}
                 onClose={handleCloseMenu}
               />

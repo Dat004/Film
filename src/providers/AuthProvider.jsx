@@ -1,108 +1,102 @@
-import { useEffect, useState, useRef } from "react";
+import { getDatabase, ref, set, get } from "firebase/database";
+import { onAuthStateChanged } from "firebase/auth";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
-  setAccessToken,
   setLogin,
+  setTokenStore,
   setUserInfo,
 } from "../redux/slices/authSlice";
-import { CustomToastContainer, ToastMessage } from "../components/Toastify";
-import { useLocalStorage, useFetchData } from "../hooks";
 import { authSelector } from "../redux/selectors";
+import { auth } from "../configs/firebaseConfig";
 import AuthContext from "../context/AuthContext";
-import services from "../services";
+import { useLocalStorage } from "../hooks";
 import configs from "../configs";
 
 function AuthProvider({ children }) {
-  const auth = useSelector(authSelector);
+  const authState = useSelector(authSelector);
   const dispatch = useDispatch();
 
-  const { access_token, logged, userInfo } = auth;
-
-  const timeoutRef = useRef(null);
-
-  const { getItem, setItem } = useLocalStorage();
+  const { setItem, getItem } = useLocalStorage();
   const {
     keyConfig: {
-      localStorageKey: { user, isLogged, accessToken },
+      localStorageKey: { token, user_info, is_logged },
     },
   } = configs;
-  const token = getItem(accessToken) || "";
-  const {
-    newData,
-    state: { isFetching, isError, isSuccess },
-  } = useFetchData(
-    services.infoAccountServices,
-    "",
-    access_token,
-    [access_token],
-    access_token
-  );
 
-  const onError = () => {
-    dispatch(setLogin(false));
-    dispatch(setUserInfo({}));
+  const { tokenStore, logged, userInfo } = authState;
 
-    setItem(user, {});
-    setItem(isLogged, false);
-    ToastMessage.error("Đăng nhập không thành công. Vui lòng đăng nhập lại!");
-  };
+  const isLogged = getItem(is_logged);
+  const userIf = getItem(user_info);
+  const tokenSt = getItem(token);
 
-  const onSuccess = () => {
-    dispatch(setLogin(true));
-    dispatch(setUserInfo(newData));
-
-    setItem(user, newData);
-    setItem(isLogged, true);
-    ToastMessage.success("Đăng nhập thành công.");
+  const value = {
+    tk: tokenSt || tokenStore,
+    lg: isLogged || logged,
+    uf: userIf || userInfo,
   };
 
   useEffect(() => {
-    if (!access_token) return;
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    timeoutRef.current = setTimeout(() => {
-      if (isError) onError();
-    }, 1200);
-  }, [access_token, isError]);
+    const db = getDatabase();
 
-  useEffect(() => {
-    if (!access_token) return;
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    timeoutRef.current = setTimeout(() => {
-      if (isSuccess) onSuccess();
-    }, 1200);
-  }, [access_token, isSuccess]);
+    const handleAuthStateChange = async (user) => {
+      if (user) {
+        const currentUser = {
+          ...user.reloadUserInfo,
+          phoneNumber: user.phoneNumber,
+          uid: user.uid,
+        };
+        const tokenCurrent = {
+          ...user.stsTokenManager,
+        };
 
-  useEffect(() => {
-    dispatch(setAccessToken(token));
+        try {
+          const snapshot = await get(ref(db, `/users/${user.uid}`));
+          if (!snapshot.exists()) {
+            await set(ref(db, `/users/${user.uid}`), {
+              currentUser,
+            });
+            alert("Add data successfully");
 
-    if (!token) {
-      setItem(user, {});
-      setItem(isLogged, false);
+            setItem(user_info, currentUser);
+            setItem(is_logged, true);
+            setItem(token, tokenCurrent);
 
-      dispatch(setUserInfo({}));
-      dispatch(setLogin(false));
-    } else {
-      const logged = getItem(isLogged) || false;
-      const info = getItem(user) || {};
+            dispatch(setUserInfo(currentUser));
+            dispatch(setLogin(true));
+            dispatch(setTokenStore(tokenCurrent));
+          } else {
+            const { currentUser } = snapshot.val();
 
-      dispatch(setUserInfo(info));
-      dispatch(setLogin(logged));
-    }
-  }, [token]);
+            setItem(user_info, currentUser);
+            setItem(is_logged, true);
+            setItem(token, tokenCurrent);
 
-  const value = { access_token, logged, userInfo };
+            dispatch(setUserInfo(currentUser));
+            dispatch(setLogin(true));
+            dispatch(setTokenStore(tokenCurrent));
+          }
+        } catch (error) {
+          console.log(error);
+          alert("Failed to add data");
+        }
+      } else {
+        setItem(user_info, {});
+        setItem(is_logged, false);
+        setItem(token, {});
+        dispatch(setUserInfo({}));
+        dispatch(setLogin(false));
+        dispatch(setTokenStore({}));
+      }
+    };
 
-  return (
-    <AuthContext.Provider value={value}>
-      <CustomToastContainer />
-      {children}
-    </AuthContext.Provider>
-  );
+    const unsubscribe = onAuthStateChanged(auth, handleAuthStateChange);
+
+    return () => unsubscribe();
+  }, []);
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export default AuthProvider;

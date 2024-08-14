@@ -1,4 +1,4 @@
-import { PersonIcon, SettingsIcon } from "../icons";
+import { PersonIcon, SettingsIcon, HeartIcon, HistoryIcon } from "../icons";
 import router from "../router";
 
 export const dataMenu = [
@@ -35,15 +35,23 @@ export const dataUserMenu = [
     path: router.user_profile,
     Icon: PersonIcon,
     title: "Cá nhân",
-    // component: pages.Home,
-    // layout: DefaultLayout,
   },
   {
     id: 2,
+    path: router.continue_watching,
+    Icon: HistoryIcon,
+    title: "Tiếp tục xem",
+  },
+  {
+    id: 3,
+    path: router.watch_list,
+    Icon: HeartIcon,
+    title: "Danh sách phát",
+  },
+  {
+    id: 4,
     path: router.user_setting,
     Icon: SettingsIcon,
     title: "Cài đặt",
-    // component: pages.DetailsFilm,
-    // layout: DetailFilmLayout,
   },
 ];

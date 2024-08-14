@@ -31,6 +31,8 @@ export default {
 
       mdm: { max: "768px" },
 
+      ccm: { max: "479px" },
+
       kdm: { max: "400px" },
 
       xsm: { max: "320px" },
@@ -46,6 +48,7 @@ export default {
     },
     backgroundImage: {
       "bg-process-slider-color": "var(--bg-process-slider-color)",
+      "bg-content-area-color": "var(--bg-content-area-color)",
       "bg-linear-to-right": "var(--bg-linear-to-right)",
       "bg-linear-to-left": "var(--bg-linear-to-left)",
       "bg-bar-controls": "var(--bg-bar-controls)",
@@ -62,6 +65,7 @@ export default {
     backgroundColor: {
       "bg-transparent": "transparent",
       "bg-field": "var(--bg-field)",
+      "bg-block": "var(--bg-block)",
       "bg-white": "var(--bg-white)",
       "bg-green": "var(--bg-green)",
       "bg-dimmer": "var(--bg-dimmer)",

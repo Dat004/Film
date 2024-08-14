@@ -32,6 +32,7 @@
     ),
     #202020;
   --bg-process-slider-color: linear-gradient(-90deg, #1fc591, #23d41e 97%);
+  --bg-content-area-color: linear-gradient(180deg, #1d1d1e 0, rgba(51, 53, 70, 0) 100%);
   --bg-slider-color: hsla(0, 0%, 100%, 0.5);
   --bg-layout: #000;
   --bg-layout-loading: rgba(0, 0, 0, 0.55);
@@ -49,6 +50,7 @@
   --bg-multiport: rgb(35, 37, 43);
   --bg-odd-color: rgb(43, 44, 48);
   --bg-select-color: rgb(74, 75, 81);
+  --bg-block: rgba(255, 255, 255, .08);
   --bg-white: #fff;
   --bg-linear-to-right: linear-gradient(270deg, #000000 20%, transparent 100%);
   --bg-linear-to-left: linear-gradient(90deg, #000000 20%, transparent 100%);

@@ -1,6 +1,8 @@
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 
+import images from "../../assets/images";
+
 function Image({
   className,
   src = "",
@@ -8,7 +10,7 @@ function Image({
   contain = false,
   ...props
 }) {
-  const [fallBack, setFallBack] = useState(src);
+  const [fallBack, setFallBack] = useState(src || images.imgLoadingVertical);
 
   const imageStyles = classNames("w-[100%] h-full", {
     [className]: className,
@@ -17,10 +19,14 @@ function Image({
   });
 
   useEffect(() => {
-    setFallBack(src);
+    if (src) {
+      setFallBack(src);
+    }
   }, [src]);
 
-  const handleFallBack = () => {};
+  const handleFallBack = () => {
+    setFallBack(images.imgLoadingVertical);
+  };
 
   return (
     <img
