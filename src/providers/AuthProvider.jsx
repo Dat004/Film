@@ -1,4 +1,4 @@
-import { getDatabase, ref, set, get } from "firebase/database";
+import { getDatabase, ref, set, get, onValue } from "firebase/database";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,10 +36,9 @@ function AuthProvider({ children }) {
     lg: isLogged || logged,
     uf: userIf || userInfo,
   };
+  const db = getDatabase();
 
   useEffect(() => {
-    const db = getDatabase();
-
     const handleAuthStateChange = async (user) => {
       if (user) {
         const currentUser = {
@@ -57,34 +56,33 @@ function AuthProvider({ children }) {
             await set(ref(db, `/users/${user.uid}`), {
               currentUser,
             });
-            alert("Add data successfully");
-
-            setItem(user_info, currentUser);
-            setItem(is_logged, true);
-            setItem(token, tokenCurrent);
-
-            dispatch(setUserInfo(currentUser));
-            dispatch(setLogin(true));
-            dispatch(setTokenStore(tokenCurrent));
-          } else {
-            const { currentUser } = snapshot.val();
-
-            setItem(user_info, currentUser);
-            setItem(is_logged, true);
-            setItem(token, tokenCurrent);
-
-            dispatch(setUserInfo(currentUser));
-            dispatch(setLogin(true));
-            dispatch(setTokenStore(tokenCurrent));
           }
         } catch (error) {
           console.log(error);
           alert("Failed to add data");
         }
+
+        const usersRef = ref(db, `users/${user.uid}`);
+        const unsubscribeUsers = onValue(usersRef, (snapshot) => {
+          const value = snapshot.val();
+
+          setItem(user_info, value.currentUser);
+          setItem(is_logged, true);
+          setItem(token, tokenCurrent);
+
+          dispatch(setUserInfo(value.currentUser));
+          dispatch(setLogin(true));
+          dispatch(setTokenStore(tokenCurrent));
+        });
+
+        return () => {
+          unsubscribeUsers();
+        };
       } else {
         setItem(user_info, {});
         setItem(is_logged, false);
         setItem(token, {});
+
         dispatch(setUserInfo({}));
         dispatch(setLogin(false));
         dispatch(setTokenStore({}));

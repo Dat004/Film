@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { MdEdit } from "react-icons/md";
 import { MdPerson, MdPersonOff } from "react-icons/md";
+import { update, getDatabase, ref } from "firebase/database";
 
 import { FlexContainer, FlexItems } from "../../components/Flex";
 import Button from "../../components/Button";
@@ -9,7 +10,7 @@ import { PersonIcon } from "../../icons";
 import FieldValue from "./FieldValue";
 
 function ProfileScreen({ data = {} }) {
-  const { createdAt, email, displayName, photoUrl, emailVerified } = data;
+  const { createdAt, email, displayName, photoUrl, emailVerified, uid } = data;
 
   const time = new Date(+createdAt).toLocaleDateString();
 
@@ -17,6 +18,20 @@ function ProfileScreen({ data = {} }) {
     image: photoUrl,
     name: displayName,
   });
+
+  const handleUpdateUser = () => {
+    if (value.name === displayName && value.image === photoUrl) return;
+
+    const db = getDatabase();
+    const dbRef = ref(db, `users/${uid}/currentUser`);
+
+    const updates = {
+      displayName: value.name,
+      photoUrl: value.image,
+    };
+
+    update(dbRef, updates);
+  };
 
   return (
     <section className="max-w-[600px] mx-auto">
@@ -52,23 +67,23 @@ function ProfileScreen({ data = {} }) {
             <FieldValue
               disabled
               label="Email address"
-              value={email}
+              value={email || ''}
               fieldName="email"
               type="email"
-            />
+            /> 
             <FieldValue
               onChange={(e) =>
                 setValue((state) => ({ ...state, name: e.target.value }))
               }
               label="Your name"
-              value={value.name}
+              value={value.name || ''}
               fieldName="username"
               type="text"
             />
             <FieldValue
               disabled
               label="Joined"
-              value={time}
+              value={time || ''}
               fieldName="createdAt"
               type="text"
             />
@@ -96,6 +111,8 @@ function ProfileScreen({ data = {} }) {
             <div className="pt-[20px]">
               <Button
                 primary
+                type="button"
+                onClick={handleUpdateUser}
                 disabled={
                   value.name === displayName && value.image === photoUrl
                 }

@@ -15,6 +15,8 @@ function MenuUser({ data = {}, dataMenu = [], onClose = () => {} }) {
     onClose();
   };
 
+  console.log(data);
+
   return (
     <Container>
       <header className="py-[12px] px-[15px] border-b border-solid border-bd-filed-form-color">
