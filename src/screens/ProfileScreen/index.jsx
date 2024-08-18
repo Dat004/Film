@@ -9,8 +9,8 @@ import Image from "../../components/Image";
 import { PersonIcon } from "../../icons";
 import FieldValue from "./FieldValue";
 
-function ProfileScreen({ data = {} }) {
-  const { createdAt, email, displayName, photoUrl, emailVerified, uid } = data;
+function ProfileScreen({ data = {}, uid = "" }) {
+  const { createdAt, email, displayName, photoUrl, emailVerified } = data;
 
   const time = new Date(+createdAt).toLocaleDateString();
 
@@ -67,23 +67,23 @@ function ProfileScreen({ data = {} }) {
             <FieldValue
               disabled
               label="Email address"
-              value={email || ''}
+              value={email || ""}
               fieldName="email"
               type="email"
-            /> 
+            />
             <FieldValue
               onChange={(e) =>
                 setValue((state) => ({ ...state, name: e.target.value }))
               }
               label="Your name"
-              value={value.name || ''}
+              value={value.name || ""}
               fieldName="username"
               type="text"
             />
             <FieldValue
               disabled
               label="Joined"
-              value={time || ''}
+              value={time || ""}
               fieldName="createdAt"
               type="text"
             />

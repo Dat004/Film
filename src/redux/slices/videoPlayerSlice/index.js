@@ -11,6 +11,10 @@ const initialState = {
     autoNext: false,
     currentVolume: 1,
   },
+  time: {
+    currentTime: 0,
+    duration: 0,
+  },
   episode: {
     episodeArray: [],
     splitEpisodes: [],
@@ -27,6 +31,11 @@ const videoPlayerSlice = createSlice({
       const { key, value } = action.payload;
 
       state.statusMovie[key] = value;
+    },
+    setTimeVideo: (state, action) => {
+      const { key, value } = action.payload;
+
+      state.time[key] = value;
     },
     setEpisodeArray: (state, action) => {
       state.episode.episodeArray = [...action.payload];
@@ -57,6 +66,7 @@ const { actions } = videoPlayerSlice;
 
 export const {
   setStatusMovie,
+  setTimeVideo,
   setSplitEpisodes,
   setCurrentIndexSplitEpisodes,
   setCurrentEpisode,

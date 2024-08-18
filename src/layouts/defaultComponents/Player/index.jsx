@@ -1,21 +1,101 @@
+import { useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { update, set, get, getDatabase, ref } from "firebase/database";
 
 import { FlexContainer, FlexItems } from "../../../components/Flex";
 import { videoPlayerSelector } from "../../../redux/selectors";
+import { UserAuth } from "../../../context/AuthContext";
 import DetailFilm from "./DetailFilmPlayer";
 import EpisodesPlayer from "./EpisodesPlayer";
 import VideoPlayer from "./VideoPlayer";
 
 function Player({ data = {} }) {
+  const watchingDataRef = useRef(null);
+  const currentTimeRef = useRef(0);
+  const durationRef = useRef(0);
+  const currentEpisodeRef = useRef(0);
+
+  const { lg, uid } = UserAuth();
+
   const videoPlayerState = useSelector(videoPlayerSelector);
 
-  const { currentEpisode } = videoPlayerState.episode;
+  const { episode, time } = videoPlayerState;
+  const { currentTime, duration } = time;
+  const { currentEpisode } = episode;
   const { episodes, movie } = data;
   const { thumb_url, name } = movie;
 
   const dataEpisodes = episodes
     ?.map((items) => items?.server_data)
     ?.find((value) => value);
+
+  useEffect(() => {
+    if (currentTime > 10) {
+      currentTimeRef.current = currentTime;
+      durationRef.current = duration;
+
+      console.log(currentTime);
+    }
+  }, [currentTime, duration]);
+
+  useEffect(() => {
+    currentTimeRef.current = 0;
+
+    return () => {
+      if (currentTimeRef.current > 10) {
+        currentEpisodeRef.current = currentEpisode;
+
+        const currentVideo = {
+          ...movie,
+          watching: {
+            currentEpisode: currentEpisodeRef.current,
+            currentTime: currentTimeRef.current,
+            duration: durationRef.current,
+            episode_info: {
+              ...dataEpisodes[currentEpisodeRef.current],
+            },
+          },
+        };
+
+        watchingDataRef.current = { ...currentVideo };
+      }
+    };
+  }, [currentEpisode]);
+
+  useEffect(() => {
+    watchingDataRef.current = null;
+    currentEpisodeRef.current = 0;
+    currentTimeRef.current = 0;
+    durationRef.current = 0;
+
+    return () => {
+      if (!lg || !watchingDataRef.current) return;
+
+      (async () => {
+        const db = getDatabase();
+        const dbRef = ref(
+          db,
+          `/continue_watching/${uid}/${watchingDataRef.current._id}`
+        );
+
+        const snapshot = await get(dbRef);
+
+        try {
+          if (snapshot.exists()) {
+            await update(dbRef, {
+              ...watchingDataRef.current,
+            });
+          } else {
+            await set(dbRef, {
+              ...watchingDataRef.current,
+            });
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      })();
+    };
+  }, []);
 
   return (
     <div className="relative px-[15px] clm:px-0">

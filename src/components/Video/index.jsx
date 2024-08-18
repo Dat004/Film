@@ -8,7 +8,10 @@ import { useDispatch, useSelector } from "react-redux";
 
 import BarControls from "../../layouts/defaultComponents/Player/VideoPlayer/BarControls";
 import { PlayDisabled } from "../../icons";
-import { setStatusMovie } from "../../redux/slices/videoPlayerSlice";
+import {
+  setStatusMovie,
+  setTimeVideo,
+} from "../../redux/slices/videoPlayerSlice";
 import { videoPlayerSelector } from "../../redux/selectors";
 import { CustomToastContainer, ToastMessage } from "../Toastify";
 
@@ -100,6 +103,7 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
     }
 
     return () => {
+      // Unmount
       if (hls) hls.destroy();
       if (hls && video) {
         hls.detachMedia(video);
@@ -109,6 +113,9 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
       setIsError(false);
       setCurrentTime(0);
       setDuration(0);
+
+      dispatch(setTimeVideo({ key: "currentTime", value: 0 }));
+      dispatch(setTimeVideo({ key: "duration", value: 0 }));
     };
   }, [src]);
 
@@ -138,7 +145,7 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
         videoWrapperRef.current.webkitRequestFullscreen();
       } else if (videoWrapperRef.current.msRequestFullscreen) {
         videoWrapperRef.current.msRequestFullscreen();
-      } else if(videoRef.current.webkitSupportsFullscreen) {
+      } else if (videoRef.current.webkitSupportsFullscreen) {
         videoRef.current.webkitEnterFullscreen();
       }
     };
@@ -197,7 +204,10 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
 
     window.addEventListener("keydown", handleKeyDown);
     document.addEventListener("fullscreenchange", handleFullScreenChange);
-    videoRef.current.addEventListener("webkitpresentationmodechanged", handleFullScreenChange);
+    videoRef.current.addEventListener(
+      "webkitpresentationmodechanged",
+      handleFullScreenChange
+    );
     document.addEventListener("mozfullscreenchange", handleFullScreenChange);
     document.addEventListener("MSFullscreenChange", handleFullScreenChange);
 
@@ -257,6 +267,9 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
   const handleTimeUpdate = (e) => {
     if (videoRef.current.readyState > 3 && isPlay) {
       setCurrentTime(+e.target.currentTime);
+      dispatch(
+        setTimeVideo({ key: "currentTime", value: +e.target.currentTime })
+      );
     }
   };
 
@@ -268,6 +281,7 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
     }
 
     setCurrentTime(currentTimeVideo);
+    dispatch(setTimeVideo({ key: "currentTime", value: currentTimeVideo }));
     handleShowController();
     handleSeeking();
 
@@ -373,7 +387,12 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
         onLoadStart={() => setIsLoading(true)}
         onError={() => handleError("Đã có lỗi xảy ra với video!")}
         onEnded={handleEndedVideo}
-        onDurationChange={(e) => setDuration(e.target.duration || 0)}
+        onDurationChange={(e) => {
+          setDuration(e.target.duration || 0);
+          dispatch(
+            setTimeVideo({ key: "duration", value: e.target.duration || 0 })
+          );
+        }}
         onTimeUpdate={handleTimeUpdate}
         onWaiting={() => setIsLoading(true)}
         onPlaying={() =>

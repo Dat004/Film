@@ -4,6 +4,7 @@ const initialState = {
   tokenStore: {},
   logged: false,
   userInfo: {},
+  uid: null,
 };
 
 const authSlice = createSlice({
@@ -19,10 +20,13 @@ const authSlice = createSlice({
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
     },
+    setUid: (state, action) => {
+      state.uid = action.payload;
+    },
   },
 });
 
 const { actions } = authSlice;
 
-export const { setLogin, setTokenStore, setUserInfo } = actions;
+export const { setLogin, setTokenStore, setUserInfo, setUid } = actions;
 export default authSlice;

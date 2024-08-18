@@ -9,24 +9,24 @@ import Image from "../../../../components/Image";
 import { LogoutIcon } from "../../../../icons";
 
 function MenuUser({ data = {}, dataMenu = [], onClose = () => {} }) {
+  const { photoUrl, displayName, email } = data;
+
   const handleLogout = async () => {
     await signOut(auth);
 
     onClose();
   };
 
-  console.log(data);
-
   return (
     <Container>
       <header className="py-[12px] px-[15px] border-b border-solid border-bd-filed-form-color">
         <FlexContainer className="items-center">
           <FlexItems className="size-[32px]">
-            <Image className="rounded-[50%]" src={data.photoUrl} />
+            <Image className="rounded-[50%]" src={photoUrl} />
           </FlexItems>
           <FlexItems className="text-[14px] text-primary ml-[10px]">
-            <p className="font-medium leading-[1.18]">{data.displayName}</p>
-            <p className="leading-[1.18]">{data.email}</p>
+            <p className="font-medium leading-[1.18]">{displayName}</p>
+            <p className="leading-[1.18]">{email}</p>
           </FlexItems>
         </FlexContainer>
       </header>

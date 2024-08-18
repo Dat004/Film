@@ -1,7 +1,11 @@
+import ContinueWatchingVideoScreen from "../screens/ContinueWatchingVideoScreen";
 import { FlexContainer } from "../components/Flex";
+import { UserAuth } from "../context/AuthContext";
 import { HistoryIcon } from "../icons";
 
 function ContinueWatching() {
+  const { continue_watching, uid } = UserAuth();
+
   return (
     <div className="px-[15px]">
       <section className="max-w-[1000px] mx-auto">
@@ -13,6 +17,7 @@ function ContinueWatching() {
             Continue Watching
           </h1>
         </FlexContainer>
+        <ContinueWatchingVideoScreen data={continue_watching} uid={uid} />
       </section>
     </div>
   );
