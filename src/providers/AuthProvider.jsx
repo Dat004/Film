@@ -20,7 +20,7 @@ function AuthProvider({ children }) {
   const { tokenStore, logged, userInfo, uid } = useSelector(authSelector);
   const { continue_watching } = useSelector(continueWatchingSelector);
   const { setItem, getItem } = useLocalStorage();
-  
+
   const dispatch = useDispatch();
 
   const {
@@ -83,11 +83,15 @@ function AuthProvider({ children }) {
           (snapshot) => {
             const value = snapshot.val();
 
-            dispatch(
-              setContinueWatchingData(
-                Object.keys(value).map((key) => value[key])
-              )
-            );
+            if (!value) {
+              dispatch(setContinueWatchingData([]));
+            } else {
+              dispatch(
+                setContinueWatchingData(
+                  Object.keys(value).map((key) => value[key])
+                )
+              );
+            }
           }
         );
 

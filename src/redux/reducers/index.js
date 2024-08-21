@@ -1,7 +1,13 @@
-import { videoPlayerSlice, authSlice, continueWatchingSlice } from "../slices";
+import {
+  videoPlayerSlice,
+  authSlice,
+  continueWatchingSlice,
+  previewInfoFilmSlice,
+} from "../slices";
 
 const reducers = {
   continueWatching: continueWatchingSlice.reducer,
+  previewInfoFilm: previewInfoFilmSlice.reducer,
   videoPlayer: videoPlayerSlice.reducer,
   auth: authSlice.reducer,
 };
