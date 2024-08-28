@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import { FlexContainer, FlexItems } from "../../../../components/Flex";
 import Paragraph from "../../../../components/Paragraph";
 import InfoDisplay from "./InfoDisplay";
@@ -56,21 +58,23 @@ function DetailFilm({ dataMovie = {} }) {
                 <span className="py-[3px] px-[4px] rounded-[2px] bg-[rgba(255,255,255,0.08)] text-[12px] text-primary font-normal">
                   {lang}
                 </span>
-                {country?.map((items) => (
-                  <span
-                    key={items?.id}
+                {country?.map((items, index) => (
+                  <Link
+                    key={index}
+                    to={`/quoc-gia/${items?.slug}`}
                     className="py-[3px] px-[4px] rounded-[2px] bg-[rgba(255,255,255,0.08)] text-[12px] text-primary font-normal"
                   >
                     {items?.name}
-                  </span>
+                  </Link>
                 ))}
-                {category?.map((items) => (
-                  <span
-                    key={items?.id}
+                {category?.map((items, index) => (
+                  <Link
+                    key={index}
+                    to={`/the-loai/${items?.slug}`}
                     className="py-[3px] px-[4px] rounded-[2px] bg-[rgba(255,255,255,0.08)] text-[12px] text-primary font-normal"
                   >
                     {items?.name}
-                  </span>
+                  </Link>
                 ))}
               </FlexContainer>
             </div>

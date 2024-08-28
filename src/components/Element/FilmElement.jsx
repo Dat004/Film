@@ -34,8 +34,10 @@ const FilmElement = forwardRef(({ data = {}, baseUrl = "" }, ref) => {
   const getPreviewDataFilm = async (slug) => {
     const data = await services.detailsFilmService(slug);
 
-    dispatch(setCurrentPreviewData({ ...data.data.movie }));
-    dispatch(setListPreviewData(data.data.movie));
+    if (typeof data.data === "object") {
+      dispatch(setCurrentPreviewData({ ...data.data.movie }));
+      dispatch(setListPreviewData(data.data.movie));
+    }
   };
 
   const handleMouseEnter = (e, id, slug) => {

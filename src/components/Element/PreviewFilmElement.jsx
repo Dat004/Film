@@ -99,7 +99,7 @@ function PreviewFilmElement({ className, data = {}, ...props }) {
               <p className="text-[13px] leading-[1.33] text-title line-clamp-2">
                 Thể loại:
                 {data?.category?.map((item, index) => (
-                  <Fragment key={item.id}>
+                  <Fragment key={index}>
                     <Link
                       to={`/the-loai/${item.slug}`}
                       className="text-primary ml-[4px] whitespace-normal hover:underline"
