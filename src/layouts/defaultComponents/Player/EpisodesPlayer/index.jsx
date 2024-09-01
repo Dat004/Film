@@ -4,10 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "../../../../hooks";
 import { videoPlayerSelector } from "../../../../redux/selectors";
 import {
-    setCurrentEpisode,
-    setCurrentIndexSplitEpisodes,
-    setSplitEpisodes,
-    setStatusMovie,
+  setCurrentEpisode,
+  setCurrentIndexSplitEpisodes,
+  setSplitEpisodes,
 } from "../../../../redux/slices/videoPlayerSlice";
 import EpisodeItem from "./EpisodeItem";
 import Header from "./Header";
@@ -17,8 +16,7 @@ function EpisodesPlayer({ dataEpisodes = [] }) {
   const dispatch = useDispatch();
   const videoPlayerState = useSelector(videoPlayerSelector);
 
-  const { episode, statusMovie } = videoPlayerState;
-  const { isPlay, autoPlay } = statusMovie;
+  const { episode } = videoPlayerState;
   const { splitEpisodes, currentIndexSplitEpisodes, currentEpisode } = episode;
 
   const searchEpisodeValueDebounce = useDebounce(searchEpisodeValue, 1000);
@@ -69,10 +67,26 @@ function EpisodesPlayer({ dataEpisodes = [] }) {
       }
 
       dispatch(setCurrentIndexSplitEpisodes(getIndexPartMovie));
+    }
+  }, [searchEpisodeValueDebounce, splitEpisodes]);
+
+  useEffect(() => {
+    const searchEpisode = splitEpisodes.findIndex((item) =>
+      item.some((value) =>
+        value?.slug
+          ?.split("-")[1]
+          ?.includes(dataEpisodes[currentEpisode]?.slug?.split("-")[1])
+      )
+    );
+
+    if (searchEpisode === -1) {
+      dispatch(setCurrentIndexSplitEpisodes(0));
 
       return;
     }
-  }, [searchEpisodeValueDebounce, splitEpisodes]);
+
+    dispatch(setCurrentIndexSplitEpisodes(searchEpisode));
+  }, [splitEpisodes, currentEpisode]);
 
   const handleChangeCurrentPartMovie = useCallback(
     (currentIndex) => {

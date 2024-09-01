@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   update,
   set,
@@ -9,6 +9,7 @@ import {
   onDisconnect,
 } from "firebase/database";
 
+import { resetEpisode } from "../../../redux/slices/videoPlayerSlice";
 import { FlexContainer, FlexItems } from "../../../components/Flex";
 import { videoPlayerSelector } from "../../../redux/selectors";
 import { UserAuth } from "../../../context/AuthContext";
@@ -22,6 +23,7 @@ function Player({ data = {} }) {
   const durationRef = useRef(0);
   const currentEpisodeRef = useRef(0);
 
+  const dispatch = useDispatch();
   const { lg, uid, continue_watching } = UserAuth();
 
   const videoPlayerState = useSelector(videoPlayerSelector);
@@ -72,11 +74,10 @@ function Player({ data = {} }) {
     durationRef.current = 0;
 
     return () => {
-      if (lg && watchingDataRef.current)
-        // Trigger on component unmount
-        handleLogData();
-
-      console.log(watchingDataRef.current);
+      if (lg && watchingDataRef.current) handleLogData();
+      
+      // Clear episode data
+      dispatch(resetEpisode());
     };
   }, []);
 

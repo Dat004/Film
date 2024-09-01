@@ -4,7 +4,6 @@ import Hls from "hls.js";
 import { useEffect, useRef, useState } from "react";
 import { IoPause, IoPlay } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
-// import ReactPlayer from "react-player";
 
 import BarControls from "../../layouts/defaultComponents/Player/VideoPlayer/BarControls";
 import { PlayDisabled } from "../../icons";
@@ -26,15 +25,14 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
   const [showController, setShowController] = useState(false);
   const [clickDetected, setClickDetected] = useState(false);
 
   const videoPlayerStatus = useSelector(videoPlayerSelector);
-  const { statusMovie, episode } = videoPlayerStatus;
-  const { currentVolume, isMuted, isPlay, autoPlay, autoNext, isFullScreen } =
+  const { statusMovie, episode, time } = videoPlayerStatus;
+  const { currentVolume, isMuted, isPlay, autoNext, isFullScreen } =
     statusMovie;
+  const { currentTime, duration } = time;
   const { currentEpisode } = episode;
 
   const controllerVariants = {
@@ -111,8 +109,6 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
       }
 
       setIsError(false);
-      setCurrentTime(0);
-      setDuration(0);
 
       dispatch(setTimeVideo({ key: "currentTime", value: 0 }));
       dispatch(setTimeVideo({ key: "duration", value: 0 }));
@@ -121,6 +117,8 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
 
   useEffect(() => {
     const handleLoadeddata = () => {
+      // Handles if there is current time, meaning this video is still being watched, then update the current time
+      videoRef.current.currentTime = currentTime;
       setIsError(false);
     };
 
@@ -266,7 +264,6 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
 
   const handleTimeUpdate = (e) => {
     if (videoRef.current.readyState > 3 && isPlay) {
-      setCurrentTime(+e.target.currentTime);
       dispatch(
         setTimeVideo({ key: "currentTime", value: +e.target.currentTime })
       );
@@ -280,7 +277,6 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
       clearTimeout(changeTimeoutRef.current);
     }
 
-    setCurrentTime(currentTimeVideo);
     dispatch(setTimeVideo({ key: "currentTime", value: currentTimeVideo }));
     handleShowController();
     handleSeeking();
@@ -388,7 +384,6 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
         onError={() => handleError("Đã có lỗi xảy ra với video!")}
         onEnded={handleEndedVideo}
         onDurationChange={(e) => {
-          setDuration(e.target.duration || 0);
           dispatch(
             setTimeVideo({ key: "duration", value: e.target.duration || 0 })
           );

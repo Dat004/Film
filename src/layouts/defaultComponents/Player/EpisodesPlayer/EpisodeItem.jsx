@@ -15,7 +15,7 @@ function EpisodeItem({
   const episodeRef = useRef();
 
   const episodeStyles = classNames(
-    "border-l-[4px] border-solid cursor-pointer",
+    "relative border-l-[4px] border-solid cursor-pointer",
     {
       "border-bd-active bg-bg-select-color text-primary": currentEpisode,
       "border-transparent text-title hover:bg-bg-select-color hover:text-primary":
@@ -25,17 +25,23 @@ function EpisodeItem({
     }
   );
 
+  const flickerClasses = classNames({
+    "flicker-frame": isHadFound,
+    "": !isHadFound,
+  });
+
   useEffect(() => {
-    if (isHadFound) {
+    if (isHadFound || currentEpisode) {
       episodeRef?.current?.scrollIntoView({
-        block: 'end',
+        block: "end",
         behavior: "smooth",
       });
     }
-  }, [isHadFound]);
+  }, [isHadFound, currentEpisode]);
 
   return (
     <div ref={episodeRef} className={episodeStyles} {...props}>
+      <div className={flickerClasses}></div>
       <FlexContainer className="items-center px-[15px] py-[7px]">
         <FlexItems className="flex-grow-0 flex-shrink-0 mr-[24px]">
           <span className="text-[12px] font-semibold">{data?.name}</span>

@@ -2,13 +2,20 @@ import { Link } from "react-router-dom";
 import { CgClose } from "react-icons/cg";
 import { FaPlay } from "react-icons/fa6";
 import { getDatabase, ref, remove } from "firebase/database";
+import { useDispatch } from "react-redux";
 
 import { FlexContainer, FlexItems } from "../../components/Flex";
+import {
+  setCurrentEpisode,
+  setTimeVideo,
+} from "../../redux/slices/videoPlayerSlice";
 import Button from "../../components/Button";
 import Image from "../../components/Image";
 import CurrentTime from "./CurrentTime";
 
 function ContinueWatchingVideoScreen({ data = [], uid = "" }) {
+  const dispatch = useDispatch();
+
   const handleDelete = (id) => {
     (async () => {
       const db = getDatabase();
@@ -22,12 +29,19 @@ function ContinueWatchingVideoScreen({ data = [], uid = "" }) {
     })();
   };
 
+  const handleGetCurrentWatchingData = (data) => {
+    dispatch(setCurrentEpisode(data.watching.currentEpisode));
+    dispatch(setTimeVideo({ key: 'currentTime', value: data.watching.currentTime }));
+    dispatch(setTimeVideo({ key: 'duration', value: data.watching.duration }));
+  };
+
   return (
     <div className="w-[100%]">
       <FlexContainer className="!items-start !gap-y-[20px] mx-[-8px]" isWrap>
         {data.map((item) => (
           <FlexItems
             key={item._id}
+            onClick={() => handleGetCurrentWatchingData(item)}
             className="w-[20%] clm:w-[25%] mdm:w-[calc(100%/3)] ccm:w-[50%] px-[8px]"
           >
             <div className="group/cards relative">

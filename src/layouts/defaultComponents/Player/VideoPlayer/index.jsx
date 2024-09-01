@@ -19,7 +19,7 @@ function VideoPlayer({ dataEpisodes = [], thumbUrl = "" }) {
   const dispatch = useDispatch();
 
   const { statusMovie, episode } = videoPlayerState;
-  const { isPlay, autoPlay, autoNext, isLight } = statusMovie;
+  const { autoPlay, autoNext, isLight } = statusMovie;
   const { currentEpisode } = episode;
 
   useEffect(() => {
