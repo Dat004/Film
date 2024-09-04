@@ -59,7 +59,7 @@ function ContinueWatchingVideoScreen({ data = [], uid = "" }) {
                   <div className="absolute inset-0">
                     <Image cover src={item.poster_url} />
                   </div>
-                  <div className="opacity-0 group-hover/cards:opacity-100 flex items-center justify-center transition-opacity duration-200 absolute inset-0 z-10 backdrop-blur-[10px]">
+                  <div className="mdm:hidden opacity-0 group-hover/cards:opacity-100 flex items-center justify-center transition-opacity duration-200 absolute inset-0 z-10 backdrop-blur-[10px]">
                     <i className="text-[42px] text-primary">
                       <FaPlay />
                     </i>
