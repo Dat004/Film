@@ -4,6 +4,8 @@ import { MdPerson, MdPersonOff } from "react-icons/md";
 import { update, getDatabase, ref } from "firebase/database";
 
 import { FlexContainer, FlexItems } from "../../components/Flex";
+import AvatarModal from "../../components/Modal/AvatarModal";
+import { useControlModal } from "../../hooks";
 import Button from "../../components/Button";
 import Image from "../../components/Image";
 import { PersonIcon } from "../../icons";
@@ -11,6 +13,7 @@ import FieldValue from "./FieldValue";
 
 function ProfileScreen({ data = {}, uid = "" }) {
   const { createdAt, email, displayName, photoUrl, emailVerified } = data;
+  const { isShowModal, handleCloseModal, handleShowModal } = useControlModal();
 
   const time = new Date(+createdAt).toLocaleDateString();
 
@@ -18,6 +21,10 @@ function ProfileScreen({ data = {}, uid = "" }) {
     image: photoUrl,
     name: displayName,
   });
+
+  const handleSelectAvatar = (avt) => {
+    setValue((state) => ({ ...state, image: avt }));
+  };
 
   const handleUpdateUser = () => {
     if (value.name === displayName && value.image === photoUrl) return;
@@ -47,12 +54,16 @@ function ProfileScreen({ data = {}, uid = "" }) {
         <div className="absolute w-[160px] top-0 right-0 h-[100%] slm:relative slm:w-[100%] slm:h-auto slm:flex slm:justify-center slm:items-center slm:mb-[16px]">
           <div className="absolute inset-0 bg-bg-content-area-color slm:hidden"></div>
           <div className="size-[100%] slm:size-[100px] slm:p-0 p-[30px]">
-            <div className="relative w-[100%] pb-[100%]">
+            <div
+              onClick={handleShowModal}
+              className="relative w-[100%] pb-[100%] cursor-pointer"
+            >
               <div className="absolute inset-0">
-                <Image className="rounded-[50%]" src={photoUrl} cover />
+                <Image className="rounded-[50%]" src={value.image} cover />
               </div>
               <Button
                 rounded
+                onClick={handleShowModal}
                 className="!absolute size-[30px] bg-bg-white bottom-0 right-0"
               >
                 <i className="text-dark text-[22px]">
@@ -60,6 +71,12 @@ function ProfileScreen({ data = {}, uid = "" }) {
                 </i>
               </Button>
             </div>
+            <AvatarModal
+              currentImg={value.image}
+              isShowModal={isShowModal}
+              onClose={handleCloseModal}
+              handleSelectAvt={handleSelectAvatar}
+            />
           </div>
         </div>
         <section className="pr-[190px] slm:pr-0">

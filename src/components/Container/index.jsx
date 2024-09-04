@@ -6,12 +6,17 @@ const Container = forwardRef(({ children, className, ...passProps }, ref) => {
     [className]: className,
   });
 
-  const handleClick = (e) => {
-    e.preventDefault();
+  const handleClickInside = (e) => {
+    e.stopPropagation();
   };
 
   return (
-    <div onClick={handleClick} ref={ref} className={containerStyles} {...passProps}>
+    <div
+      ref={ref}
+      onClick={handleClickInside}
+      className={containerStyles}
+      {...passProps}
+    >
       {children}
     </div>
   );

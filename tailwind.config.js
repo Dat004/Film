@@ -31,6 +31,8 @@ export default {
 
       mdm: { max: "768px" },
 
+      ssm: { max: "535px" },
+
       ccm: { max: "479px" },
 
       kdm: { max: "400px" },
@@ -57,6 +59,7 @@ export default {
     },
     borderColor: {
       transparent: "transparent",
+      "bd-black": "var(--bd-black)",
       "bd-active": "var(--bd-active)",
       "bd-select-menu": "var(--bd-select-menu)",
       "bd-filed-form-color": "var(--bd-filed-form-color)",
