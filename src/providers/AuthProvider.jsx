@@ -4,21 +4,27 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
-  setLogin,
+  setContinueWatchingData,
+  setListWatchingData,
   setTokenStore,
   setUserInfo,
+  setLogin,
   setUid,
 } from "../redux/slices/authSlice";
-import { setContinueWatchingData } from "../redux/slices/continueWatchingSlice";
-import { authSelector, continueWatchingSelector } from "../redux/selectors";
+import { authSelector } from "../redux/selectors";
 import { auth } from "../configs/firebaseConfig";
 import AuthContext from "../context/AuthContext";
 import { useLocalStorage } from "../hooks";
 import configs from "../configs";
 
 function AuthProvider({ children }) {
-  const { tokenStore, logged, userInfo, uid } = useSelector(authSelector);
-  const { continue_watching } = useSelector(continueWatchingSelector);
+  const {
+    tokenStore,
+    logged,
+    userInfo,
+    uid,
+    data: { continue_watching, list_watching },
+  } = useSelector(authSelector);
   const { setItem, getItem } = useLocalStorage();
 
   const dispatch = useDispatch();
@@ -33,9 +39,10 @@ function AuthProvider({ children }) {
   const userIf = getItem(user_info);
 
   const value = {
+    continue_watching,
+    list_watching,
     lg: isLogged || logged,
     uf: userIf || userInfo,
-    continue_watching,
     tk: tokenStore,
     uid: uid,
   };
@@ -95,8 +102,41 @@ function AuthProvider({ children }) {
           }
         );
 
+        const listWatchingRef = ref(db, `list_video/${user.uid}`);
+        const unsubscribeListWatching = onValue(listWatchingRef, (snapshot) => {
+          const value = snapshot.val();
+
+          if (!value) {
+            dispatch(setListWatchingData([]));
+          } else {
+            let watchListArr = [];
+            let watchListData = {};
+            const data = Object.keys(value).map((key) => value[key]);
+
+            for (let i = 0; i < data.length; i++) {
+              const type = data[i].type;
+
+              if (!watchListData[type]) {
+                watchListData[type] = [];
+              }
+
+              watchListData[type].push(data[i]);
+            }
+
+            for (let i in watchListData) {
+              watchListArr.push({
+                title: i,
+                data: watchListData[i],
+              });
+            }
+
+            dispatch(setListWatchingData(watchListArr || []));
+          }
+        });
+
         return () => {
           unsubscribeUsers();
+          unsubscribeListWatching();
           unsubscribeContinueWatching();
         };
       } else {

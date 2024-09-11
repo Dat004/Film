@@ -1,4 +1,4 @@
-import { forwardRef, useRef } from "react";
+import { forwardRef, useRef, useEffect } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,6 +18,12 @@ const FilmElement = forwardRef(({ data = {}, baseUrl = "" }, ref) => {
 
   const { listPreviewData } = useSelector(previewFilmSelector);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    return () => {
+      dispatch(setShowPreview(false));
+    };
+  }, []);
 
   const imageUrl = baseUrl
     ? `${baseUrl}/${data?.poster_url || data?.thumb_url}`

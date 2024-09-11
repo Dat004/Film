@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { CgMenuLeft } from "react-icons/cg";
 import { IoSearch } from "react-icons/io5";
 
+import WatchListButton from "../../../../../components/Button/WatchListButton";
 import { FlexContainer, FlexItems } from "../../../../../components/Flex";
 import SelectMenuPartMovie from "./SelectMenuPartMovie";
 import Button from "../../../../../components/Button";
@@ -73,9 +74,16 @@ function Header({
 
   return (
     <div className="py-[12px] bg-[rgb(20,21,26)]">
-      <p className="text-[12px] ml-[15px] text-primary font-medium mb-[8px]">
-        List of episodes:
-      </p>
+      <FlexContainer className="items-center px-[15px] mb-[8px] justify-between">
+        <FlexItems className="!flex-shrink">
+          <p className="text-[12px] text-primary font-medium">
+            List of episodes:
+          </p>
+        </FlexItems>
+        <FlexItems className="relative !flex-shrink hidden ssm:block">
+          <WatchListButton right top />
+        </FlexItems>
+      </FlexContainer>
       <FlexContainer className="items-center">
         <FlexItems className="relative flex-grow w-[50%] px-[15px] flex-shrink-0">
           <FlexContainer className="gap-x-[16px]">

@@ -9,7 +9,11 @@ import {
   onDisconnect,
 } from "firebase/database";
 
-import { resetEpisode } from "../../../redux/slices/videoPlayerSlice";
+import {
+  resetEpisode,
+  resetMovie,
+  setMovieData,
+} from "../../../redux/slices/videoPlayerSlice";
 import { FlexContainer, FlexItems } from "../../../components/Flex";
 import { videoPlayerSelector } from "../../../redux/selectors";
 import { UserAuth } from "../../../context/AuthContext";
@@ -19,16 +23,16 @@ import VideoPlayer from "./VideoPlayer";
 
 function Player({ data = {} }) {
   const watchingDataRef = useRef(null);
+  const currentEpisodeRef = useRef(0);
   const currentTimeRef = useRef(0);
   const durationRef = useRef(0);
-  const currentEpisodeRef = useRef(0);
 
   const dispatch = useDispatch();
   const { lg, uid, continue_watching } = UserAuth();
 
   const videoPlayerState = useSelector(videoPlayerSelector);
 
-  const { episode, time } = videoPlayerState;
+  const { episode, time, movie: movieStore } = videoPlayerState;
   const { currentTime, duration } = time;
   const { currentEpisode } = episode;
   const { episodes, movie } = data;
@@ -73,11 +77,14 @@ function Player({ data = {} }) {
     currentTimeRef.current = 0;
     durationRef.current = 0;
 
+    dispatch(setMovieData(movie));
+
     return () => {
       if (lg && watchingDataRef.current) handleLogData();
-      
-      // Clear episode data
+
+      // Clear store data
       dispatch(resetEpisode());
+      dispatch(resetMovie());
     };
   }, []);
 

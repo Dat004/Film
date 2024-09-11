@@ -1,22 +1,40 @@
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef, useState, useLayoutEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { FaPlay } from "react-icons/fa6";
 import { CgMathPlus } from "react-icons/cg";
+import { MdDeleteOutline } from "react-icons/md";
+import { getDatabase, ref, remove } from "firebase/database";
 import classNames from "classnames";
 
+import { setShowPreview } from "../../redux/slices/previewInfoFilmSlice";
 import { previewFilmSelector } from "../../redux/selectors";
+import ListContainer from "../Container/ListContainer";
+import { UserAuth } from "../../context/AuthContext";
 import { FlexContainer, FlexItems } from "../Flex";
 import Container from "../Container";
 import Button from "../Button";
 
 function PreviewFilmElement({ className, data = {}, ...props }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const previewRef = useRef();
+
+  const { list_watching, uid } = UserAuth();
+  const [isAlreadyWatchList, setIsAlReadyWatchList] = useState(false);
+  const [isShowMenu, setIsShowMenu] = useState(false);
 
   const {
     position: { x, y },
   } = useSelector(previewFilmSelector);
+
+  useLayoutEffect(() => {
+    const isAlready = list_watching.some((watch) =>
+      watch.data.find((value) => value?._id === data?._id)
+    );
+
+    setIsAlReadyWatchList(isAlready);
+  }, [data, list_watching]);
 
   useEffect(() => {
     const rect = previewRef.current.getBoundingClientRect();
@@ -34,6 +52,14 @@ function PreviewFilmElement({ className, data = {}, ...props }) {
     previewRef.current.style.top = t + "px";
   }, [data]);
 
+  useEffect(() => {
+    if (isShowMenu) window.addEventListener("click", handleToggleMenu);
+
+    return () => {
+      window.removeEventListener("click", handleToggleMenu);
+    };
+  }, [isShowMenu]);
+
   const previewClasses = classNames(
     "!bg-[rgba(81,80,100,0.6)] !rounded-[8px] backdrop-blur-[10px]",
     {
@@ -41,8 +67,25 @@ function PreviewFilmElement({ className, data = {}, ...props }) {
     }
   );
 
+  const handleToggleMenu = (e) => {
+    e.stopPropagation();
+
+    setIsShowMenu((state) => !state);
+  };
+
   const handleDirectionPage = () => {
     navigate(`/phim/${data?.slug}`);
+  };
+
+  const handleRemoveVideoToList = async () => {
+    const db = getDatabase();
+    const dbRef = ref(db, `/list_video/${uid}/${data?._id}`);
+
+    try {
+      await remove(dbRef);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -52,7 +95,7 @@ function PreviewFilmElement({ className, data = {}, ...props }) {
       style={{ left: x, top: y }}
       {...props}
     >
-      <div className="p-[15px]">
+      <div onClick={handleToggleMenu} className="p-[15px]">
         {!Object.keys(data).length ? (
           <FlexContainer className="items-center justify-center">
             <div style={{ width: "25px" }} className="loader"></div>
@@ -86,7 +129,10 @@ function PreviewFilmElement({ className, data = {}, ...props }) {
             {data?.status && (
               <p className="text-[13px] leading-[1.33] text-title line-clamp-2">
                 Trạng thái:
-                <span className="text-primary ml-[4px] whitespace-normal">
+                <span
+                  className="text-primary ml-[
+                4px] whitespace-normal"
+                >
                   {data?.status === "ongoing"
                     ? "Đang phát hành"
                     : data?.status === "completed"
@@ -121,10 +167,31 @@ function PreviewFilmElement({ className, data = {}, ...props }) {
                   Watch now
                 </Button>
               </FlexItems>
-              <FlexItems className="!flex-grow-0 !flex-shrink-0 ml-[10px]">
-                <Button rounded className="bg-bg-white size-[37px] !text-dark">
-                  <CgMathPlus className="text-[22px]" />
+              <FlexItems className="relative !flex-grow-0 !flex-shrink-0 ml-[10px]">
+                <Button
+                  rounded
+                  onClick={
+                    !isAlreadyWatchList
+                      ? handleToggleMenu
+                      : handleRemoveVideoToList
+                  }
+                  title={
+                    !isAlreadyWatchList
+                      ? "Thêm vào danh sách phát"
+                      : "Xóa khỏi danh sách phát"
+                  }
+                  className="bg-bg-white p-[7px] !text-dark"
+                >
+                  <i className="text-[23px]">
+                    {!isAlreadyWatchList ? <CgMathPlus /> : <MdDeleteOutline />}
+                  </i>
                 </Button>
+                <ListContainer
+                  dataFilm={data}
+                  xRight
+                  yBottom
+                  isShow={isShowMenu && !isAlreadyWatchList}
+                />
               </FlexItems>
             </FlexContainer>
           </>

@@ -3,6 +3,7 @@ import {
   TbPlayerTrackPrevFilled,
 } from "react-icons/tb";
 
+import WatchListButton from "../../../../../components/Button/WatchListButton";
 import { FlexContainer, FlexItems } from "../../../../../components/Flex";
 import ScreenDimmer from "../../../../../components/ScreenDimmer";
 import Button from "../../../../../components/Button";
@@ -27,7 +28,7 @@ function BarPlayer({
           <FlexItems className="m-[5px]">
             <Button
               onClick={() => handleToggleStatus("isLight", isLight)}
-              className="text-[12px] text-primary font-normal"
+              className="text-[12px] text-primary !font-medium"
             >
               Light
               <Status isOn={isLight} />
@@ -37,7 +38,7 @@ function BarPlayer({
           <FlexItems className="m-[5px]">
             <Button
               onClick={() => handleToggleStatus("autoPlay", isAutoPlay)}
-              className="text-[12px] text-primary font-normal"
+              className="text-[12px] text-primary !font-medium"
             >
               Auto Play
               <Status isOn={isAutoPlay} />
@@ -46,7 +47,7 @@ function BarPlayer({
           <FlexItems className="m-[5px]">
             <Button
               onClick={() => handleToggleStatus("autoNext", isAutoNext)}
-              className="text-[12px] text-primary font-normal"
+              className="text-[12px] text-primary !font-medium"
             >
               Auto Next
               <Status isOn={isAutoNext} />
@@ -56,6 +57,9 @@ function BarPlayer({
       </FlexItems>
       <FlexItems className="ml-auto">
         <FlexContainer className="gap-x-[8px] items-center">
+          <FlexItems className="relative ssm:hidden m-[5px]">
+            <WatchListButton right top />
+          </FlexItems>
           <FlexItems className="m-[5px]">
             <Button onClick={handlePrev} title="Previous video">
               <TbPlayerTrackPrevFilled className="text-[20px]" />

@@ -14,7 +14,7 @@ function HeaderContainer({
 
   return (
     <div className={headerStyles}>
-      <h3 className="text-[24px] text-primary font-semibold">{title}</h3>
+      <h3 className="text-[24px] capitalize text-primary font-semibold">{title}</h3>
       {isShowAll && (
         <div className="ml-auto">
           <Button className="text-[14px]" to={to}>

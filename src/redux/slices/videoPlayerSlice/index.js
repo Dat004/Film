@@ -21,6 +21,9 @@ const initialState = {
     currentIndexSplitEpisodes: 0,
     currentEpisode: 0,
   },
+  movie: {
+    movieData: {},
+  },
 };
 
 const videoPlayerSlice = createSlice({
@@ -49,6 +52,9 @@ const videoPlayerSlice = createSlice({
     setCurrentEpisode: (state, action) => {
       state.episode.currentEpisode = action.payload;
     },
+    setMovieData: (state, action) => {
+      state.movie.movieData = { ...action.payload };
+    },
     resetStatus: (state) => {
       state.statusMovie.isFullScreen = false;
       state.statusMovie.isPlay = false;
@@ -58,6 +64,9 @@ const videoPlayerSlice = createSlice({
       state.episode.splitEpisodes.splice(0);
       state.episode.currentIndexSplitEpisodes = 0;
       state.episode.currentEpisode = 0;
+    },
+    resetMovie: (state) => {
+      state.movie.movieData = {};
     },
   },
 });
@@ -70,7 +79,9 @@ export const {
   setSplitEpisodes,
   setCurrentIndexSplitEpisodes,
   setCurrentEpisode,
+  setMovieData,
   resetStatus,
   resetEpisode,
+  resetMovie,
 } = actions;
 export default videoPlayerSlice;

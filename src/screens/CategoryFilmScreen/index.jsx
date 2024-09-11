@@ -99,7 +99,7 @@ function CategoryFilmScreen({ request, params }) {
           <FlexContainer className="mx-[-12px] pb-[24px] items-start" isWrap>
             {data?.items?.map((items) => (
               <FlexItems
-                className="w-[calc(100%/5)] xsm:w-[100%] mdm:w-[calc(100%/2)] lgm:w-[calc(100%/3)] xlm:w-[calc(100%/4)] px-[12px]"
+                className="w-[calc(100%/5)] xsm:w-[100%] ssm:w-[calc(100%/2)] lgm:w-[calc(100%/3)] xlm:w-[calc(100%/4)] px-[12px]"
                 key={items?._id}
               >
                 <FilmElement
