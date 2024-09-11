@@ -29,6 +29,8 @@ function RightHeader() {
   const { isShowModal, handleToggleModal, handleCloseModal } =
     useControlModal();
 
+  console.log(uf);
+
   const handleCloseMenu = () => {
     setShowMenu(false);
   };
@@ -47,7 +49,7 @@ function RightHeader() {
           <Button
             onClick={(e) => {
               e.stopPropagation();
-              
+
               handleToggleMenu();
             }}
             rounded
