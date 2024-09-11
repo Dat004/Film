@@ -12,7 +12,7 @@ import {
   setTimeVideo,
 } from "../../redux/slices/videoPlayerSlice";
 import { videoPlayerSelector } from "../../redux/selectors";
-import { CustomToastContainer, ToastMessage } from "../Toastify";
+import { ToastMessage } from "../Toastify";
 
 function Video({ className, src, handleNext = () => {}, ...props }) {
   const clickTimeoutRef = useRef(null);
@@ -404,7 +404,6 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
         playsInline
         {...props}
       ></video>
-      <CustomToastContainer />
       {isLoading && (
         <div className="absolute flex items-center justify-center inset-0 z-[999] bg-bg-layout-loading cursor-default">
           <div className="loader"></div>

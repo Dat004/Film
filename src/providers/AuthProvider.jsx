@@ -66,10 +66,7 @@ function AuthProvider({ children }) {
               currentUser,
             });
           }
-        } catch (error) {
-          console.log(error);
-          alert("Failed to add data");
-        }
+        } catch (e) {}
 
         const usersRef = ref(db, `users/${user.uid}`);
         const unsubscribeUsers = onValue(usersRef, (snapshot) => {

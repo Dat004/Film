@@ -7,11 +7,11 @@ import { MdDeleteOutline } from "react-icons/md";
 import { getDatabase, ref, remove } from "firebase/database";
 import classNames from "classnames";
 
-import { setShowPreview } from "../../redux/slices/previewInfoFilmSlice";
 import { previewFilmSelector } from "../../redux/selectors";
 import ListContainer from "../Container/ListContainer";
 import { UserAuth } from "../../context/AuthContext";
 import { FlexContainer, FlexItems } from "../Flex";
+import { ToastMessage } from "../Toastify";
 import Container from "../Container";
 import Button from "../Button";
 
@@ -83,8 +83,10 @@ function PreviewFilmElement({ className, data = {}, ...props }) {
 
     try {
       await remove(dbRef);
+
+      ToastMessage.success("Đã xóa video khỏi danh sách phát!");
     } catch (e) {
-      console.error(e);
+      ToastMessage.error("Không thể xóa video khỏi danh sách phát!");
     }
   };
 

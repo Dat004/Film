@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { RiCloseLargeFill } from "react-icons/ri";
 
-import { CustomToastContainer, ToastMessage } from "../Toastify";
 import { auth, provider } from "../../configs/firebaseConfig";
 import GoogleButtonLogin from "../Button/GoogleButtonLogin";
+import { ToastMessage } from "../Toastify";
 import Container from "../Container";
 import Button from "../Button";
 import Modal from "./";
@@ -41,10 +41,12 @@ function LoginModal({ onClose = () => {}, isShowModal = false }) {
 
   const onSuccess = () => {
     ToastMessage.success("Đăng nhập thành công!");
+    
+    onClose();
   };
 
   const onError = () => {
-    ToastMessage.success("Đăng nhập không thành công. Vui lòng đăng nhập lại!");
+    ToastMessage.error("Đăng nhập không thành công. Vui lòng đăng nhập lại!");
   };
 
   const handleLogin = () => {
@@ -133,7 +135,6 @@ function LoginModal({ onClose = () => {}, isShowModal = false }) {
                     onClick={handleLogin}
                     className="h-[48px] w-[100%]"
                   />
-                  <CustomToastContainer />
                 </form>
               </div>
             </Container>

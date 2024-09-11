@@ -2,6 +2,7 @@ import { signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
 
 import { FlexContainer, FlexItems } from "../../../../components/Flex";
+import { ToastMessage } from "../../../../components/Toastify";
 import { auth } from "../../../../configs/firebaseConfig";
 import Container from "../../../../components/Container";
 import Button from "../../../../components/Button";
@@ -14,6 +15,7 @@ function MenuUser({ data = {}, dataMenu = [], onClose = () => {} }) {
   const handleLogout = async () => {
     await signOut(auth);
 
+    ToastMessage.success("Đã đăng xuất ra khỏi tài khoản!");
     onClose();
   };
 

@@ -25,7 +25,7 @@ function RightHeader() {
     };
   }, [showMenu]);
 
-  const { lg, uf, tk } = UserAuth();
+  const { lg, uf } = UserAuth();
   const { isShowModal, handleToggleModal, handleCloseModal } =
     useControlModal();
 
@@ -47,6 +47,7 @@ function RightHeader() {
           <Button
             onClick={(e) => {
               e.stopPropagation();
+              
               handleToggleMenu();
             }}
             rounded

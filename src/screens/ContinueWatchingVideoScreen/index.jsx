@@ -9,6 +9,7 @@ import {
   setCurrentEpisode,
   setTimeVideo,
 } from "../../redux/slices/videoPlayerSlice";
+import { ToastMessage } from "../../components/Toastify";
 import Button from "../../components/Button";
 import Image from "../../components/Image";
 import CurrentTime from "./CurrentTime";
@@ -23,8 +24,10 @@ function ContinueWatchingVideoScreen({ data = [], uid = "" }) {
 
       try {
         await remove(dbRef);
+
+        ToastMessage.success("Đã xóa video khỏi lịch sử xem!");
       } catch (err) {
-        console.error(err);
+        ToastMessage.error("Không thể xóa video khỏi lịch sử xem!");
       }
     })();
   };

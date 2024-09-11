@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { get, set, getDatabase, ref } from "firebase/database";
 
 import { UserAuth } from "../../context/AuthContext";
+import { ToastMessage } from "../Toastify";
 import data from "../../data";
 import Container from ".";
 
@@ -43,12 +44,14 @@ function ListContainer({
 
     try {
       if (snapShot.exists()) {
-        console.log("Had video");
+        ToastMessage.warning("Video đã có trong danh sách phát!");
       } else {
         await set(dbRef, { ...dataFilm, type });
+
+        ToastMessage.success("Đã thêm video vào danh sách phát!");
       }
     } catch (e) {
-      console.error(e);
+      ToastMessage.error("Không thể thêm video vào danh sách phát!");
     }
   };
 

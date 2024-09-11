@@ -6,6 +6,7 @@ import { getDatabase, ref, remove } from "firebase/database";
 import { videoPlayerSelector } from "../../redux/selectors";
 import ListContainer from "../Container/ListContainer";
 import { UserAuth } from "../../context/AuthContext";
+import { ToastMessage } from "../Toastify";
 import Button from ".";
 
 function WatchListButton({
@@ -44,8 +45,10 @@ function WatchListButton({
 
     try {
       await remove(dbRef);
+
+      ToastMessage.success("Đã xóa video khỏi danh sách phát!");
     } catch (e) {
-      console.error(e);
+      ToastMessage.error("Không thể xóa video khỏi danh sách phát!");
     }
   };
 

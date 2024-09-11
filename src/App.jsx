@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { setShowPreview } from "./redux/slices/previewInfoFilmSlice";
+import { CustomToastContainer } from "./components/Toastify";
 import { PreviewFilmElement } from "./components/Element";
 import { previewFilmSelector } from "./redux/selectors";
 import Button from "./components/Button";
@@ -95,6 +96,7 @@ function App() {
           </Button>
         </div>
       )}
+      <CustomToastContainer />
     </div>
   );
 }

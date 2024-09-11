@@ -5,6 +5,7 @@ import { update, getDatabase, ref } from "firebase/database";
 
 import { FlexContainer, FlexItems } from "../../components/Flex";
 import AvatarModal from "../../components/Modal/AvatarModal";
+import { ToastMessage } from "../../components/Toastify";
 import { useControlModal } from "../../hooks";
 import Button from "../../components/Button";
 import Image from "../../components/Image";
@@ -26,7 +27,7 @@ function ProfileScreen({ data = {}, uid = "" }) {
     setValue((state) => ({ ...state, image: avt }));
   };
 
-  const handleUpdateUser = () => {
+  const handleUpdateUser = async () => {
     if (value.name === displayName && value.image === photoUrl) return;
 
     const db = getDatabase();
@@ -37,7 +38,13 @@ function ProfileScreen({ data = {}, uid = "" }) {
       photoUrl: value.image,
     };
 
-    update(dbRef, updates);
+    try {
+      await update(dbRef, updates);
+
+      ToastMessage.success("Cập nhật thông tin thành công!");
+    } catch(e) {
+      ToastMessage.error("Cập nhật thông tin thất bại!");
+    }
   };
 
   return (
