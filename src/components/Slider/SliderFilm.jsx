@@ -98,7 +98,11 @@ function SliderFilm({ value = {}, title = "", to = "" }) {
           onClick={handleNextSlide}
           className="absolute z-10 right-0 top-0 w-[6%] bg-bg-linear-to-right group-hover/cards:opacity-100 transition-opacity duration-500 opacity-0 flex items-center justify-center cursor-pointer"
         >
-          <Button onClick={handleNextSlide} className="text-[30px]">
+          <Button
+            aria-label="next-btn"
+            onClick={handleNextSlide}
+            className="text-[30px]"
+          >
             <GrNext />
           </Button>
         </div>
@@ -107,7 +111,11 @@ function SliderFilm({ value = {}, title = "", to = "" }) {
           onClick={handlePrevSlide}
           className="absolute z-10 left-0 top-0 w-[6%] bg-bg-linear-to-left group-hover/cards:opacity-100 transition-opacity duration-500 opacity-0 flex items-center justify-center cursor-pointer"
         >
-          <Button onClick={handlePrevSlide} className="text-[30px]">
+          <Button
+            aria-label="prev-btn"
+            onClick={handlePrevSlide}
+            className="text-[30px]"
+          >
             <GrPrevious />
           </Button>
         </div>

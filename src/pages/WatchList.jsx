@@ -5,6 +5,7 @@ import WatchListScreen from "../screens/WatchListScreen";
 import { UserAuth } from "../context/AuthContext";
 import Button from "../components/Button";
 import { HeartIcon } from "../icons";
+import SEO from "../components/SEO";
 import data from "../data";
 
 function WatchList() {
@@ -61,6 +62,11 @@ function WatchList() {
         </FlexContainer>
         <WatchListScreen isShowTitle={type === "all"} data={listWatchingData} />
       </section>
+      <SEO
+        url={window.location.href}
+        title="Danh sách phát phim"
+        description="Tại đây bạn có thể thưởng thức những bộ phim mà mình chưa có thời gian để xem"
+      />
     </div>
   );
 }

@@ -26,9 +26,9 @@ function ProfileScreen({ data = {}, uid = "" }) {
   });
 
   useEffect(() => {
-    setValue((state) => ({ ...state, image: avatar }));
-  }, [avatar]);
-  
+    setValue({ name: displayName, image: avatar });
+  }, [displayName, avatar]);
+
   const handleSelectAvatar = (avt) => {
     setValue((state) => ({ ...state, image: avt }));
   };

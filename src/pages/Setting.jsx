@@ -1,5 +1,11 @@
+import SEO from "../components/SEO";
+
 function Setting() {
-  return <h1>Setting</h1>;
+  return (
+    <>
+      <SEO url={window.location.href} title="Cài đặt" description="Cài đặt" />
+    </>
+  );
 }
 
 export default Setting;

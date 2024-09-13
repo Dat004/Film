@@ -86,6 +86,7 @@ function SliderBanner({ data = {} }) {
         className="absolute left-0 top-0 group/btn h-full flex items-center justify-center cursor-pointer z-10"
       >
         <Button
+          aria-label="prev-btn"
           onClick={handlePrevSlide}
           className="text-[40px] opacity-35 group-hover/btn:opacity-100"
         >
@@ -97,6 +98,7 @@ function SliderBanner({ data = {} }) {
         className="absolute right-0 top-0 group/btn h-full flex items-center justify-center cursor-pointer z-10"
       >
         <Button
+          aria-label="next-btn"
           onClick={handleNextSlide}
           className="text-[40px] opacity-35 group-hover/btn:opacity-100"
         >

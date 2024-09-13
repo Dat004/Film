@@ -86,7 +86,7 @@ const FilmElement = forwardRef(({ data = {}, baseUrl = "" }, ref) => {
         onMouseLeave={(e) => handleMouseLeave(e)}
         className="relative w-[100%] h-full"
       >
-        <Link to={`/phim/${data?.slug}`}>
+        <Link to={`/phim/${data?.slug}`} aria-label={data?.slug}>
           <div className="pb-[150%] h-0 leading-0">
             <div className="absolute inset-0 rounded-[5px] overflow-hidden">
               <LazyLoadImage

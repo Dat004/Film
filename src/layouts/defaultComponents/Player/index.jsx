@@ -17,8 +17,9 @@ import {
 import { FlexContainer, FlexItems } from "../../../components/Flex";
 import { videoPlayerSelector } from "../../../redux/selectors";
 import { UserAuth } from "../../../context/AuthContext";
-import DetailFilm from "./DetailFilmPlayer";
 import EpisodesPlayer from "./EpisodesPlayer";
+import DetailFilm from "./DetailFilmPlayer";
+import SEO from "../../../components/SEO";
 import VideoPlayer from "./VideoPlayer";
 
 function Player({ data = {} }) {
@@ -184,6 +185,12 @@ function Player({ data = {} }) {
           </FlexContainer>
         </div>
       </div>
+      <SEO
+        title={`${movie?.name} - ${dataEpisodes[currentEpisode]?.name}`}
+        description={movie?.content}
+        url={window.location.href}
+        image={movie?.thumb_url}
+      />
     </div>
   );
 }

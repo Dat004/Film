@@ -2,6 +2,7 @@ import ContinueWatchingVideoScreen from "../screens/ContinueWatchingVideoScreen"
 import { FlexContainer } from "../components/Flex";
 import { UserAuth } from "../context/AuthContext";
 import { HistoryIcon } from "../icons";
+import SEO from "../components/SEO";
 
 function ContinueWatching() {
   const { continue_watching, uid } = UserAuth();
@@ -19,6 +20,11 @@ function ContinueWatching() {
         </FlexContainer>
         <ContinueWatchingVideoScreen data={continue_watching} uid={uid} />
       </section>
+      <SEO
+        title="Bộ phim đang xem"
+        url={window.location.href}
+        description="Tại đây bạn có thể quản lý được các nội dung đang xem dở của mình"
+      />
     </div>
   );
 }

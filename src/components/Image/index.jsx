@@ -8,6 +8,7 @@ function Image({
   src = "",
   cover = false,
   contain = false,
+  alt = '',
   ...props
 }) {
   const [fallBack, setFallBack] = useState(src || images.imgLoadingVertical);
@@ -33,6 +34,7 @@ function Image({
       className={imageStyles}
       onError={handleFallBack}
       src={fallBack}
+      alt={alt}
       {...props}
     />
   );

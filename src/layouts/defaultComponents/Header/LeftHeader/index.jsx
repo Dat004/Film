@@ -36,7 +36,9 @@ function LeftHeader({ dataCategory = [] }) {
 
   return (
     <>
-      {!!dataCategory && <MenuItems dataCategory={dataCategory} isShow={isShowMenu} />}
+      {!!dataCategory && (
+        <MenuItems dataCategory={dataCategory} isShow={isShowMenu} />
+      )}
       <div className="flex items-center">
         <Button onClick={handleShowMenu} className="hidden lgm:block mr-[15px]">
           <BarMenuIcon width="24px" height="24px" />
@@ -59,7 +61,7 @@ function LeftHeader({ dataCategory = [] }) {
             </NavLink>
           ))}
           {!!dataCategory?.length && (
-            <>
+            <ul className="flex items-center">
               <li
                 className={`${
                   pathname?.split("/")[1] === "the-loai"
@@ -120,7 +122,7 @@ function LeftHeader({ dataCategory = [] }) {
                   </Container>
                 </div>
               </li>
-            </>
+            </ul>
           )}
         </nav>
       </div>

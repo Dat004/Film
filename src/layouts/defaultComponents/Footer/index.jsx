@@ -60,10 +60,20 @@ function Footer() {
               <Button
                 className="text-[12px] gap-x-[6px] px-[10px] py-[5px] !border-bd-select-menu"
                 leftIcon={
-                  <Image className="!w-[16px] !h-[16px]" src={images.lang} cover />
+                  <Image
+                    alt="global-img"
+                    className="!w-[16px] !h-[16px]"
+                    src={images.lang}
+                    cover
+                  />
                 }
                 rightIcon={
-                  <Image className="!w-[16px] !h-[16px]" src={images.downArrow} cover />
+                  <Image
+                    alt="down-arrow-img"
+                    className="!w-[16px] !h-[16px]"
+                    src={images.downArrow}
+                    cover
+                  />
                 }
                 outline
               >
@@ -74,18 +84,21 @@ function Footer() {
               <FlexContainer className="items-center gap-x-[15px] mdm:gap-x-[8px]">
                 <FlexItems>
                   <Link
+                    aria-label="fb-icon"
                     style={{ backgroundImage: `url(${images.facebookIcon})` }}
                     className="block w-[30px] h-[30px] bg-center bg-no-repeat bg-cover"
                   ></Link>
                 </FlexItems>
                 <FlexItems>
                   <Link
+                    aria-label="is-icon"
                     style={{ backgroundImage: `url(${images.instagramIcon})` }}
                     className="block w-[30px] h-[30px] bg-center bg-no-repeat bg-cover"
                   ></Link>
                 </FlexItems>
                 <FlexItems>
                   <Link
+                    aria-label="tw-icon"
                     style={{ backgroundImage: `url(${images.twitterIcon})` }}
                     className="block w-[30px] h-[30px] bg-center bg-no-repeat bg-cover"
                   ></Link>
@@ -100,9 +113,9 @@ function Footer() {
               {data.dataFooter?.map((items) => (
                 <FlexItems className="px-[15px]" key={items.id}>
                   <div className="w-[100%]">
-                    <h3 className="text-primary text-[14px] font-normal">
+                    <p className="text-primary text-[14px] font-normal">
                       {items.title}
-                    </h3>
+                    </p>
                     <ul className="max-w-[90%]">
                       {items?.items?.map((value) => (
                         <li key={value.id} className="mt-[16px] leading-[1]">
@@ -124,10 +137,18 @@ function Footer() {
             <Button
               className="text-[12px] gap-x-[6px] px-[10px] py-[5px] !border-bd-select-menu"
               leftIcon={
-                <Image className="!w-[16px] !h-[16px]" src={images.lang} cover />
+                <Image
+                  className="!w-[16px] !h-[16px]"
+                  src={images.lang}
+                  cover
+                />
               }
               rightIcon={
-                <Image className="!w-[16px] !h-[16px]" src={images.downArrow} cover />
+                <Image
+                  className="!w-[16px] !h-[16px]"
+                  src={images.downArrow}
+                  cover
+                />
               }
               outline
             >
@@ -152,18 +173,21 @@ function Footer() {
             <FlexContainer className="items-center gap-x-[15px]">
               <FlexItems>
                 <Link
+                  aria-label="fb-icon"
                   style={{ backgroundImage: `url(${images.facebookIcon})` }}
                   className="block w-[30px] h-[30px] bg-center bg-no-repeat bg-cover"
                 ></Link>
               </FlexItems>
               <FlexItems>
                 <Link
+                  aria-label="is-icon"
                   style={{ backgroundImage: `url(${images.instagramIcon})` }}
                   className="block w-[30px] h-[30px] bg-center bg-no-repeat bg-cover"
                 ></Link>
               </FlexItems>
               <FlexItems>
                 <Link
+                  aria-label="tw-icon"
                   style={{ backgroundImage: `url(${images.twitterIcon})` }}
                   className="block w-[30px] h-[30px] bg-center bg-no-repeat bg-cover"
                 ></Link>

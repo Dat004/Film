@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { HelmetProvider } from "react-helmet-async";
 
 import { setShowPreview } from "./redux/slices/previewInfoFilmSlice";
 import { CustomToastContainer } from "./components/Toastify";
@@ -72,32 +73,34 @@ function App() {
   };
 
   return (
-    <div className="bg-bg-layout">
-      <Router>
-        <Routes>
-          {configs.routerConfig.map((items) => (
-            <Route
-              key={items.id}
-              path={items.path}
-              element={
-                <items.layout>
-                  <items.component />
-                </items.layout>
-              }
-            />
-          ))}
-        </Routes>
-        {isShowPreview && memorizedPreview}
-      </Router>
-      {isShowBtnBackToTop && (
-        <div className="fixed right-[11.5%] bottom-[5%] z-[400]">
-          <Button onClick={handleScrollToTop}>
-            <BackToTopIcon />
-          </Button>
-        </div>
-      )}
-      <CustomToastContainer />
-    </div>
+    <HelmetProvider>
+      <div className="bg-bg-layout">
+        <Router>
+          <Routes>
+            {configs.routerConfig.map((items) => (
+              <Route
+                key={items.id}
+                path={items.path}
+                element={
+                  <items.layout>
+                    <items.component />
+                  </items.layout>
+                }
+              />
+            ))}
+          </Routes>
+          {isShowPreview && memorizedPreview}
+        </Router>
+        {isShowBtnBackToTop && (
+          <div className="fixed right-[11.5%] bottom-[5%] z-[400]">
+            <Button onClick={handleScrollToTop}>
+              <BackToTopIcon />
+            </Button>
+          </div>
+        )}
+        <CustomToastContainer />
+      </div>
+    </HelmetProvider>
   );
 }
 
