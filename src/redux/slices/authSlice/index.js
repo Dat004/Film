@@ -4,6 +4,7 @@ const initialState = {
   tokenStore: {},
   logged: false,
   userInfo: {},
+  avatar: null,
   uid: null,
   data: {
     continue_watching: [],
@@ -24,6 +25,9 @@ const authSlice = createSlice({
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
     },
+    setAvatar: (state, action) => {
+      state.avatar = action.payload;
+    },
     setUid: (state, action) => {
       state.uid = action.payload;
     },
@@ -43,6 +47,7 @@ export const {
   setTokenStore,
   setUserInfo,
   setUid,
+  setAvatar,
   setContinueWatchingData,
   setListWatchingData,
 } = actions;

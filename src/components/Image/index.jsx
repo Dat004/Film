@@ -17,13 +17,13 @@ function Image({
     "object-cover": cover,
     "object-contain": contain,
   });
-
+  
   useEffect(() => {
     if (src) {
       setFallBack(src);
     }
   }, [src]);
-
+  
   const handleFallBack = () => {
     setFallBack(images.imgLoadingVertical);
   };

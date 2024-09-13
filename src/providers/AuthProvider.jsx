@@ -1,4 +1,9 @@
 import { getDatabase, ref, set, get, onValue } from "firebase/database";
+import {
+  ref as refStorage,
+  getDownloadURL,
+  uploadBytes,
+} from "firebase/storage";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,11 +13,12 @@ import {
   setListWatchingData,
   setTokenStore,
   setUserInfo,
+  setAvatar,
   setLogin,
   setUid,
 } from "../redux/slices/authSlice";
 import { authSelector } from "../redux/selectors";
-import { auth } from "../configs/firebaseConfig";
+import { auth, storage } from "../configs/firebaseConfig";
 import AuthContext from "../context/AuthContext";
 import { useLocalStorage } from "../hooks";
 import configs from "../configs";
@@ -22,18 +28,20 @@ function AuthProvider({ children }) {
 
   const {
     tokenStore,
-    logged,
     userInfo,
+    avatar,
+    logged,
     uid,
     data: { continue_watching, list_watching },
   } = useSelector(authSelector);
   const { setItem, getItem } = useLocalStorage();
   const {
     keyConfig: {
-      localStorageKey: { user_info, is_logged },
+      localStorageKey: { user_info, is_logged, avatar: avatarProfile },
     },
   } = configs;
 
+  const imgPf = getItem(avatarProfile);
   const isLogged = getItem(is_logged);
   const userIf = getItem(user_info);
 
@@ -61,6 +69,8 @@ function AuthProvider({ children }) {
 
         const usersRef = ref(db, `users/${user.uid}`);
         const unsubscribeUsers = handleSubscribeRef(usersRef, (value) => {
+          uploadImageFromUrl(value.currentUser.photoUrl, user.uid);
+
           setItem(user_info, value.currentUser);
           setItem(is_logged, true);
 
@@ -134,6 +144,31 @@ function AuthProvider({ children }) {
     return () => unsubscribe();
   }, []);
 
+  const uploadImageFromUrl = async (url, uid) => {
+    try {
+      const res = await fetch(url);
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch image.");
+      }
+
+      const blob = await res.blob(); // Convert to Blob
+      const storageProfileImageRef = refStorage(storage, `profile/${uid}/`);
+      const uploadTask = uploadBytes(storageProfileImageRef, blob);
+
+      await uploadTask
+        .then(() => {
+          getDownloadURL(storageProfileImageRef).then((url) => {
+            setItem(avatarProfile, url);
+            dispatch(setAvatar(url));
+          });
+        })
+        .catch((err) => console.log(err));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const handleSubscribeRef = (ref, callback) => {
     return onValue(ref, (snapshot) => {
       callback(snapshot.val());
@@ -141,8 +176,9 @@ function AuthProvider({ children }) {
   };
 
   const handleUserLogout = () => {
-    setItem(user_info, {});
+    setItem(avatarProfile, null);
     setItem(is_logged, false);
+    setItem(user_info, {});
 
     dispatch(setUid(null));
     dispatch(setUserInfo({}));
@@ -153,10 +189,11 @@ function AuthProvider({ children }) {
   const value = {
     continue_watching,
     list_watching,
+    uid,
+    avatar: imgPf || avatar,
     lg: isLogged || logged,
     uf: userIf || userInfo,
     tk: tokenStore,
-    uid: uid,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

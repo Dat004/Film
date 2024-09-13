@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdEdit } from "react-icons/md";
 import { MdPerson, MdPersonOff } from "react-icons/md";
 import { update, getDatabase, ref } from "firebase/database";
@@ -6,6 +6,7 @@ import { update, getDatabase, ref } from "firebase/database";
 import { FlexContainer, FlexItems } from "../../components/Flex";
 import AvatarModal from "../../components/Modal/AvatarModal";
 import { ToastMessage } from "../../components/Toastify";
+import { UserAuth } from "../../context/AuthContext";
 import { useControlModal } from "../../hooks";
 import Button from "../../components/Button";
 import Image from "../../components/Image";
@@ -13,22 +14,27 @@ import { PersonIcon } from "../../icons";
 import FieldValue from "./FieldValue";
 
 function ProfileScreen({ data = {}, uid = "" }) {
-  const { createdAt, email, displayName, photoUrl, emailVerified } = data;
+  const { createdAt, email, displayName, emailVerified } = data;
+  const { avatar } = UserAuth();
   const { isShowModal, handleCloseModal, handleShowModal } = useControlModal();
 
   const time = new Date(+createdAt).toLocaleDateString();
 
   const [value, setValue] = useState({
-    image: photoUrl,
+    image: avatar,
     name: displayName,
   });
 
+  useEffect(() => {
+    setValue((state) => ({ ...state, image: avatar }));
+  }, [avatar]);
+  
   const handleSelectAvatar = (avt) => {
     setValue((state) => ({ ...state, image: avt }));
   };
 
   const handleUpdateUser = async () => {
-    if (value.name === displayName && value.image === photoUrl) return;
+    if (value.name === displayName && value.image === avatar) return;
 
     const db = getDatabase();
     const dbRef = ref(db, `users/${uid}/currentUser`);
@@ -42,7 +48,7 @@ function ProfileScreen({ data = {}, uid = "" }) {
       await update(dbRef, updates);
 
       ToastMessage.success("Cập nhật thông tin thành công!");
-    } catch(e) {
+    } catch (e) {
       ToastMessage.error("Cập nhật thông tin thất bại!");
     }
   };
@@ -137,9 +143,7 @@ function ProfileScreen({ data = {}, uid = "" }) {
                 primary
                 type="button"
                 onClick={handleUpdateUser}
-                disabled={
-                  value.name === displayName && value.image === photoUrl
-                }
+                disabled={value.name === displayName && value.image === avatar}
                 className="w-[100%] disabled:!bg-bg-disabled rounded-[4px] hover:text-primary hover:opacity-80 !font-medium h-[42px]"
               >
                 Save

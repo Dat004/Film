@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import { FlexContainer, FlexItems } from "../../../../components/Flex";
 import { ToastMessage } from "../../../../components/Toastify";
+import { UserAuth } from "../../../../context/AuthContext";
 import { auth } from "../../../../configs/firebaseConfig";
 import Container from "../../../../components/Container";
 import Button from "../../../../components/Button";
@@ -10,7 +11,8 @@ import Image from "../../../../components/Image";
 import { LogoutIcon } from "../../../../icons";
 
 function MenuUser({ data = {}, dataMenu = [], onClose = () => {} }) {
-  const { photoUrl, displayName, email } = data;
+  const { displayName, email } = data;
+  const { avatar } = UserAuth();
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -24,7 +26,7 @@ function MenuUser({ data = {}, dataMenu = [], onClose = () => {} }) {
       <header className="py-[12px] px-[15px] border-b border-solid border-bd-filed-form-color">
         <FlexContainer className="items-center">
           <FlexItems className="size-[32px]">
-            <Image className="rounded-[50%]" src={photoUrl} />
+            <Image cover className="rounded-[50%]" src={avatar} />
           </FlexItems>
           <FlexItems className="text-[14px] text-primary ml-[10px]">
             <p className="font-medium leading-[1.18]">{displayName}</p>

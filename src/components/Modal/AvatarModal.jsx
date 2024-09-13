@@ -19,7 +19,7 @@ function AvatarModal({
   const [id, setId] = useState(null);
 
   useEffect(() => {
-    if (currentImg.startsWith("https://lh3")) return;
+    if (currentImg?.startsWith("https://lh3")) return;
 
     (async () => {
       for (let i = 0; i < data.dataAvatar.length; i++) {

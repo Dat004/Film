@@ -12,24 +12,20 @@ import MenuUser from "./MenuUser";
 
 function RightHeader() {
   const navigate = useNavigate();
-
   const [showMenu, setShowMenu] = useState(false);
-
-  const { dataUserMenu } = data;
 
   useEffect(() => {
     window.addEventListener("click", handleCloseMenu);
-
+    
     return () => {
       window.removeEventListener("click", handleCloseMenu);
     };
   }, [showMenu]);
-
-  const { lg, uf } = UserAuth();
+  
+  const { dataUserMenu } = data;
+  const { lg, uf, avatar } = UserAuth();
   const { isShowModal, handleToggleModal, handleCloseModal } =
     useControlModal();
-
-  console.log(uf);
 
   const handleCloseMenu = () => {
     setShowMenu(false);
@@ -55,7 +51,7 @@ function RightHeader() {
             rounded
             className="size-[35px]"
           >
-            <Image src={uf.photoUrl} className="rounded-[50%]" />
+            <Image src={avatar} className="rounded-[50%]" />
           </Button>
           {showMenu && (
             <div className="absolute right-0 top-[calc(100%+15px)]">

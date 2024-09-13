@@ -14,7 +14,7 @@ function ProfileLayout({ children }) {
   const itemsRef = useRef([]);
   const slideRef = useRef();
 
-  const { lg, uf } = UserAuth();
+  const { lg, uf, avatar } = UserAuth();
   const { dataUserMenu } = data;
 
   useEffect(() => {
@@ -51,7 +51,7 @@ function ProfileLayout({ children }) {
       <main className="min-h-[520px] mt-[80px] pb-[30px]">
         <section className="relative pt-[40px] mb-[30px] overflow-hidden">
           <div
-            style={{ backgroundImage: `url(${uf.photoUrl})` }}
+            style={{ backgroundImage: `url(${avatar})` }}
             className="absolute left-0 right-0 top-[-20px] bottom-[-20px] blur-[20px] opacity-40 bg-center bg-cover bg-no-repeat"
           ></div>
           <div className="relative px-[15px]">
