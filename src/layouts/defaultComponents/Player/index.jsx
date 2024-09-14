@@ -33,11 +33,11 @@ function Player({ data = {} }) {
 
   const videoPlayerState = useSelector(videoPlayerSelector);
 
-  const { episode, time, movie: movieStore } = videoPlayerState;
+  const { episode, time } = videoPlayerState;
   const { currentTime, duration } = time;
   const { currentEpisode } = episode;
   const { episodes, movie } = data;
-  const { thumb_url, name } = movie;
+  const { thumb_url, poster_url, name } = movie;
 
   const dataEpisodes = episodes
     ?.map((items) => items?.server_data)
@@ -158,7 +158,7 @@ function Player({ data = {} }) {
         <div className="absolute inset-0 overflow-hidden">
           <div
             style={{
-              backgroundImage: `url(${thumb_url})`,
+              backgroundImage: `url(${thumb_url || poster_url})`,
               filter: "blur(20px)",
             }}
             className="w-[100%] h-full bg-no-repeat bg-cover bg-center opacity-60"
@@ -176,7 +176,10 @@ function Player({ data = {} }) {
           </div>
           <FlexContainer className="relative !gap-y-0 2xlm:flex-col">
             <FlexItems className="relative w-[75%] h-fit 2xlm:w-[auto]">
-              <VideoPlayer dataEpisodes={dataEpisodes} thumbUrl={thumb_url} />
+              <VideoPlayer
+                dataEpisodes={dataEpisodes}
+                dataMovie={movie}
+              />
               <EpisodesPlayer dataEpisodes={dataEpisodes} />
             </FlexItems>
             <FlexItems className="w-[25%] pl-[30px] 2xlm:pl-0 2xlm:relative 2xlm:py-[35px] clm:py-[25px] 2xlm:w-[100%] clm:px-[15px] flex-shrink-0 ">
@@ -187,9 +190,9 @@ function Player({ data = {} }) {
       </div>
       <SEO
         title={`${movie?.name} - ${dataEpisodes[currentEpisode]?.name}`}
+        image={movie?.thumb_url || poster_url}
         description={movie?.content}
         url={window.location.href}
-        image={movie?.thumb_url}
       />
     </div>
   );

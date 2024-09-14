@@ -12,7 +12,7 @@ import {
 } from "../../../../redux/slices/videoPlayerSlice";
 import BarPlayer from "./BarPlayer";
 
-function VideoPlayer({ dataEpisodes = [], thumbUrl = "" }) {
+function VideoPlayer({ dataEpisodes = [], dataMovie = {} }) {
   const [showPoster, setShowPoster] = useState(true);
 
   const videoPlayerState = useSelector(videoPlayerSelector);
@@ -20,6 +20,7 @@ function VideoPlayer({ dataEpisodes = [], thumbUrl = "" }) {
 
   const { statusMovie, episode } = videoPlayerState;
   const { autoPlay, autoNext, isLight } = statusMovie;
+  const { thumb_url, poster_url } = dataMovie;
   const { currentEpisode } = episode;
 
   useEffect(() => {
@@ -34,7 +35,7 @@ function VideoPlayer({ dataEpisodes = [], thumbUrl = "" }) {
   const videoPlayerClasses = classNames("relative", {
     "z-[1002]": isLight,
   });
- 
+
   const handlePlayVideo = () => {
     setShowPoster(false);
     dispatch(setStatusMovie({ key: "isPlay", value: true }));
@@ -68,9 +69,11 @@ function VideoPlayer({ dataEpisodes = [], thumbUrl = "" }) {
             <div className="absolute inset-0 z-[100]">
               <div
                 style={{
-                  backgroundImage: `url(${thumbUrl})`,
+                  backgroundImage: `url(${thumb_url || poster_url})`,
                 }}
-                className="relative w-[100%] h-full bg-center bg-cover bg-no-repeat z-[50]"
+                className={`relative bg-bg-layout w-[100%] h-full bg-center ${
+                  thumb_url ? "bg-cover" : "bg-contain"
+                } bg-no-repeat z-[50]`}
               ></div>
               <FlexContainer className="absolute inset-0 items-center justify-center z-[120]">
                 <FlexItems>

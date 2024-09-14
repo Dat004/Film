@@ -75,7 +75,6 @@ function SliderBanner({ data = {} }) {
           <SwiperSlide key={items?._id}>
             <BannerElement
               data={items}
-              backgroundImage={items?.thumb_url}
               baseUrl={APP_DOMAIN_CDN_IMAGE}
             />
           </SwiperSlide>

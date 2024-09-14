@@ -6,15 +6,19 @@ import { DotIcon } from "../../icons";
 import Button from "../Button";
 import Image from "../Image";
 
-function BannerElement({ data = {}, backgroundImage = "", baseUrl = "" }) {
+function BannerElement({ data = {}, baseUrl = "" }) {
+  const { poster_url, thumb_url } = data;
+  const bgFilm = thumb_url || poster_url;
+
   return (
     <div className="relative w-[100%] h-full flex-shrink-0 lgm:rounded-[4px] pb-[56.25%]">
       <div className="absolute flex inset-0">
         <div className="flex w-[100%] h-[100%] overflow-hidden">
           <Image
-            cover
+            cover={thumb_url}
+            contain={!thumb_url}
             className="flex-shrink-0 flex-grow mdm:rounded-[4px]"
-            src={baseUrl ? baseUrl + "/" + backgroundImage : backgroundImage}
+            src={baseUrl ? baseUrl + "/" + bgFilm : bgFilm}
           />
         </div>
       </div>
