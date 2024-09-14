@@ -28,6 +28,7 @@ function PreviousPage({
         <Button
           key={index}
           data-index={items}
+          aria-label={items}
           className="border-bd-btn-pagination-color hover:bg-bg-btn-hover-pagination hover:!text-primary text-[14px] p-[4px] min-w-[35px] h-[35px]"
           outline
           {...props}
