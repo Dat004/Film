@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
 
@@ -14,6 +15,11 @@ function MenuUser({ data = {}, dataMenu = [], onClose = () => {} }) {
   const { displayName, email } = data;
   const { avatar } = UserAuth();
 
+  const memoizedAvatar = useMemo(
+    () => <Image cover className="rounded-[50%]" src={avatar} />,
+    [avatar]
+  );
+
   const handleLogout = async () => {
     await signOut(auth);
 
@@ -25,9 +31,7 @@ function MenuUser({ data = {}, dataMenu = [], onClose = () => {} }) {
     <Container>
       <header className="py-[12px] px-[15px] border-b border-solid border-bd-filed-form-color">
         <FlexContainer className="items-center">
-          <FlexItems className="size-[32px]">
-            <Image cover className="rounded-[50%]" src={avatar} />
-          </FlexItems>
+          <FlexItems className="size-[32px]">{memoizedAvatar}</FlexItems>
           <FlexItems className="text-[14px] text-primary ml-[10px]">
             <p className="font-medium leading-[1.18]">{displayName}</p>
             <p className="leading-[1.18]">{email}</p>

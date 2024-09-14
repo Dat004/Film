@@ -1,13 +1,6 @@
 import { useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  update,
-  set,
-  get,
-  getDatabase,
-  ref,
-  onDisconnect,
-} from "firebase/database";
+import { getDatabase, ref, onDisconnect } from "firebase/database";
 
 import {
   resetEpisode,
@@ -17,6 +10,7 @@ import {
 import { FlexContainer, FlexItems } from "../../../components/Flex";
 import { videoPlayerSelector } from "../../../redux/selectors";
 import { UserAuth } from "../../../context/AuthContext";
+import { useRealtimeDbFirebase } from "../../../hooks";
 import EpisodesPlayer from "./EpisodesPlayer";
 import DetailFilm from "./DetailFilmPlayer";
 import SEO from "../../../components/SEO";
@@ -29,6 +23,7 @@ function Player({ data = {} }) {
   const durationRef = useRef(0);
 
   const dispatch = useDispatch();
+  const { setDb, getDb, updateDb } = useRealtimeDbFirebase();
   const { lg, uid, continue_watching } = UserAuth();
 
   const videoPlayerState = useSelector(videoPlayerSelector);
@@ -129,27 +124,28 @@ function Player({ data = {} }) {
   };
 
   const handleLogData = async () => {
-    const db = getDatabase();
-    const dbRef = ref(
-      db,
-      `/continue_watching/${uid}/${watchingDataRef.current._id}`
-    );
-
-    const snapshot = await get(dbRef);
-
-    try {
-      if (snapshot.exists()) {
-        await update(dbRef, {
-          ...watchingDataRef.current,
-        });
-      } else {
-        await set(dbRef, {
-          ...watchingDataRef.current,
-        });
-      }
-    } catch (err) {
-      console.error(err);
-    }
+    const dbRef = `/continue_watching/${uid}/${watchingDataRef.current._id}`;
+    await getDb({
+      path: dbRef,
+      callback: async (snapshot) => {
+        if (snapshot?.exists()) {
+          await updateDb({
+            path: dbRef,
+            options: {
+              ...watchingDataRef.current,
+            },
+          });
+        } else {
+          await setDb({
+            path: dbRef,
+            options: { ...watchingDataRef.current },
+          });
+        }
+      },
+      fallback: (err) => {
+        console.log(err);
+      },
+    });
   };
 
   return (
@@ -176,10 +172,7 @@ function Player({ data = {} }) {
           </div>
           <FlexContainer className="relative !gap-y-0 2xlm:flex-col">
             <FlexItems className="relative w-[75%] h-fit 2xlm:w-[auto]">
-              <VideoPlayer
-                dataEpisodes={dataEpisodes}
-                dataMovie={movie}
-              />
+              <VideoPlayer dataEpisodes={dataEpisodes} dataMovie={movie} />
               <EpisodesPlayer dataEpisodes={dataEpisodes} />
             </FlexItems>
             <FlexItems className="w-[25%] pl-[30px] 2xlm:pl-0 2xlm:relative 2xlm:py-[35px] clm:py-[25px] 2xlm:w-[100%] clm:px-[15px] flex-shrink-0 ">

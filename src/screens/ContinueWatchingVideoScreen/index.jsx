@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { CgClose } from "react-icons/cg";
 import { FaPlay } from "react-icons/fa6";
-import { getDatabase, ref, remove } from "firebase/database";
 import { useDispatch } from "react-redux";
 
 import { FlexContainer, FlexItems } from "../../components/Flex";
@@ -9,33 +8,33 @@ import {
   setCurrentEpisode,
   setTimeVideo,
 } from "../../redux/slices/videoPlayerSlice";
-import { ToastMessage } from "../../components/Toastify";
+import { useRealtimeDbFirebase } from "../../hooks";
 import Button from "../../components/Button";
 import Image from "../../components/Image";
 import CurrentTime from "./CurrentTime";
 
 function ContinueWatchingVideoScreen({ data = [], uid = "" }) {
   const dispatch = useDispatch();
+  const { removeDb } = useRealtimeDbFirebase();
 
   const handleDelete = (id) => {
     (async () => {
-      const db = getDatabase();
-      const dbRef = ref(db, `/continue_watching/${uid}/${id}`);
+      const dbRef = `/continue_watching/${uid}/${id}`;
 
-      try {
-        await remove(dbRef);
-
-        ToastMessage.success("Đã xóa video khỏi lịch sử xem!");
-      } catch (err) {
-        ToastMessage.error("Không thể xóa video khỏi lịch sử xem!");
-      }
+      await removeDb({
+        path: dbRef,
+        messageSuccess: "Đã xóa video khỏi lịch sử xem!",
+        messageError: "Không thể xóa video khỏi lịch sử xem!",
+      });
     })();
   };
 
   const handleGetCurrentWatchingData = (data) => {
     dispatch(setCurrentEpisode(data.watching.currentEpisode));
-    dispatch(setTimeVideo({ key: 'currentTime', value: data.watching.currentTime }));
-    dispatch(setTimeVideo({ key: 'duration', value: data.watching.duration }));
+    dispatch(
+      setTimeVideo({ key: "currentTime", value: data.watching.currentTime })
+    );
+    dispatch(setTimeVideo({ key: "duration", value: data.watching.duration }));
   };
 
   return (

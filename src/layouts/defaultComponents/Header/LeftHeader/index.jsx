@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { GoTriangleDown } from "react-icons/go";
 
 import { FlexContainer, FlexItems } from "../../../../components/Flex";
 import Container from "../../../../components/Container";
 import Button from "../../../../components/Button";
+import Image from "../../../../components/Image";
 import { BarMenuIcon } from "../../../../icons";
 import images from "../../../../assets/images";
 import data from "../../../../data";
@@ -43,11 +43,11 @@ function LeftHeader({ dataCategory = [] }) {
         <Button onClick={handleShowMenu} className="hidden lgm:block mr-[15px]">
           <BarMenuIcon width="24px" height="24px" />
         </Button>
-        <div className="w-[125px] mr-[25px]">
-          <Link to="/">
-            <img src={images.logo} alt="logo" />
-          </Link>
-        </div>
+        <Link className="mr-[25px]" to="/">
+          <div className="w-[125px]">
+            <Image src={images.logo} alt="logo" />
+          </div>
+        </Link>
         <nav className="flex items-center lgm:hidden">
           {data.dataMenu.map((items, index) => (
             <NavLink

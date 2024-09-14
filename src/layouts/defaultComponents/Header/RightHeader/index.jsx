@@ -37,8 +37,8 @@ function RightHeader() {
 
   return (
     <div className="flex items-center gap-[16px]">
-      <Button onClick={() => navigate("/search")}>
-        <img src={images.searchIcon} alt="search" />
+      <Button className="size-[22px]" onClick={() => navigate("/search")}>
+        <Image src={images.searchIcon} alt="search" />
       </Button>
       {lg ? (
         <div className="relative">

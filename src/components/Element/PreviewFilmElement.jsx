@@ -1,26 +1,26 @@
 import { Fragment, useEffect, useRef, useState, useLayoutEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { FaPlay } from "react-icons/fa6";
 import { CgMathPlus } from "react-icons/cg";
 import { MdDeleteOutline } from "react-icons/md";
-import { getDatabase, ref, remove } from "firebase/database";
 import classNames from "classnames";
 
 import { previewFilmSelector } from "../../redux/selectors";
 import ListContainer from "../Container/ListContainer";
 import { UserAuth } from "../../context/AuthContext";
+import { useRealtimeDbFirebase } from "../../hooks";
 import { FlexContainer, FlexItems } from "../Flex";
-import { ToastMessage } from "../Toastify";
 import Container from "../Container";
 import Button from "../Button";
 
 function PreviewFilmElement({ className, data = {}, ...props }) {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const previewRef = useRef();
 
   const { list_watching, uid } = UserAuth();
+  const { removeDb } = useRealtimeDbFirebase();
+
   const [isAlreadyWatchList, setIsAlReadyWatchList] = useState(false);
   const [isShowMenu, setIsShowMenu] = useState(false);
 
@@ -78,16 +78,13 @@ function PreviewFilmElement({ className, data = {}, ...props }) {
   };
 
   const handleRemoveVideoToList = async () => {
-    const db = getDatabase();
-    const dbRef = ref(db, `/list_video/${uid}/${data?._id}`);
+    const dbRef = `/list_video/${uid}/${data?._id}`;
 
-    try {
-      await remove(dbRef);
-
-      ToastMessage.success("Đã xóa video khỏi danh sách phát!");
-    } catch (e) {
-      ToastMessage.error("Không thể xóa video khỏi danh sách phát!");
-    }
+    await removeDb({
+      path: dbRef,
+      messageSuccess: "Đã xóa video khỏi danh sách phát!",
+      messageError: "Không thể xóa video khỏi danh sách phát!"
+    });
   };
 
   return (

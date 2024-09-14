@@ -1,4 +1,4 @@
-import { getDatabase, ref, set, get, onValue } from "firebase/database";
+import { getDatabase, ref, onValue } from "firebase/database";
 import {
   ref as refStorage,
   getDownloadURL,
@@ -20,12 +20,14 @@ import {
 import { authSelector } from "../redux/selectors";
 import { auth, storage } from "../configs/firebaseConfig";
 import AuthContext from "../context/AuthContext";
+import { useRealtimeDbFirebase } from "../hooks";
 import { useLocalStorage } from "../hooks";
 import configs from "../configs";
 
 function AuthProvider({ children }) {
   const dispatch = useDispatch();
 
+  const { getDb, setDb } = useRealtimeDbFirebase();
   const {
     tokenStore,
     userInfo,
@@ -58,14 +60,23 @@ function AuthProvider({ children }) {
           ...user.stsTokenManager,
         };
 
-        try {
-          const snapshot = await get(ref(db, `/users/${user.uid}`));
-          if (!snapshot.exists()) {
-            await set(ref(db, `/users/${user.uid}`), {
-              currentUser,
-            });
-          }
-        } catch (e) {}
+        await getDb({
+          path: `/users/${user.uid}`,
+          callback: async (snapshot) => {
+            console.log(snapshot);
+            if (!snapshot?.exists()) {
+              await setDb({
+                path: `/users/${user.uid}`,
+                options: {
+                  currentUser,
+                },
+              });
+            }
+          },
+          fallback: (err) => {
+            console.log(err);
+          },
+        });
 
         const usersRef = ref(db, `users/${user.uid}`);
         const unsubscribeUsers = handleSubscribeRef(usersRef, (value) => {

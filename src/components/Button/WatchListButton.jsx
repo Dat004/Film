@@ -1,12 +1,11 @@
 import { useState, useLayoutEffect, useEffect } from "react";
 import { MdOutlineAdd, MdDeleteOutline } from "react-icons/md";
 import { useSelector } from "react-redux";
-import { getDatabase, ref, remove } from "firebase/database";
 
 import { videoPlayerSelector } from "../../redux/selectors";
 import ListContainer from "../Container/ListContainer";
 import { UserAuth } from "../../context/AuthContext";
-import { ToastMessage } from "../Toastify";
+import { useRealtimeDbFirebase } from "../../hooks";
 import Button from ".";
 
 function WatchListButton({
@@ -18,6 +17,7 @@ function WatchListButton({
   const [isAlreadyWatchList, setIsAlreadyWatchList] = useState(false);
   const [isShowMenu, setIsShowMenu] = useState(false);
 
+  const { removeDb } = useRealtimeDbFirebase();
   const {
     movie: { movieData },
   } = useSelector(videoPlayerSelector);
@@ -40,16 +40,13 @@ function WatchListButton({
   }, [isShowMenu]);
 
   const handleRemoveVideoToList = async () => {
-    const db = getDatabase();
-    const dbRef = ref(db, `/list_video/${uid}/${movieData?._id}`);
+    const dbRef = `/list_video/${uid}/${movieData?._id}`;
 
-    try {
-      await remove(dbRef);
-
-      ToastMessage.success("Đã xóa video khỏi danh sách phát!");
-    } catch (e) {
-      ToastMessage.error("Không thể xóa video khỏi danh sách phát!");
-    }
+    await removeDb({
+      path: dbRef,
+      messageSuccess: "Đã xóa video khỏi danh sách phát!",
+      messageError: "Không thể xóa video khỏi danh sách phát!"
+    });
   };
 
   const handleToggleMenu = (e) => {

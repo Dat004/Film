@@ -1,8 +1,8 @@
 import classNames from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
-import { get, set, getDatabase, ref } from "firebase/database";
 
 import { UserAuth } from "../../context/AuthContext";
+import { useRealtimeDbFirebase } from "../../hooks";
 import { ToastMessage } from "../Toastify";
 import data from "../../data";
 import Container from ".";
@@ -17,6 +17,7 @@ function ListContainer({
   isShow = false,
 }) {
   const { uid } = UserAuth();
+  const { getDb, setDb } = useRealtimeDbFirebase();
 
   const listContainerClasses = classNames("absolute z-[10] overflow-hidden  ", {
     [className]: className,
@@ -38,21 +39,25 @@ function ListContainer({
   };
 
   const handleAddList = async (type) => {
-    const db = getDatabase();
-    const dbRef = ref(db, `/list_video/${uid}/${dataFilm?._id}`);
-    const snapShot = await get(dbRef);
-
-    try {
-      if (snapShot.exists()) {
-        ToastMessage.warning("Video đã có trong danh sách phát!");
-      } else {
-        await set(dbRef, { ...dataFilm, type });
-
-        ToastMessage.success("Đã thêm video vào danh sách phát!");
-      }
-    } catch (e) {
-      ToastMessage.error("Không thể thêm video vào danh sách phát!");
-    }
+    const refPath = `/list_video/${uid}/${dataFilm?._id}`;
+    await getDb({
+      path: refPath,
+      callback: async (snapShot) => {
+        if (snapShot?.exists()) {
+          ToastMessage.warning("Video đã có trong danh sách phát!");
+        } else {
+          await setDb({
+            path: refPath,
+            options: { ...dataFilm, type },
+            messageSuccess: "Đã thêm video vào danh sách phát!",
+            messageError: "Không thể thêm video vào danh sách phát!",
+          });
+        }
+      },
+      fallback: (err) => {
+        console.log(err);
+      },
+    });
   };
 
   return (

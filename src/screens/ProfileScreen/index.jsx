@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { MdEdit } from "react-icons/md";
 import { MdPerson, MdPersonOff } from "react-icons/md";
-import { update, getDatabase, ref } from "firebase/database";
 
+import { useControlModal, useRealtimeDbFirebase } from "../../hooks";
 import { FlexContainer, FlexItems } from "../../components/Flex";
 import AvatarModal from "../../components/Modal/AvatarModal";
 import { ToastMessage } from "../../components/Toastify";
 import { UserAuth } from "../../context/AuthContext";
-import { useControlModal } from "../../hooks";
 import Button from "../../components/Button";
 import Image from "../../components/Image";
 import { PersonIcon } from "../../icons";
@@ -17,6 +16,7 @@ function ProfileScreen({ data = {}, uid = "" }) {
   const { createdAt, email, displayName, emailVerified } = data;
   const { avatar } = UserAuth();
   const { isShowModal, handleCloseModal, handleShowModal } = useControlModal();
+  const { updateDb } = useRealtimeDbFirebase();
 
   const time = new Date(+createdAt).toLocaleDateString();
 
@@ -36,21 +36,18 @@ function ProfileScreen({ data = {}, uid = "" }) {
   const handleUpdateUser = async () => {
     if (value.name === displayName && value.image === avatar) return;
 
-    const db = getDatabase();
-    const dbRef = ref(db, `users/${uid}/currentUser`);
-
+    const dbRef = `users/${uid}/currentUser`;
     const updates = {
       displayName: value.name,
       photoUrl: value.image,
     };
 
-    try {
-      await update(dbRef, updates);
-
-      ToastMessage.success("Cập nhật thông tin thành công!");
-    } catch (e) {
-      ToastMessage.error("Cập nhật thông tin thất bại!");
-    }
+    await updateDb({
+      path: dbRef,
+      options: updates,
+      messageSuccess: "Cập nhật thông tin thành công!",
+      messageError: "Cập nhật thông tin thất bại!",
+    });
   };
 
   return (
