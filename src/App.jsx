@@ -19,20 +19,12 @@ function App() {
     useSelector(previewFilmSelector);
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  useEffect(() => {
-    if (isShowPreview) {
-      window.addEventListener("scroll", handleMouseLeave);
-    }
-
-    return () => {
-      window.addEventListener("scroll", handleMouseLeave);
-    };
-  }, [isShowPreview]);
 
   const handleScroll = () => {
     if (window.scrollY >= 20) {

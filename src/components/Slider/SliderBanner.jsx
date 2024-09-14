@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { GrNext, GrPrevious } from "react-icons/gr";
 
 import Button from "../Button";
@@ -8,10 +8,6 @@ import { Swiper, SwiperSlide } from "../Swiper";
 function SliderBanner({ data = {} }) {
   const swiperRef = useRef();
   const { APP_DOMAIN_CDN_IMAGE, itemsBanner } = data;
-
-  useEffect(() => {
-    swiperRef.current?.swiper?.on("slideChange", (e) => {});
-  }, []);
 
   const handleNextSlide = () => {
     swiperRef.current?.swiper?.slideNext(600);
@@ -73,37 +69,36 @@ function SliderBanner({ data = {} }) {
       >
         {itemsBanner?.map((items) => (
           <SwiperSlide key={items?._id}>
-            <BannerElement
-              data={items}
-              baseUrl={APP_DOMAIN_CDN_IMAGE}
-            />
+            <BannerElement data={items} baseUrl={APP_DOMAIN_CDN_IMAGE} />
           </SwiperSlide>
         ))}
       </Swiper>
-      <div
-        onClick={handlePrevSlide}
-        className="absolute left-0 top-0 group/btn h-full flex items-center justify-center cursor-pointer z-10"
-      >
-        <Button
-          aria-label="prev-btn"
+      <section className="absolute inset-0 pb-[56.25%]">
+        <div
           onClick={handlePrevSlide}
-          className="text-[40px] opacity-35 group-hover/btn:opacity-100"
+          className="absolute left-0 top-0 group/btn h-full flex items-center justify-center cursor-pointer z-10"
         >
-          <GrPrevious />
-        </Button>
-      </div>
-      <div
-        onClick={handleNextSlide}
-        className="absolute right-0 top-0 group/btn h-full flex items-center justify-center cursor-pointer z-10"
-      >
-        <Button
-          aria-label="next-btn"
+          <Button
+            aria-label="prev-btn"
+            onClick={handlePrevSlide}
+            className="text-[40px] hover:!text-primary opacity-35 group-hover/btn:opacity-100"
+          >
+            <GrPrevious />
+          </Button>
+        </div>
+        <div
           onClick={handleNextSlide}
-          className="text-[40px] opacity-35 group-hover/btn:opacity-100"
+          className="absolute right-0 top-0 group/btn h-full flex items-center justify-center cursor-pointer z-10"
         >
-          <GrNext />
-        </Button>
-      </div>
+          <Button
+            aria-label="next-btn"
+            onClick={handleNextSlide}
+            className="text-[40px] hover:!text-primary opacity-35 group-hover/btn:opacity-100"
+          >
+            <GrNext />
+          </Button>
+        </div>
+      </section>
     </div>
   );
 }

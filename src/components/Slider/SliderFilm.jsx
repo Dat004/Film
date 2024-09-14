@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import HeaderContainer from "../Container/HeaderContainer";
 import { Swiper, SwiperSlide } from "../Swiper";
@@ -10,7 +10,7 @@ function SliderFilm({ value = {}, title = "", to = "" }) {
   const bgMovieRef = useRef();
   const [height, setHeight] = useState(0);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     handleGetHeight();
     const observer = new ResizeObserver((entries) => {
       for (let entry of entries) {
@@ -19,6 +19,7 @@ function SliderFilm({ value = {}, title = "", to = "" }) {
         }
       }
     });
+    
     if (bgMovieRef.current) {
       observer.observe(bgMovieRef.current);
     }
@@ -96,7 +97,7 @@ function SliderFilm({ value = {}, title = "", to = "" }) {
         <div
           style={{ height: `${height}px` }}
           onClick={handleNextSlide}
-          className="absolute z-10 right-0 top-0 w-[6%] bg-bg-linear-to-right group-hover/cards:opacity-100 transition-opacity duration-500 opacity-0 flex items-center justify-center cursor-pointer"
+          className="absolute z-10 right-0 top-0 w-[6%] bg-bg-linear-to-right group-hover/cards:opacity-100 transition-opacity duration-500 opacity-0 mdm:opacity-100 flex items-center justify-center cursor-pointer"
         >
           <Button
             aria-label="next-btn"
@@ -109,7 +110,7 @@ function SliderFilm({ value = {}, title = "", to = "" }) {
         <div
           style={{ height: `${height}px` }}
           onClick={handlePrevSlide}
-          className="absolute z-10 left-0 top-0 w-[6%] bg-bg-linear-to-left group-hover/cards:opacity-100 transition-opacity duration-500 opacity-0 flex items-center justify-center cursor-pointer"
+          className="absolute z-10 left-0 top-0 w-[6%] bg-bg-linear-to-left group-hover/cards:opacity-100 transition-opacity duration-500 opacity-0 mdm:opacity-100 flex items-center justify-center cursor-pointer"
         >
           <Button
             aria-label="prev-btn"
