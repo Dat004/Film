@@ -458,11 +458,6 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
           className="w-[100%] bg-bg-bar-controls"
         >
           <BarControls
-            duration={duration}
-            currentTime={currentTime}
-            currentVolume={currentVolume}
-            isPlay={isPlay}
-            isMuted={isMuted}
             handlePlay={handleTogglePlay}
             handleChangeTime={handleChangeTime}
             handleFullScreen={handleToggleFullScreen}

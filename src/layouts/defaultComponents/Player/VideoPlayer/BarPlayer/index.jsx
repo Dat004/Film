@@ -2,21 +2,27 @@ import {
   TbPlayerTrackNextFilled,
   TbPlayerTrackPrevFilled,
 } from "react-icons/tb";
+import { useSelector, useDispatch } from "react-redux";
 
 import WatchListButton from "../../../../../components/Button/WatchListButton";
+import { setStatusMovie } from "../../../../../redux/slices/videoPlayerSlice";
 import { FlexContainer, FlexItems } from "../../../../../components/Flex";
+import { videoPlayerSelector } from "../../../../../redux/selectors";
 import ScreenDimmer from "../../../../../components/ScreenDimmer";
 import Button from "../../../../../components/Button";
 import Status from "./Status";
 
-function BarPlayer({
-  isLight = false,
-  isAutoPlay = false,
-  isAutoNext = false,
-  handleNext = () => {},
-  handlePrev = () => {},
-  handleToggleStatus = () => {},
-}) {
+function BarPlayer({ handleNext = () => {}, handlePrev = () => {} }) {
+  const dispatch = useDispatch();
+
+  const {
+    statusMovie: { isLight, autoPlay, autoNext },
+  } = useSelector(videoPlayerSelector);
+
+  const handleToggleStatus = (key, value) => {
+    dispatch(setStatusMovie({ key: key, value: !value }));
+  };
+
   const handleLightOff = () => {
     if (isLight) handleToggleStatus("isLight", isLight);
   };
@@ -37,20 +43,20 @@ function BarPlayer({
           </FlexItems>
           <FlexItems className="m-[5px]">
             <Button
-              onClick={() => handleToggleStatus("autoPlay", isAutoPlay)}
+              onClick={() => handleToggleStatus("autoPlay", autoPlay)}
               className="text-[12px] text-primary !font-medium"
             >
               Auto Play
-              <Status isOn={isAutoPlay} />
+              <Status isOn={autoPlay} />
             </Button>
           </FlexItems>
           <FlexItems className="m-[5px]">
             <Button
-              onClick={() => handleToggleStatus("autoNext", isAutoNext)}
+              onClick={() => handleToggleStatus("autoNext", autoNext)}
               className="text-[12px] text-primary !font-medium"
             >
               Auto Next
-              <Status isOn={isAutoNext} />
+              <Status isOn={autoNext} />
             </Button>
           </FlexItems>
         </FlexContainer>

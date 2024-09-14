@@ -2,7 +2,6 @@ import ContinueWatching from "./ContinueWatching";
 import PhimHoatHinh from "./PhimHoatHinh";
 import DetailsFilm from "./DetailsFilm";
 import WatchList from "./WatchList";
-import PhimMoi from "./PhimMoi";
 import TheLoai from "./TheLoai";
 import QuocGia from "./QuocGia";
 import TVShows from "./TVShows";
@@ -22,7 +21,6 @@ const pages = {
   WatchList,
   TheLoai,
   QuocGia,
-  PhimMoi,
   TVShows,
   Profile,
   Setting,

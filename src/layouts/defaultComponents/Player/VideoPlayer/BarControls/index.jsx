@@ -1,25 +1,27 @@
 import { IoPlay, IoPause } from "react-icons/io5";
 import { BiFullscreen } from "react-icons/bi";
 import { BiVolumeFull, BiVolumeMute } from "react-icons/bi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { setStatusMovie } from "../../../../../redux/slices/videoPlayerSlice";
 import { FlexContainer, FlexItems } from "../../../../../components/Flex";
 import InputSlider from "../../../../../components/InputSlider";
 import Button from "../../../../../components/Button";
 import { useVideoTime } from "../../../../../hooks";
+import { videoPlayerSelector } from "../../../../../redux/selectors";
 
 function BarControls({
-  isPlay = false,
-  isMuted = false,
-  currentTime = 0,
-  currentVolume = 0,
-  duration = 0,
   handlePlay = () => {},
   handleChangeTime = () => {},
   handleFullScreen = () => {},
 }) {
   const dispatch = useDispatch();
+
+  const {
+    time: { currentTime, duration },
+    statusMovie: { isPlay, isMuted, currentVolume },
+  } = useSelector(videoPlayerSelector);
+
   const currentTimeValue = useVideoTime(currentTime);
   const durationValue = useVideoTime(duration);
 

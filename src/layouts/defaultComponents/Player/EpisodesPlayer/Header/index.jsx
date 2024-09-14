@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { CgMenuLeft } from "react-icons/cg";
 import { IoSearch } from "react-icons/io5";
+import { useSelector } from "react-redux";
 
 import WatchListButton from "../../../../../components/Button/WatchListButton";
 import { FlexContainer, FlexItems } from "../../../../../components/Flex";
+import { videoPlayerSelector } from "../../../../../redux/selectors";
 import SelectMenuPartMovie from "./SelectMenuPartMovie";
 import Button from "../../../../../components/Button";
 
 function Header({
   dataPartMovies = [],
   searchEpisodeValue = "",
-  currentPartMovie = 0,
   handleSelect = () => {},
   handleSearchEpisodeValue = () => {},
 }) {
@@ -20,6 +21,8 @@ function Header({
     end: "",
     full: "",
   });
+
+  const { episode: { currentIndexSplitEpisodes } } = useSelector(videoPlayerSelector);
 
   useEffect(() => {
     window.addEventListener("click", handleClickOutsideMenu);
@@ -49,7 +52,7 @@ function Header({
     let full = "";
 
     dataPartMovies?.map((items, index) => {
-      if (currentPartMovie === index) {
+      if (currentIndexSplitEpisodes === index) {
         const episodeStart = items[0]?.slug?.split("-")[1];
         const episodeEnd = items[items?.length - 1]?.slug?.split("-")[1];
 
@@ -70,7 +73,7 @@ function Header({
       end: end,
       full: full,
     }));
-  }, [currentPartMovie, dataPartMovies]);
+  }, [currentIndexSplitEpisodes, dataPartMovies]);
 
   return (
     <div className="py-[12px] bg-[rgb(20,21,26)]">
@@ -109,7 +112,7 @@ function Header({
           </FlexContainer>
           <SelectMenuPartMovie
             isShowMenu={isShowMenu}
-            currentPartMovie={currentPartMovie}
+            currentPartMovie={currentIndexSplitEpisodes}
             dataMenuSelect={dataPartMovies}
             handleSelect={handleSelect}
           />

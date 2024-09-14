@@ -112,7 +112,6 @@ function EpisodesPlayer({ dataEpisodes = [] }) {
       <div className="w-[100%] h-full">
         <Header
           dataPartMovies={splitEpisodes}
-          currentPartMovie={currentIndexSplitEpisodes}
           searchEpisodeValue={searchEpisodeValue}
           handleSelect={handleChangeCurrentPartMovie}
           handleSearchEpisodeValue={handleSearchEpisode}

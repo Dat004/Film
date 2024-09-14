@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import classNames from "classnames";
 
 import { FlexContainer, FlexItems } from "../../../../components/Flex";
-import Video from "../../../../components/Video";
-import { PlayIconCustom } from "../../../../icons";
 import { videoPlayerSelector } from "../../../../redux/selectors";
 import {
   setCurrentEpisode,
   setStatusMovie,
 } from "../../../../redux/slices/videoPlayerSlice";
+import { PlayIconCustom } from "../../../../icons";
+import Video from "../../../../components/Video";
 import BarPlayer from "./BarPlayer";
 
 function VideoPlayer({ dataEpisodes = [], dataMovie = {} }) {
@@ -19,7 +19,7 @@ function VideoPlayer({ dataEpisodes = [], dataMovie = {} }) {
   const dispatch = useDispatch();
 
   const { statusMovie, episode } = videoPlayerState;
-  const { autoPlay, autoNext, isLight } = statusMovie;
+  const { autoPlay, isLight } = statusMovie;
   const { thumb_url, poster_url } = dataMovie;
   const { currentEpisode } = episode;
 
@@ -57,10 +57,6 @@ function VideoPlayer({ dataEpisodes = [], dataMovie = {} }) {
     dispatch(setCurrentEpisode(currentEpisode - 1));
   };
 
-  const handleToggleStatus = (key, value) => {
-    dispatch(setStatusMovie({ key: key, value: !value }));
-  };
-
   return (
     <div className="relative w-[100%] pl-[300px] slm:w-[100%] 2xlm:w-[100%] slm:pl-0">
       <div className={videoPlayerClasses}>
@@ -95,12 +91,8 @@ function VideoPlayer({ dataEpisodes = [], dataMovie = {} }) {
         </div>
         <div className="bg-[#08090b] py-[5px]">
           <BarPlayer
-            isLight={isLight}
-            isAutoNext={autoNext}
-            isAutoPlay={autoPlay}
             handleNext={handleNextEpisode}
             handlePrev={handlePrevEpisode}
-            handleToggleStatus={handleToggleStatus}
           />
         </div>
       </div>
