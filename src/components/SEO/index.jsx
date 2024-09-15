@@ -12,7 +12,7 @@ function SEO({
     <Helmet>
       {/* Primary Meta Tags */}
       <title>{title}</title>
-      <link rel="canonical" href={window.location.origin} />
+      <link rel="canonical" href={window.location.href} />
       <meta name="description" content={description} />
 
       {/* Open Graph / Facebook Meta Tags */}

@@ -120,6 +120,7 @@ function SearchPageFilmScreen() {
             </FlexItems>
             <FlexItems className="ml-[15px] clm:ml-[12px] !flex-grow-0 !flex-shrink-0">
               <Button
+                aria-lable="search-btn"
                 type="submit"
                 onClick={handleUpdateParams}
                 className="bg-bg-search-btn text-[14px] px-[24px] kdm:px-[16px] kdm:py-[8px] rounded-[4px] py-[10px]"

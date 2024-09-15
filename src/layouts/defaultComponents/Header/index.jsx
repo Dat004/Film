@@ -8,12 +8,9 @@ import LeftHeader from "./LeftHeader";
 function Header() {
   const [data, setData] = useState(null);
 
-  const { newData, state } = useFetchData(
-    services.allCategoryService,
-    "",
-    {},
-    []
-  );
+  const { newData, state } = useFetchData({
+    request: services.allCategoryService,
+  });
 
   useEffect(() => {
     if (!data) setData(newData);

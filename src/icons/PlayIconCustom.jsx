@@ -18,6 +18,7 @@ function PlayIconCustom({
     <Button
       style={{ width: widthContainer, height: heightContainer }}
       className="bg-bg-green"
+      aria-label="play-btn"
       rounded
       {...props}
     >

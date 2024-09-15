@@ -55,12 +55,16 @@ function DetailFilm({ dataMovie = {} }) {
             </div>
             <div className="hidden 2xlm:block">
               <FlexContainer className="my-[14px] h-[24px] overflow-hidden flex-wrap gap-x-[6px]">
-                <span className="py-[3px] px-[4px] rounded-[2px] bg-[rgba(255,255,255,0.08)] text-[12px] text-primary font-normal">
+                <span
+                  aria-label={lang}
+                  className="py-[3px] px-[4px] rounded-[2px] bg-[rgba(255,255,255,0.08)] text-[12px] text-primary font-normal"
+                >
                   {lang}
                 </span>
                 {country?.map((items, index) => (
                   <Link
                     key={index}
+                    aria-label={items?.name}
                     to={`/quoc-gia/${items?.slug}`}
                     className="py-[3px] px-[4px] rounded-[2px] bg-[rgba(255,255,255,0.08)] text-[12px] text-primary font-normal"
                   >
@@ -70,6 +74,7 @@ function DetailFilm({ dataMovie = {} }) {
                 {category?.map((items, index) => (
                   <Link
                     key={index}
+                    aria-label={items?.name}
                     to={`/the-loai/${items?.slug}`}
                     className="py-[3px] px-[4px] rounded-[2px] bg-[rgba(255,255,255,0.08)] text-[12px] text-primary font-normal"
                   >

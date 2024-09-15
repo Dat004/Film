@@ -113,6 +113,7 @@ function MenuItems({ dataCategory = [], isShow = false }) {
                     state.filter((_, index) => index !== state.length - 1)
                   )
                 }
+                aria-label="back-btn"
                 className="py-[8px] px-[16px] gap-x-[8px] text-[14px]"
                 leftIcon={<IoChevronBack className="text-[18px]" />}
               >
@@ -136,6 +137,7 @@ function MenuItems({ dataCategory = [], isShow = false }) {
                         ? "text-hover bg-bg-menu-items"
                         : "text-items"
                     } block w-[100%] py-[8px] px-[16px] hover:text-hover hover:bg-bg-menu-items cursor-pointer`}
+                    aria-label={items.name}
                     onClick={(e) => handleClick(e, items)}
                     {...props}
                   >

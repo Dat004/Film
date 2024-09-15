@@ -6,38 +6,20 @@ export default {
   theme: {
     screens: {
       "3xl": { min: "1600px" },
-      // => @media (max-width: 1600px) { ... }
-
       "2xl": { min: "1280px", max: "1599px" },
-      // => @media (max-width: 1280px) { ... }
-
-      xl: { min: "1024px", max: "1279px" },
-      // => @media (max-width: 1024) { ... }
-
-      // lg: { min: "992px" },
-      // md: { min: "768px" },
-
+      "xl": { min: "1024px", max: "1279px" },
+      
       "2xls": { max: "1599px" },
-
       "2xlm": { max: "1400px" },
-
-      xlm: { max: "1279px" },
-
-      slm: { max: "1199px" },
-
-      clm: { max: "1023px" },
-
-      lgm: { max: "992px" },
-
-      mdm: { max: "768px" },
-
-      ssm: { max: "535px" },
-
-      ccm: { max: "479px" },
-
-      kdm: { max: "400px" },
-
-      xsm: { max: "320px" },
+      "xlm": { max: "1279px" },
+      "slm": { max: "1199px" },
+      "clm": { max: "1023px" },
+      "lgm": { max: "992px" },
+      "mdm": { max: "768px" },
+      "ssm": { max: "535px" },
+      "ccm": { max: "479px" },
+      "kdm": { max: "400px" },
+      "xsm": { max: "320px" },
     },
     colors: {
       primary: "var(--primary-color)",

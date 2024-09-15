@@ -21,6 +21,10 @@ const FilmElement = forwardRef(({ data = {}, baseUrl = "" }, ref) => {
 
   useEffect(() => {
     return () => {
+      if (mouseEnterTimeoutRef.current) {
+        clearTimeout(mouseEnterTimeoutRef.current);
+      }
+      
       dispatch(setShowPreview(false));
     };
   }, []);
@@ -64,10 +68,10 @@ const FilmElement = forwardRef(({ data = {}, baseUrl = "" }, ref) => {
 
     mouseEnterTimeoutRef.current = setTimeout(() => {
       dispatch(setShowPreview(true));
-
       dispatch(setCurrentPreviewData({}));
+
       getPreviewDataFilm(slug);
-    }, [1200]);
+    }, [1000]);
   };
 
   const handleMouseLeave = () => {

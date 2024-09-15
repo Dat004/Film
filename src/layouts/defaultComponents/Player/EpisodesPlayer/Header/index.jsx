@@ -22,7 +22,9 @@ function Header({
     full: "",
   });
 
-  const { episode: { currentIndexSplitEpisodes } } = useSelector(videoPlayerSelector);
+  const {
+    episode: { currentIndexSplitEpisodes },
+  } = useSelector(videoPlayerSelector);
 
   useEffect(() => {
     window.addEventListener("click", handleClickOutsideMenu);
@@ -91,7 +93,11 @@ function Header({
         <FlexItems className="relative flex-grow w-[50%] px-[15px] flex-shrink-0">
           <FlexContainer className="gap-x-[16px]">
             <FlexItems>
-              <Button onClick={handleToggleMenu}>
+              <Button
+                aria-label="menu-btn"
+                aria-haspopup="menu"
+                onClick={handleToggleMenu}
+              >
                 <CgMenuLeft className="text-[18px]" />
               </Button>
             </FlexItems>

@@ -1,5 +1,6 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { GrNext, GrPrevious } from "react-icons/gr";
+
 import HeaderContainer from "../Container/HeaderContainer";
 import { Swiper, SwiperSlide } from "../Swiper";
 import { FilmElement } from "../Element";

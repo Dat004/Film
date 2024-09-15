@@ -28,6 +28,7 @@ function SearchResultsFilm({ data = {}, limit = 20 }) {
                 {keywordsSuggest?.map((items, index) => (
                   <FlexItems key={index} className="mr-[8px]">
                     <Link
+                      aria-label={items}
                       to={`/search?value=${items}&limit=${limit}`}
                       className="px-[16px] py-[6px] rounded-[999px] bg-bg-multiport text-[14px] text-primary hover:text-hover"
                     >

@@ -67,6 +67,8 @@ function Paragraph({ children, className, lineClamp = 5 }) {
       {showBtn && (
         <div>
           <Button
+            aria-label="more-btn"
+            aria-expanded={isShowModal}
             onClick={handleSeeMore}
             className="text-[14px] !font-medium text-primary"
           >

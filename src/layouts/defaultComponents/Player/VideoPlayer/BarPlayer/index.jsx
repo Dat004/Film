@@ -17,6 +17,7 @@ function BarPlayer({ handleNext = () => {}, handlePrev = () => {} }) {
 
   const {
     statusMovie: { isLight, autoPlay, autoNext },
+    episode: { currentEpisode },
   } = useSelector(videoPlayerSelector);
 
   const handleToggleStatus = (key, value) => {
@@ -35,6 +36,8 @@ function BarPlayer({ handleNext = () => {}, handlePrev = () => {} }) {
             <Button
               onClick={() => handleToggleStatus("isLight", isLight)}
               className="text-[12px] text-primary !font-medium"
+              aria-label="light-mode-btn"
+              data-active={isLight}
             >
               Light
               <Status isOn={isLight} />
@@ -45,6 +48,8 @@ function BarPlayer({ handleNext = () => {}, handlePrev = () => {} }) {
             <Button
               onClick={() => handleToggleStatus("autoPlay", autoPlay)}
               className="text-[12px] text-primary !font-medium"
+              aria-label="auto-play-btn"
+              data-active={autoPlay}
             >
               Auto Play
               <Status isOn={autoPlay} />
@@ -54,6 +59,8 @@ function BarPlayer({ handleNext = () => {}, handlePrev = () => {} }) {
             <Button
               onClick={() => handleToggleStatus("autoNext", autoNext)}
               className="text-[12px] text-primary !font-medium"
+              aria-label="auto-next-btn"
+              data-active={autoNext}
             >
               Auto Next
               <Status isOn={autoNext} />
@@ -66,13 +73,22 @@ function BarPlayer({ handleNext = () => {}, handlePrev = () => {} }) {
           <FlexItems className="relative ssm:hidden m-[5px]">
             <WatchListButton right top />
           </FlexItems>
-          <FlexItems className="m-[5px]">
+          <FlexItems
+            aria-label="prev-btn"
+            data-episode={currentEpisode - 1}
+            className="m-[5px]"
+          >
             <Button onClick={handlePrev} title="Previous video">
               <TbPlayerTrackPrevFilled className="text-[20px]" />
             </Button>
           </FlexItems>
           <FlexItems className="m-[5px]">
-            <Button onClick={handleNext} title="Next video">
+            <Button
+              aria-label="next-btn"
+              data-episode={currentEpisode + 1}
+              onClick={handleNext}
+              title="Next video"
+            >
               <TbPlayerTrackNextFilled className="text-[20px]" />
             </Button>
           </FlexItems>

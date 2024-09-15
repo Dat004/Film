@@ -9,9 +9,11 @@ function DetailsFilm() {
   const [data, setData] = useState(null);
   const { film } = useParams();
 
-  const { newData, state } = useFetchData(services.detailsFilmService, film, [
-    film,
-  ]);
+  const { newData, state } = useFetchData({
+    request: services.detailsFilmService,
+    path: film,
+    dependencies: [film],
+  });
   const { isFetching, isSuccess, isError } = state;
 
   useEffect(() => {

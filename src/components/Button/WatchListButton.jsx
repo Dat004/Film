@@ -58,6 +58,8 @@ function WatchListButton({
   return (
     <>
       <Button
+        aria-label="add-list-btn"
+        aria-haspopup="menu"
         leftIcon={
           !isAlreadyWatchList ? (
             <MdOutlineAdd className="text-[18px]" />

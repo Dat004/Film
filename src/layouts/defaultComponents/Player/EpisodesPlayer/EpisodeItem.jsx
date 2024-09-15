@@ -54,6 +54,7 @@ function EpisodeItem({
         {currentEpisode && (
           <FlexItems className="flex-grow-0 flex-shrink-0 ml-[24px]">
             <PlayIconCustom
+              data-episode={data?.name}
               widthContainer="24px"
               heightContainer="24px"
               className="text-[10px] pl-[2px]"

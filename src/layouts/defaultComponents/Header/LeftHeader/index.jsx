@@ -40,12 +40,17 @@ function LeftHeader({ dataCategory = [] }) {
         <MenuItems dataCategory={dataCategory} isShow={isShowMenu} />
       )}
       <div className="flex items-center">
-        <Button onClick={handleShowMenu} className="hidden lgm:block mr-[15px]">
+        <Button
+          aria-expanded={isShowMenu}
+          aria-haspopup="menu"
+          onClick={handleShowMenu}
+          className="hidden lgm:block mr-[15px]"
+        >
           <BarMenuIcon width="24px" height="24px" />
         </Button>
         <Link className="mr-[25px]" to="/">
-          <div className="w-[125px]">
-            <Image src={images.logo} alt="logo" />
+          <div>
+            <Image className="!w-[125px] !h-auto" src={images.logo} alt="logo" />
           </div>
         </Link>
         <nav className="flex items-center lgm:hidden">
@@ -54,6 +59,7 @@ function LeftHeader({ dataCategory = [] }) {
               className={`${
                 pathname === items.path ? "text-primary" : "text-secondary"
               } p-[12px] hover:text-primary cursor-pointer`}
+              aria-label={items.title}
               to={items.path}
               key={index}
             >

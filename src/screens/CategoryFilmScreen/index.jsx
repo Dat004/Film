@@ -7,7 +7,7 @@ import { SliderBanner } from "../../components/Slider";
 import { FilmElement } from "../../components/Element";
 import { useFetchData } from "../../hooks";
 
-function CategoryFilmScreen({ request, params }) {
+function CategoryFilmScreen({ request, params = "" }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const pageParams = searchParams.get("page") ?? 1;
   const limitParams = searchParams.get("limit") ?? 20;
@@ -20,23 +20,24 @@ function CategoryFilmScreen({ request, params }) {
     itemsBanner: null,
   });
 
-  const { newData, state } = useFetchData(
+  const { newData, state } = useFetchData({
     request,
-    "",
-    {
+    options: {
       slug: params,
       page,
       limit,
     },
-    [page, limit, params]
-  );
+    dependencies: [page, limit, params],
+  });
   const { isError, isFetching, isSuccess } = state;
 
   useEffect(() => {
-    setData(null);
-    setDataBanner({ itemsBanner: null });
-    setEndPage(null);
-    setPage(1);
+    if (params) {
+      setData(null);
+      setDataBanner({ itemsBanner: null });
+      setEndPage(null);
+      setPage(1);
+    }
   }, [params]);
 
   useEffect(() => {

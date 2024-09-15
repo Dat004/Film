@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 
-const useFetchData = (
+const useFetchData = ({
   request,
   path = "",
-  params = {},
+  options = {},
   dependencies = [],
-  condition = true
-) => {
+  condition = true,
+}) => {
   const [state, setState] = useState({
     isFetching: false,
     isError: false,
@@ -18,15 +18,14 @@ const useFetchData = (
     if (!condition) return;
 
     setNewData(null);
-    setState((prevState) => ({
-      ...prevState,
+    setState({
       isFetching: false,
       isError: false,
       isSuccess: false,
-    }));
+    });
 
     (async () => {
-      const data = await request(path, params);
+      const data = await request(path, options);
 
       if (Array.isArray(data)) {
         setState((prevState) => ({
@@ -53,7 +52,8 @@ const useFetchData = (
         ((data.status >= 400 || data?.response?.status >= 400) &&
           (data.status < 500 || data?.response?.status < 500)) ||
         ((data.status >= 500 || data?.response?.status >= 500) &&
-          (data.status < 600 || data?.response?.status < 600))
+          (data.status < 600 || data?.response?.status < 600)) ||
+        typeof data.data === "string"
       ) {
         setState((prevState) => ({
           ...prevState,
