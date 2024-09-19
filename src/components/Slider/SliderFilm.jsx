@@ -20,7 +20,7 @@ function SliderFilm({ value = {}, title = "", to = "" }) {
         }
       }
     });
-    
+
     if (bgMovieRef.current) {
       observer.observe(bgMovieRef.current);
     }
@@ -97,6 +97,7 @@ function SliderFilm({ value = {}, title = "", to = "" }) {
         </Swiper>
         <div
           style={{ height: `${height}px` }}
+          role="button"
           onClick={handleNextSlide}
           className="absolute z-10 right-0 top-0 w-[6%] bg-bg-linear-to-right group-hover/cards:opacity-100 transition-opacity duration-500 opacity-0 mdm:opacity-100 flex items-center justify-center cursor-pointer"
         >
@@ -110,6 +111,7 @@ function SliderFilm({ value = {}, title = "", to = "" }) {
         </div>
         <div
           style={{ height: `${height}px` }}
+          role="button"
           onClick={handlePrevSlide}
           className="absolute z-10 left-0 top-0 w-[6%] bg-bg-linear-to-left group-hover/cards:opacity-100 transition-opacity duration-500 opacity-0 mdm:opacity-100 flex items-center justify-center cursor-pointer"
         >

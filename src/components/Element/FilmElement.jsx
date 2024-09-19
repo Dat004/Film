@@ -71,7 +71,7 @@ const FilmElement = forwardRef(({ data = {}, baseUrl = "" }, ref) => {
       dispatch(setCurrentPreviewData({}));
 
       getPreviewDataFilm(slug);
-    }, [1000]);
+    }, [700]);
   };
 
   const handleMouseLeave = () => {

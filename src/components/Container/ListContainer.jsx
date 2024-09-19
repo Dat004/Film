@@ -3,9 +3,11 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { UserAuth } from "../../context/AuthContext";
 import { useRealtimeDbFirebase } from "../../hooks";
+import { useControlModal } from "../../hooks";
+import LoginModal from "../Modal/LoginModal";
 import { ToastMessage } from "../Toastify";
 import data from "../../data";
-import Container from ".";
+import Menu from "../Menu";
 
 function ListContainer({
   className,
@@ -16,8 +18,9 @@ function ListContainer({
   yBottom = false,
   isShow = false,
 }) {
-  const { uid } = UserAuth();
+  const { uid, lg } = UserAuth();
   const { getDb, setDb } = useRealtimeDbFirebase();
+  const { handleCloseModal, handleShowModal, isShowModal } = useControlModal();
 
   const listContainerClasses = classNames("absolute z-[10] overflow-hidden  ", {
     [className]: className,
@@ -38,26 +41,33 @@ function ListContainer({
     },
   };
 
-  const handleAddList = async (type) => {
-    const refPath = `/list_video/${uid}/${dataFilm?._id}`;
-    await getDb({
-      path: refPath,
-      callback: async (snapShot) => {
-        if (snapShot?.exists()) {
-          ToastMessage.warning("Video đã có trong danh sách phát!");
-        } else {
-          await setDb({
-            path: refPath,
-            options: { ...dataFilm, type },
-            messageSuccess: "Đã thêm video vào danh sách phát!",
-            messageError: "Không thể thêm video vào danh sách phát!",
-          });
-        }
-      },
-      fallback: (err) => {
-        console.log(err);
-      },
-    });
+  const handleAddList = async (item) => {
+    if (lg && uid) {
+      const type = item?.type;
+      const refPath = `/list_video/${uid}/${dataFilm?._id}`;
+      await getDb({
+        path: refPath,
+        callback: async (snapShot) => {
+          if (snapShot?.exists()) {
+            ToastMessage.warning("Video đã có trong danh sách phát!");
+          } else {
+            await setDb({
+              path: refPath,
+              options: { ...dataFilm, type },
+              messageSuccess: "Đã thêm video vào danh sách phát!",
+              messageError: "Không thể thêm video vào danh sách phát!",
+            });
+          }
+        },
+        fallback: (err) => {
+          console.log(err);
+        },
+      });
+    } else {
+      ToastMessage.warning("Vui lòng đăng nhập!");
+
+      handleShowModal();
+    }
   };
 
   return (
@@ -71,21 +81,8 @@ function ListContainer({
           layout
           className={listContainerClasses}
         >
-          <Container className="!bg-bg-white min-w-[140px]">
-            <ul>
-              {data.dataList.map((item) => (
-                <li
-                  key={item.id}
-                  onClick={() => handleAddList(item.type)}
-                  className="px-[12px] py-[10px] bg-transparent hover:bg-bg-menu-items leading-[1] cursor-pointer"
-                >
-                  <span className="text-[12px] text-dark font-medium">
-                    {item.title}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </Container>
+          <Menu onClick={handleAddList} dataMenu={{ items: data.dataList }} />
+          <LoginModal isShowModal={isShowModal} onClose={handleCloseModal} />
         </motion.div>
       )}
     </AnimatePresence>

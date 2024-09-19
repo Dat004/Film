@@ -60,7 +60,7 @@ function VideoPlayer({ dataEpisodes = [], dataMovie = {} }) {
   return (
     <div className="relative w-[100%] pl-[300px] slm:w-[100%] 2xlm:w-[100%] slm:pl-0">
       <div className={videoPlayerClasses}>
-        <div className="relative pb-[56.25%] 2xls:pb-[460px] 2xlm:pb-[56.25%] slm:pb-[56.25%] h-0 leading-0">
+        <div className="relative z-[5] pb-[56.25%] 2xls:pb-[460px] 2xlm:pb-[56.25%] slm:pb-[56.25%] h-0 leading-0">
           {showPoster ? (
             <div className="absolute inset-0 z-[100]">
               <div
@@ -89,7 +89,7 @@ function VideoPlayer({ dataEpisodes = [], dataMovie = {} }) {
             </div>
           )}
         </div>
-        <div className="bg-[#08090b] py-[5px]">
+        <div className="relative z-[10] bg-[#08090b] py-[5px]">
           <BarPlayer
             handleNext={handleNextEpisode}
             handlePrev={handlePrevEpisode}

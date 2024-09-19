@@ -1,20 +1,23 @@
+import { useRef, useState } from "react";
 import { IoPlay, IoPause } from "react-icons/io5";
-import { BiFullscreen } from "react-icons/bi";
-import { BiVolumeFull, BiVolumeMute } from "react-icons/bi";
+import { BiFullscreen, BiVolumeFull, BiVolumeMute } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 
 import { setStatusMovie } from "../../../../../redux/slices/videoPlayerSlice";
 import { FlexContainer, FlexItems } from "../../../../../components/Flex";
-import InputSlider from "../../../../../components/InputSlider";
+import { videoPlayerSelector } from "../../../../../redux/selectors";
+import RangeSlider from "../../../../../components/RangeSlider";
 import Button from "../../../../../components/Button";
 import { useVideoTime } from "../../../../../hooks";
-import { videoPlayerSelector } from "../../../../../redux/selectors";
 
 function BarControls({
   handlePlay = () => {},
   handleChangeTime = () => {},
   handleFullScreen = () => {},
 }) {
+  const [currentTimeCapture, setCurrentTimeCapture] = useState(0);
+
+  const previewThumbnailRef = useRef();
   const dispatch = useDispatch();
 
   const {
@@ -23,9 +26,20 @@ function BarControls({
   } = useSelector(videoPlayerSelector);
 
   const currentTimeValue = useVideoTime(currentTime);
+  const currentTimeSeek = useVideoTime(currentTimeCapture);
   const durationValue = useVideoTime(duration);
 
-  const handleChangeVolume = (currentVolume) => {
+  const handleMouseMove = (e, currentValue) => {
+    const position =
+      e.clientX -
+      e.target.getBoundingClientRect().left -
+      previewThumbnailRef.current.getBoundingClientRect().width / 2;
+    previewThumbnailRef.current.style.transform = `translateX(${position}px)`;
+
+    setCurrentTimeCapture(currentValue);
+  };
+
+  const handleChangeVolume = (_, currentVolume) => {
     dispatch(
       setStatusMovie({
         key: "isMuted",
@@ -42,13 +56,22 @@ function BarControls({
 
   return (
     <>
-      <div className="w-[100%]">
-        <InputSlider
-          value={currentTime}
-          min={0}
+      <div className="group/slider relative w-[100%] mt-[-7px]">
+        <RangeSlider
           max={duration}
+          borderRadius={0}
+          value={currentTime}
+          onMove={handleMouseMove}
           onChange={handleChangeTime}
         />
+        <div
+          className="absolute bottom-[calc(100%+10px)] opacity-0 will-change-[transform] translate-x-[-50%] group-hover/slider:opacity-100"
+          ref={previewThumbnailRef}
+        >
+          <span className="bg-bg-layer-btn min-w-[34px] px-[10px] py-[6px] rounded-[4px] text-[14px] font-normal text-primary">
+            {currentTimeSeek}
+          </span>
+        </div>
       </div>
       <div className="w-[100%] h-full">
         <FlexContainer className="h-full py-[12px] items-center">
@@ -88,13 +111,12 @@ function BarControls({
                     </Button>
                   </FlexItems>
                   <FlexItems>
-                    <InputSlider
-                      className="max-w-[100px]"
-                      borderRadius={12}
+                    <RangeSlider
+                      className="flex-grow min-w-[100px]"
+                      borderRadius={6}
                       onChange={handleChangeVolume}
                       value={currentVolume}
                       max={1}
-                      min={0}
                     />
                   </FlexItems>
                 </FlexContainer>

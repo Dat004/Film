@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { motion } from "framer-motion";
 import Hls from "hls.js";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { IoPause, IoPlay } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -14,7 +14,7 @@ import {
 import { videoPlayerSelector } from "../../redux/selectors";
 import { ToastMessage } from "../Toastify";
 
-function Video({ className, src, handleNext = () => {}, ...props }) {
+function Video({ className, src = "", handleNext = () => {}, ...props }) {
   const clickTimeoutRef = useRef(null);
   const mouseMoveTimeoutRef = useRef(null);
   const changeTimeoutRef = useRef(null);
@@ -32,7 +32,7 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
   const { statusMovie, episode, time } = videoPlayerStatus;
   const { currentVolume, isMuted, isPlay, autoNext, isFullScreen } =
     statusMovie;
-  const { currentTime, duration } = time;
+  const { currentTime } = time;
   const { currentEpisode } = episode;
 
   const controllerVariants = {
@@ -183,10 +183,8 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
     if (videoWrapperRef.current && videoRef.current) {
       if (isFullScreen) {
         enterFullScreen();
-        // videoRef.current.playsInline = false;
       } else {
         exitFullScreen();
-        // videoRef.current.playsInline = true;
       }
     }
 
@@ -256,11 +254,11 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
     dispatch(setStatusMovie({ key: "isFullScreen", value: false }));
   };
 
-  const handleToggleFullScreen = () => {
+  const handleToggleFullScreen = useCallback(() => {
     if (isError) return;
 
     dispatch(setStatusMovie({ key: "isFullScreen", value: !isFullScreen }));
-  };
+  }, [dispatch, isError, isFullScreen]);
 
   const handleTimeUpdate = (e) => {
     if (videoRef.current.readyState > 3 && isPlay) {
@@ -270,29 +268,32 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
     }
   };
 
-  const handleChangeTime = (currentTimeVideo) => {
-    if (isError) return;
+  const handleChangeTime = useCallback(
+    async (_, currentTimeVideo) => {
+      if (isError) return;
 
-    if (changeTimeoutRef.current) {
-      clearTimeout(changeTimeoutRef.current);
-    }
+      if (changeTimeoutRef.current) {
+        clearTimeout(changeTimeoutRef.current);
+      }
 
-    dispatch(setTimeVideo({ key: "currentTime", value: currentTimeVideo }));
-    handleShowController();
-    handleSeeking();
+      dispatch(setTimeVideo({ key: "currentTime", value: currentTimeVideo }));
+      handleShowController();
+      handleSeeking();
 
-    changeTimeoutRef.current = setTimeout(() => {
-      videoRef.current.currentTime = currentTimeVideo;
+      changeTimeoutRef.current = setTimeout(() => {
+        videoRef.current.currentTime = currentTimeVideo;
 
-      handleSeeked();
-    }, 500);
-  };
+        handleSeeked();
+      }, 500);
+    },
+    [dispatch, isError]
+  );
 
-  const handleTogglePlay = () => {
+  const handleTogglePlay = useCallback(() => {
     if (isError) return;
 
     dispatch(setStatusMovie({ key: "isPlay", value: !isPlay }));
-  };
+  }, [dispatch, isError, isPlay]);
 
   const handleShowController = () => {
     setShowController(true);
@@ -311,7 +312,7 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
 
     mouseMoveTimeoutRef.current = setTimeout(() => {
       handleHideController();
-    }, 2500); // 1 giây
+    }, 2500);
   };
 
   const handleClickInside = () => {
@@ -324,12 +325,11 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
 
     clickTimeoutRef.current = setTimeout(() => {
       setClickDetected(false);
-    }, 1000); // 1 giây
+    }, 1000);
   };
 
-  const handleSeeked = () => {
+  const handleSeeked = async () => {
     dispatch(setStatusMovie({ key: "isPlay", value: true }));
-    setIsLoading(true);
   };
 
   const handleSeeking = () => {
@@ -347,6 +347,12 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
     handleNext();
   };
 
+  const handlePointer = (e, callback) => {
+    if (e.pointerType === "mouse") {
+      return callback();
+    }
+  };
+
   const handleError = (message) => {
     dispatch(setStatusMovie({ key: "isPlay", value: false }));
     setIsLoading(false);
@@ -360,21 +366,9 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
       ref={videoWrapperRef}
       onClick={handleClickInside}
       onTouchStart={handleCheckMousePointerPosition}
-      onPointerEnter={(e) => {
-        if (e.pointerType === "mouse") {
-          handleShowController();
-        }
-      }}
-      onPointerMove={(e) => {
-        if (e.pointerType === "mouse") {
-          handleCheckMousePointerPosition();
-        }
-      }}
-      onPointerLeave={(e) => {
-        if (e.pointerType === "mouse") {
-          handleHideController();
-        }
-      }}
+      onPointerEnter={(e) => handlePointer(e, handleShowController)}
+      onPointerMove={(e) => handlePointer(e, handleCheckMousePointerPosition)}
+      onPointerLeave={(e) => handlePointer(e, handleHideController)}
       className="video-wrapper relative w-[100%] h-[100%]"
     >
       <video
@@ -443,7 +437,7 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
       </div>
       <div
         onClick={(e) => e.stopPropagation()}
-        className="controls absolute bottom-0 left-0 w-[100%] h-[20%] mdm:h-[60px] flex items-end z-[2147483647] overflow-hidden"
+        className="controls absolute bottom-0 left-0 w-[100%] h-[20%] mdm:h-[70px] flex items-end z-[2147483647] overflow-hidden"
       >
         <motion.div
           variants={controllerVariants}
@@ -458,6 +452,7 @@ function Video({ className, src, handleNext = () => {}, ...props }) {
           className="w-[100%] bg-bg-bar-controls"
         >
           <BarControls
+            src={src}
             handlePlay={handleTogglePlay}
             handleChangeTime={handleChangeTime}
             handleFullScreen={handleToggleFullScreen}

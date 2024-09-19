@@ -11,8 +11,10 @@ import {
   allDataService,
   tvShowService,
 } from "./filmSevice";
+import base64ConverterService from "./base64ConverterService";
 
 const services = {
+  base64ConverterService,
   categoryFilmService,
   countryFilmService,
   detailsFilmService,

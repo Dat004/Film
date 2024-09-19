@@ -9,7 +9,7 @@ import Image from "../../../../components/Image";
 import { BarMenuIcon } from "../../../../icons";
 import images from "../../../../assets/images";
 import data from "../../../../data";
-import MenuItems from "./MenuItems";
+import BarMenu from "./BarMenu";
 
 function LeftHeader({ dataCategory = [] }) {
   const [isShowMenu, setIsShowMenu] = useState(false);
@@ -37,7 +37,7 @@ function LeftHeader({ dataCategory = [] }) {
   return (
     <>
       {!!dataCategory && (
-        <MenuItems dataCategory={dataCategory} isShow={isShowMenu} />
+        <BarMenu dataCategory={dataCategory} isShow={isShowMenu} />
       )}
       <div className="flex items-center">
         <Button

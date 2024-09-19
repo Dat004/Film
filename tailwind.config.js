@@ -24,14 +24,13 @@ export default {
     colors: {
       primary: "var(--primary-color)",
       secondary: "var(--secondary-color)",
-      thirty: "var(--thirty-color)",
       items: "var(--items-color)",
+      thirty: "var(--thirty-color)",
       hover: "var(--hover-color)",
       title: "var(--title-color)",
       dark: "var(--dark-color)",
     },
     backgroundImage: {
-      "bg-process-slider-color": "var(--bg-process-slider-color)",
       "bg-content-area-color": "var(--bg-content-area-color)",
       "bg-linear-to-right": "var(--bg-linear-to-right)",
       "bg-linear-to-left": "var(--bg-linear-to-left)",
@@ -69,6 +68,7 @@ export default {
       "bg-layout-loading": "var(--bg-layout-loading)",
       "bg-hover-btn-primary": "var(--bg-hover-btn-primary)",
       "bg-btn-hover-pagination": "var(--bg-btn-hover-pagination)",
+      "bg-process-slider-color": "var(--bg-process-slider-color)",
       "bg-btn-active-pagination": "var(--bg-btn-active-pagination)",
       "bg-btn-hover-active-pagination": "var(--bg-btn-hover-active-pagination)",
     },
