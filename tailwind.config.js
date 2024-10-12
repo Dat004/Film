@@ -2,24 +2,24 @@
 const plugin = require("tailwindcss/plugin");
 
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: ["./index.php", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     screens: {
       "3xl": { min: "1600px" },
       "2xl": { min: "1280px", max: "1599px" },
-      "xl": { min: "1024px", max: "1279px" },
-      
+      xl: { min: "1024px", max: "1279px" },
+
       "2xls": { max: "1599px" },
-      "2xlm": { max: "1400px" },
-      "xlm": { max: "1279px" },
-      "slm": { max: "1199px" },
-      "clm": { max: "1023px" },
-      "lgm": { max: "992px" },
-      "mdm": { max: "768px" },
-      "ssm": { max: "535px" },
-      "ccm": { max: "479px" },
-      "kdm": { max: "400px" },
-      "xsm": { max: "320px" },
+      "2xlm": { max: "1400px" }, 
+      xlm: { max: "1279px" },
+      slm: { max: "1199px" },
+      clm: { max: "1023px" },
+      lgm: { max: "992px" },
+      mdm: { max: "768px" },
+      ssm: { max: "535px" },
+      ccm: { max: "479px" },
+      kdm: { max: "400px" },
+      xsm: { max: "320px" },
     },
     colors: {
       primary: "var(--primary-color)",
@@ -87,7 +87,11 @@ export default {
         ".bg-search-form": {
           background: "var(--bg-search-form)",
         },
+        ".mask-loading": {
+          WebkitMask: "-webkit-linear-gradient(top, #000, transparent)",
+        },
       });
     }),
   ],
 };
+   

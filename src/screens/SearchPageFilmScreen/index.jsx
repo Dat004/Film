@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { IoSearchOutline } from "react-icons/io5";
 import { MdClear } from "react-icons/md";
 
+import SearchPageSkeleton from "../../components/Skeleton/SearchPageSkeleton";
 import { FlexContainer, FlexItems } from "../../components/Flex";
 import SearchResultsFilm from "./SearchResultsFilm";
 import Button from "../../components/Button";
@@ -84,7 +85,7 @@ function SearchPageFilmScreen() {
   return (
     <>
       <div>
-        <form action="" className="pb-[42px]">
+        <form className="pb-[42px]">
           <FlexContainer className="items-center py-[8px] bg-search-form rounded-[4px] px-[15px] clm:px-[12px]">
             <FlexItems className=" flex-grow !flex-shrink">
               <FlexContainer className="relative items-center">
@@ -120,7 +121,7 @@ function SearchPageFilmScreen() {
             </FlexItems>
             <FlexItems className="ml-[15px] clm:ml-[12px] !flex-grow-0 !flex-shrink-0">
               <Button
-                aria-lable="search-btn"
+                aria-label="search-btn"
                 type="submit"
                 onClick={handleUpdateParams}
                 className="bg-bg-search-btn text-[14px] px-[24px] kdm:px-[16px] kdm:py-[8px] rounded-[4px] py-[10px]"
@@ -135,6 +136,11 @@ function SearchPageFilmScreen() {
         </form>
       </div>
       {!loading && !!data && <SearchResultsFilm data={data} limit={limit} />}
+      {loading && !data && (
+        <div className="min-w-[calc(100dvh-90px)] mask-loading">
+          <SearchPageSkeleton />
+        </div>
+      )}
     </>
   );
 }

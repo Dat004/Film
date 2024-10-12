@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+import PlayerSkeleton from "../components/Skeleton/PlayerSkeleton";
 import Player from "../layouts/defaultComponents/Player";
 import { useFetchData } from "../hooks";
 import services from "../services";
@@ -22,7 +23,11 @@ function DetailsFilm() {
 
   return (
     <div className="film-detail">
-      {(!isFetching || !isError) && isSuccess && data && <Player data={data} />}
+      {(!isFetching || !isError) && isSuccess && data ? (
+        <Player data={data} />
+      ) : (
+        <PlayerSkeleton />
+      )}
     </div>
   );
 }
