@@ -5,7 +5,6 @@ import { MdPerson, MdPersonOff } from "react-icons/md";
 import { useControlModal, useRealtimeDbFirebase } from "../../hooks";
 import { FlexContainer, FlexItems } from "../../components/Flex";
 import AvatarModal from "../../components/Modal/AvatarModal";
-import { ToastMessage } from "../../components/Toastify";
 import { UserAuth } from "../../context/AuthContext";
 import Button from "../../components/Button";
 import Image from "../../components/Image";

@@ -45,6 +45,28 @@ function AvatarModal({
     },
   };
 
+  const handleCreateImageBlobURL = async (url) => {
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+
+      const base64String = await convertImageToBase64(blob);
+
+      handleSelectAvt(base64String);
+    } catch (e) {
+      return e;
+    }
+  };
+
+  async function convertImageToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result); // Trả về chuỗi base64
+      reader.onerror = reject; // Xử lý lỗi nếu có
+      reader.readAsDataURL(file); // Đọc file và chuyển thành Data URL
+    });
+  }
+
   return (
     <AnimatePresence>
       {isShowModal && (
@@ -66,7 +88,7 @@ function AvatarModal({
                 <FlexContainer className="!gap-y-[20px]" isWrap>
                   {data.dataAvatar.map((avt, index) => (
                     <FlexItems
-                      onClick={() => handleSelectAvt(avt)}
+                      onClick={() => handleCreateImageBlobURL(avt)}
                       className={`w-[25%] ssm:w-[calc(100%/3)] px-[10px] ${
                         id === index
                           ? "scale-100 opacity-100"

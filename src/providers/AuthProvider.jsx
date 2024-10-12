@@ -16,6 +16,8 @@ import {
   setAvatar,
   setLogin,
   setUid,
+
+
 } from "../redux/slices/authSlice";
 import { authSelector } from "../redux/selectors";
 import { auth, storage } from "../configs/firebaseConfig";
@@ -63,7 +65,6 @@ function AuthProvider({ children }) {
         await getDb({
           path: `/users/${user.uid}`,
           callback: async (snapshot) => {
-            console.log(snapshot);
             if (!snapshot?.exists()) {
               await setDb({
                 path: `/users/${user.uid}`,

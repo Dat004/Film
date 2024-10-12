@@ -14,7 +14,7 @@ export const allDataService = async () => {
 
     return res;
   } catch (e) {
-    return e;
+    return { Error: { e, isError: true } };
   }
 };
 

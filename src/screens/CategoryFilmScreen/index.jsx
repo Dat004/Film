@@ -1,8 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 
+import CatalogSkeleton from "../../components/Skeleton/CatalogSkeleton";
 import { FlexContainer, FlexItems } from "../../components/Flex";
 import CustomPagination from "../../components/CustomPagination";
+import SkeletonContainer from "../../components/Skeleton";
 import { SliderBanner } from "../../components/Slider";
 import { FilmElement } from "../../components/Element";
 import { useFetchData } from "../../hooks";
@@ -70,7 +72,21 @@ function CategoryFilmScreen({ request, params = "" }) {
   };
 
   const memolizedBanner = useMemo(() => {
-    return <>{!dataBanner ? null : <SliderBanner data={dataBanner} />}</>;
+    return (
+      <>
+        {!dataBanner.itemsBanner ? (
+          <div className="flex justify-center">
+            <div className="relative w-[100%] max-w-[1200px] pb-[56.25%]">
+              <section className="absolute inset-0">
+                <SkeletonContainer borderRadius={4} />
+              </section>
+            </div>
+          </div>
+        ) : (
+          <SliderBanner data={dataBanner} />
+        )}
+      </>
+    );
   }, [dataBanner.itemsBanner]);
 
   const memolizedPagination = useMemo(() => {
@@ -95,7 +111,7 @@ function CategoryFilmScreen({ request, params = "" }) {
   return (
     <div className="mb-[40px]">
       <div className="mb-[40px]">{memolizedBanner}</div>
-      {(!isFetching || !isError) && isSuccess && (
+      {(!isFetching || !isError) && isSuccess ? (
         <>
           <FlexContainer className="mx-[-12px] pb-[24px] items-start" isWrap>
             {data?.items?.map((items) => (
@@ -111,6 +127,10 @@ function CategoryFilmScreen({ request, params = "" }) {
             ))}
           </FlexContainer>
         </>
+      ) : (
+        <div className="relative min-h-[calc(100dvh-90px)] mt-[40px] mask-loading">
+          <CatalogSkeleton />
+        </div>
       )}
       <>{memolizedPagination}</>
     </div>
