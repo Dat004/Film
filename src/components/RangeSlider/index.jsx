@@ -47,6 +47,26 @@ function RangeSlider({
     };
   }, []);
 
+  useEffect(() => {
+    if(sliderRef.current && progressRef.current) {
+      progressRef.current.style = !yAxis
+        ? `width: ${value / max * 100}%`
+        : `height: ${value / max * 100}%`;
+
+      const rect = progressRef.current.getBoundingClientRect();
+      const position = !yAxis ? rect.width : rect.height;
+
+      thumbRef.current.style.transform = !yAxis
+        ? `translate(${
+            position - thumbRef.current.getBoundingClientRect().width / 2
+          }px, -50%)`
+        : `translate(-50%, ${-(
+            position -
+            thumbRef.current.getBoundingClientRect().height / 2
+          )}px)`;
+    }
+  }, [value]);
+
   const sliderWrapperClasses = classNames(
     "relative justify-center items-center flex group/wrapperSlider pointer-events-auto cursor-pointer select-none",
     {

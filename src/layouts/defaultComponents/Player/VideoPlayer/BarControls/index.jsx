@@ -3,12 +3,12 @@ import { IoPlay, IoPause } from "react-icons/io5";
 import { BiFullscreen, BiVolumeFull, BiVolumeMute } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 
+import CurrentTime from "../../../../../screens/ContinueWatchingVideoScreen/CurrentTime";
 import { setStatusMovie } from "../../../../../redux/slices/videoPlayerSlice";
 import { FlexContainer, FlexItems } from "../../../../../components/Flex";
 import { videoPlayerSelector } from "../../../../../redux/selectors";
 import RangeSlider from "../../../../../components/RangeSlider";
 import Button from "../../../../../components/Button";
-import { useVideoTime } from "../../../../../hooks";
 
 function BarControls({
   handlePlay = () => {},
@@ -24,10 +24,6 @@ function BarControls({
     time: { currentTime, duration },
     statusMovie: { isPlay, isMuted, currentVolume },
   } = useSelector(videoPlayerSelector);
-
-  const currentTimeValue = useVideoTime(currentTime);
-  const currentTimeSeek = useVideoTime(currentTimeCapture);
-  const durationValue = useVideoTime(duration);
 
   const handleMouseMove = (e, currentValue) => {
     const position =
@@ -68,8 +64,8 @@ function BarControls({
           className="absolute bottom-[calc(100%+10px)] opacity-0 will-change-[transform] translate-x-[-50%] group-hover/slider:opacity-100"
           ref={previewThumbnailRef}
         >
-          <span className="bg-bg-layer-btn min-w-[34px] px-[10px] py-[6px] rounded-[4px] text-[14px] font-normal text-primary">
-            {currentTimeSeek}
+          <span>
+            <CurrentTime className="bg-bg-layer-btn min-w-[34px] px-[10px] py-[6px] rounded-[4px] text-[14px] font-normal text-primary" currentTime={currentTimeCapture} />
           </span>
         </div>
       </div>
@@ -86,14 +82,14 @@ function BarControls({
               </FlexItems>
               <FlexItems>
                 <FlexContainer className="items-center">
-                  <span className="text-[14px] font-normal text-primary">
-                    {currentTimeValue}
+                  <span>
+                    <CurrentTime className="text-[14px] font-normal text-primary" currentTime={currentTime} />
                   </span>
                   <span className="mx-[5px] text-[14px] font-normal text-primary opacity-50">
                     &#47;
                   </span>
-                  <span className="text-[14px] font-normal text-primary opacity-50">
-                    {durationValue}
+                  <span>
+                    <CurrentTime className="text-[14px] font-normal text-primary opacity-50" currentTime={duration} />
                   </span>
                 </FlexContainer>
               </FlexItems>
