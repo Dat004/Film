@@ -5,6 +5,8 @@ export default {
   content: ["./index.php", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     screens: {
+      player3col: "1401px",
+      detail769: "769px",
       "3xl": { min: "1600px" },
       "2xl": { min: "1280px", max: "1599px" },
       xl: { min: "1024px", max: "1279px" },
