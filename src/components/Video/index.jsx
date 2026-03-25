@@ -47,21 +47,27 @@ function Video({ className, src = "", handleNext = () => {}, ...props }) {
   };
 
   useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !src) return undefined;
+
     const config = {
-      maxBufferLength: 60, // Tăng kích thước bộ đệm
-      maxMaxBufferLength: 1200, // Tăng kích thước bộ đệm tối đa
+      maxBufferLength: 60,
+      maxMaxBufferLength: 1200,
       backBufferLength: Infinity,
       frontBufferFlushThreshold: Infinity,
-      maxBufferSize: 120 * 1000 * 1000, // Tăng kích thước bộ đệm
-      maxBufferHole: 0.1, // Giảm kích thước lỗ hổng bộ đệm
+      maxBufferSize: 120 * 1000 * 1000,
+      maxBufferHole: 0.1,
     };
 
-    const hls = new Hls(config);
-    const video = videoRef.current;
-    hls.attachMedia(video);
+    let hls = null;
+    let usedNativeHls = false;
+
+    const onNativeLoadedMetadata = () => handleStarting();
+
     if (Hls.isSupported()) {
-      hls.loadSource(src);
+      hls = new Hls(config);
       hls.attachMedia(video);
+      hls.loadSource(src);
       hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
         console.log(
           "manifest loaded, found " + data.levels.length + " quality level: ",
@@ -76,36 +82,35 @@ function Video({ className, src = "", handleNext = () => {}, ...props }) {
           switch (type) {
             case Hls.ErrorTypes.NETWORK_ERROR:
               handleError("Gặp lỗi mạng nghiêm trọng, hãy thử khôi phục");
-              // console.log(type, data);
-              // hls.startLoad();
               break;
             case Hls.ErrorTypes.MEDIA_ERROR:
               handleError(
                 "Gặp lỗi phương tiện nghiêm trọng, hãy thử khôi phục"
               );
-              // hls.swapAudioCodec();
-              // hls.recoverMediaError();
               break;
             default:
-              // cannot recover
               hls.destroy();
               break;
           }
         }
       });
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      console.error("This device does not support HLS playback.");
+      usedNativeHls = true;
       video.src = src;
-
-      video.addEventListener("loadedmetadata", handleStarting);
+      video.addEventListener("loadedmetadata", onNativeLoadedMetadata);
+    } else {
+      console.error("This device does not support HLS playback.");
     }
 
     return () => {
-      // Unmount
-      if (hls) hls.destroy();
-      if (hls && video) {
-        hls.detachMedia(video);
-        video.removeEventListener("loadedmetadata", handleStarting);
+      if (usedNativeHls) {
+        video.removeEventListener("loadedmetadata", onNativeLoadedMetadata);
+        video.removeAttribute("src");
+        video.load();
+      }
+      if (hls) {
+        hls.detachMedia();
+        hls.destroy();
       }
 
       setIsError(false);
@@ -126,7 +131,7 @@ function Video({ className, src = "", handleNext = () => {}, ...props }) {
 
     return () => {
       if (videoRef.current) {
-        videoRef.current.addEventListener("loadedmetadata", handleLoadeddata);
+        videoRef.current.removeEventListener("loadedmetadata", handleLoadeddata);
       }
     };
   }, []);

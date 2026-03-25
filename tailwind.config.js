@@ -5,6 +5,9 @@ export default {
   content: ["./index.php", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     screens: {
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
       player3col: "1401px",
       detail769: "769px",
       "3xl": { min: "1600px" },
@@ -74,13 +77,15 @@ export default {
       "bg-btn-active-pagination": "var(--bg-btn-active-pagination)",
       "bg-btn-hover-active-pagination": "var(--bg-btn-hover-active-pagination)",
     },
-    width: {
-      "width-layout-xl": "var(--width-layout-xl)",
-      "width-layout-2xl": "var(--width-layout-2xl)",
-      "width-layout-3xl": "var(--width-layout-3xl)",
-      "width-detail-film-layout-clm": "var(--width-detail-film-layout-clm)",
-      "width-detail-film-layout-slm": "var(--width-detail-film-layout-slm)",
-      "width-detail-film-layout-2xlm": "var(--width-detail-film-layout-2xlm)",
+    extend: {
+      width: {
+        "width-layout-xl": "var(--width-layout-xl)",
+        "width-layout-2xl": "var(--width-layout-2xl)",
+        "width-layout-3xl": "var(--width-layout-3xl)",
+        "width-detail-film-layout-clm": "var(--width-detail-film-layout-clm)",
+        "width-detail-film-layout-slm": "var(--width-detail-film-layout-slm)",
+        "width-detail-film-layout-2xlm": "var(--width-detail-film-layout-2xlm)",
+      },
     },
   },
   plugins: [

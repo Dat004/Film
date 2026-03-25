@@ -1,10 +1,45 @@
-import { Link } from "react-router-dom";
+/* eslint-disable react/prop-types */
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import { FlexContainer, FlexItems } from "../../../../components/Flex";
 import Paragraph from "../../../../components/Paragraph";
 import InfoDisplay from "./InfoDisplay";
+import { UserAuth } from "../../../../context/AuthContext";
+import { ToastMessage } from "../../../../components/Toastify";
+import { createRoom } from "../../../../services/firebase/watchPartyService";
+import CreateRoomModal from "../../../../components/Modal/CreateRoomModal";
+import { RiGroupLine } from "react-icons/ri";
 
-function DetailFilm({ dataMovie = {} }) {
+function DetailFilm({ dataMovie = {}, data = {}, isWatchParty = false }) {
+  const navigate = useNavigate();
+  const { uf, uid, lg } = UserAuth();
+  const [isCreatingRoom, setIsCreatingRoom] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const handleOpenCreateModal = () => {
+    if (!lg || !uf || !uid) {
+      ToastMessage.warning("Vui lòng đăng nhập để tạo phòng!");
+      return;
+    }
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCreateWatchParty = async (passwordInput) => {
+    setIsCreatingRoom(true);
+    try {
+      const host = { uid, displayName: uf?.displayName || "Ẩn danh", photoURL: uf?.photoUrl || "" };
+      const roomId = await createRoom(host, dataMovie?.slug || "sample", data, passwordInput?.trim() || null);
+      ToastMessage.success("Tạo phòng xem chung thành công!");
+      setIsCreateModalOpen(false);
+      navigate(`/watch-party/${roomId}`);
+    } catch (error) {
+       console.log(error);
+       ToastMessage.error("Lỗi mạng! Tạo phòng không thành công");
+    } finally {
+       setIsCreatingRoom(false);
+    }
+  };
   const {
     poster_url,
     name,
@@ -97,6 +132,20 @@ function DetailFilm({ dataMovie = {} }) {
               </Link>
             ))}
           </div>
+
+          {!isWatchParty && (
+            <div className="pt-2 flex justify-center detail769:justify-start">
+              <button
+                 disabled={isCreatingRoom}
+                 onClick={handleOpenCreateModal}
+                 className="inline-flex items-center justify-center rounded-[8px] bg-[#e50914] px-[18px] py-[10px] text-[14px] font-semibold text-white transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none hover:opacity-90 shadow-md"
+              >
+                 <RiGroupLine className="text-[18px] mr-2 shrink-0" />
+                 {isCreatingRoom ? "Đang tạo..." : "Tạo Phòng Xem Chung"}
+              </button>
+            </div>
+          )}
+
           <Paragraph lineClamp={3} className="text-[14px] font-normal !text-secondary leading-relaxed">
             {content ? content.replace(/&quot;/g, '"') : "Đang cập nhật"}
           </Paragraph>
@@ -109,6 +158,13 @@ function DetailFilm({ dataMovie = {} }) {
           <InfoDisplay data={infoSecondary} />
         </div>
       </div>
+
+      <CreateRoomModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreateWatchParty}
+        isCreating={isCreatingRoom}
+      />
     </div>
   );
 }

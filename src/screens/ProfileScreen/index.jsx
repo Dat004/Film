@@ -59,7 +59,7 @@ function ProfileScreen({ data = {}, uid = "" }) {
           Profile
         </h1>
       </FlexContainer>
-      <div className="w-[100%] p-[30px] relative bg-bg-block ccm:bg-bg-transparent ccm:p-0">
+      <div className="profile-panel relative w-[100%] p-[30px] ccm:border-0 ccm:bg-transparent ccm:p-0 ccm:shadow-none">
         <div className="absolute w-[160px] top-0 right-0 h-[100%] slm:relative slm:w-[100%] slm:h-auto slm:flex slm:justify-center slm:items-center slm:mb-[16px]">
           <div className="absolute inset-0 bg-bg-content-area-color slm:hidden"></div>
           <div className="size-[100%] slm:size-[100px] slm:p-0 p-[30px]">
@@ -116,7 +116,7 @@ function ProfileScreen({ data = {}, uid = "" }) {
             <div className="bg-bg-layout ccm:bg-bg-footer rounded-[8px] p-[12px]">
               <FlexContainer
                 className={`items-center mb-[4px] ${
-                  !emailVerified ? "text-title" : "text-[#66bb6a]"
+                  !emailVerified ? "text-title" : "text-[var(--color-success)]"
                 }`}
               >
                 <i className="text-[18px]">
@@ -140,7 +140,7 @@ function ProfileScreen({ data = {}, uid = "" }) {
                 type="button"
                 onClick={handleUpdateUser}
                 disabled={value.name === displayName && value.image === avatar}
-                className="w-[100%] disabled:!bg-bg-disabled rounded-[4px] hover:text-primary hover:opacity-80 !font-medium h-[42px]"
+                className="profile-save-btn w-[100%] rounded-[4px] hover:text-primary hover:opacity-90 !font-medium h-[42px] disabled:hover:opacity-100"
               >
                 Save
               </Button>

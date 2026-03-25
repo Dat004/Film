@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, Fragment } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { HelmetProvider } from "react-helmet-async";
@@ -69,17 +69,21 @@ function App() {
       <div className="bg-bg-layout">
         <Router>
           <Routes>
-            {configs.routerConfig.map((items) => (
-              <Route
-                key={items.id}
-                path={items.path}
-                element={
-                  <items.layout>
-                    <items.component />
-                  </items.layout>
-                }
-              />
-            ))}
+            {configs.routerConfig.map((item) => {
+              const Layout = item.layout || Fragment;
+              const Component = item.component;
+              return (
+                <Route
+                  key={item.id}
+                  path={item.path}
+                  element={
+                    <Layout>
+                      <Component />
+                    </Layout>
+                  }
+                />
+              );
+            })}
           </Routes>
           {isShowPreview && memorizedPreview}
         </Router>

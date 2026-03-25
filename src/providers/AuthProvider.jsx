@@ -81,7 +81,11 @@ function AuthProvider({ children }) {
 
         const usersRef = ref(db, `users/${user.uid}`);
         const unsubscribeUsers = handleSubscribeRef(usersRef, (value) => {
-          uploadImageFromUrl(value.currentUser.photoUrl, user.uid);
+          // Bỏ qua uploadImageFromUrl vì nó gây tràn dung lượng băng thông Storage (Quota Exceeded)
+          // Thay vào đó lưu trực tiếp photoUrl từ User Info vì GG Auth đã cung cấp link ảnh host sẵn.
+          const photoUrl = value?.currentUser?.photoUrl || "";
+          setItem(avatarProfile, photoUrl);
+          dispatch(setAvatar(photoUrl));
 
           setItem(user_info, value.currentUser);
           setItem(is_logged, true);

@@ -83,4 +83,16 @@ export const routerConfig = [
     component: pages.WatchList,
     layout: ProfileLayout,
   },
+  {
+    id: 14,
+    path: router.watch_party,
+    component: pages.WatchPartyRoom,
+    layout: null, // Full screen for Watch Party
+  },
+  {
+    id: 15,
+    path: router.watch_party_lobby,
+    component: pages.WatchPartyLobby,
+    layout: DefaultLayout,
+  },
 ];

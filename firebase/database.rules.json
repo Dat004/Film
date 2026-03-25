@@ -1,0 +1,50 @@
+{
+  "rules": {
+    "users": {
+      "$user_id": {
+        ".read": "auth != null && auth.uid === $user_id",
+        ".write": "auth != null && auth.uid === $user_id"
+      }
+    },
+    "continue_watching": {
+      "$user_id": {
+        ".read": "auth != null && auth.uid === $user_id",
+        ".write": "auth != null && auth.uid === $user_id"
+      }
+    },
+    "list_video": {
+      "$user_id": {
+        ".read": "auth != null && auth.uid === $user_id",
+        ".write": "auth != null && auth.uid === $user_id"
+      }
+    },
+    "watch_party_rooms": {
+      ".read": "auth != null",
+      ".indexOn": ["createdAt"],
+      "$roomId": {
+        ".write": "auth != null && (!data.exists() || data.child('hostId').val() === auth.uid || data.child('members').child(auth.uid).exists())",
+        
+        "hostId": {
+          ".validate": "newData.val() === auth.uid || data.val() === auth.uid"
+        },
+        
+        "members": {
+          "$uid": {
+            ".write": "auth != null && ($uid === auth.uid || data.parent().parent().child('hostId').val() === auth.uid)"
+          }
+        },
+        
+        "status": {
+          ".write": "auth != null && (data.parent().child('hostId').val() === auth.uid || (!data.exists() && newData.parent().child('hostId').val() === auth.uid))"
+        },
+        
+        "messages": {
+          "$msgId": {
+            ".write": "auth != null && (newData.child('uid').val() === auth.uid || (newData.child('uid').val() === 'system' || newData.child('uid').val() === 'Hệ thống'))",
+            ".validate": "newData.hasChildren(['uid', 'text', 'timestamp'])"
+          }
+        }
+      }
+    }
+  }
+}

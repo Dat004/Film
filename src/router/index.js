@@ -1,5 +1,7 @@
 const router = {
   continue_watching: "/user/continue-watching",
+  watch_party: "/watch-party/:roomId",
+  watch_party_lobby: "/watch-party",
   the_loai: "/the-loai/:the_loai",
   quoc_gia: "/quoc-gia/:quoc_gia",
   user_setting: "/user/settings",

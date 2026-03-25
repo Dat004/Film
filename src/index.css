@@ -810,3 +810,17 @@ video:fullscreen ~ .controls {
     margin-top: 10px;
   }
 }
+
+/* Hide website main sidebar and backdrop layout inside Watch Party room */
+body:has(.watch-party-container) .fixed.h-\[100dvh\].left-0.top-0.w-\[250px\] {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+body:has(.watch-party-container) .fixed.top-0.left-0.h-\[100dvh\].w-\[100dvw\] {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+

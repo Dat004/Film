@@ -16,7 +16,7 @@ import DetailFilm from "./DetailFilmPlayer";
 import SEO from "../../../components/SEO";
 import VideoPlayer from "./VideoPlayer";
 
-function Player({ data = {} }) {
+function Player({ data = {}, isWatchParty = false, isChatOpen = false, isHost = true }) {
   const watchingDataRef = useRef(null);
   const currentEpisodeRef = useRef(0);
   const currentTimeRef = useRef(0);
@@ -32,8 +32,8 @@ function Player({ data = {} }) {
   const { isLight } = statusMovie;
   const { currentTime, duration } = time;
   const { currentEpisode } = episode;
-  const { episodes, movie } = data;
-  const { thumb_url, poster_url, name } = movie;
+  const { episodes, movie } = data || {};
+  const { thumb_url, poster_url, name } = movie || {};
 
   const dataEpisodes = episodes
     ?.map((items) => items?.server_data)
@@ -149,9 +149,23 @@ function Player({ data = {} }) {
     });
   };
 
+  // Điều kiện để kích hoạt Layout 2 cột dọc (Bên Phim - Bên Thông Tin Phim)
+  const shouldApply3Col = !isWatchParty || !isChatOpen;
+
+  if (isWatchParty) {
+    return (
+      <div className="relative w-full h-full bg-black">
+        {!isHost && (
+          <div className="absolute inset-0 z-[50]" title="Chỉ Host mới có quyền đổi tập và điều khiển Video"></div>
+        )}
+        <VideoPlayer dataEpisodes={dataEpisodes} dataMovie={movie} isWatchParty={true} />
+      </div>
+    );
+  }
+
   return (
     <div className="relative px-[15px]">
-      <div className="mx-auto 2xlm:w-width-detail-film-layout-2xlm slm:w-width-detail-film-layout-slm clm:w-width-detail-film-layout-clm">
+      <div className={classNames("mx-auto", shouldApply3Col ? "2xlm:w-width-detail-film-layout-2xlm slm:w-width-detail-film-layout-slm clm:w-width-detail-film-layout-clm" : "w-full max-w-[1920px]")}>
         <div className="absolute inset-0 overflow-hidden">
           <div
             style={{
@@ -174,21 +188,24 @@ function Player({ data = {} }) {
           <div
             className={classNames("relative w-full", isLight && "player-light-stage")}
           >
-            <div className="relative w-full">
-              <div className="relative h-fit w-full player3col:w-[75%]">
+            <div className="relative w-full flex flex-col">
+              <div className={classNames("relative h-fit w-full", shouldApply3Col && "player3col:w-[75%]")}>
+                {isWatchParty && !isHost && (
+                  <div className="absolute inset-0 z-[50]" title="Chỉ Host mới có quyền đổi tập và điều khiển Video"></div>
+                )}
                 <VideoPlayer dataEpisodes={dataEpisodes} dataMovie={movie} />
-                <EpisodesPlayer dataEpisodes={dataEpisodes} />
+                {!isWatchParty && <EpisodesPlayer dataEpisodes={dataEpisodes} />}
               </div>
               <div
                 className={classNames(
                   "detail-film-scroll relative z-auto w-full min-h-0 overflow-visible",
                   "py-[35px] clm:py-[25px] px-[15px]",
-                  "player3col:absolute player3col:top-0 player3col:right-0 player3col:bottom-0 player3col:z-[1] player3col:w-[25%] player3col:min-h-0 player3col:overflow-y-auto player3col:overflow-x-hidden player3col:overscroll-y-contain player3col:pl-[30px] player3col:pr-[8px] player3col:py-0 player3col:px-0"
+                  shouldApply3Col && "player3col:absolute player3col:top-0 player3col:right-0 player3col:bottom-0 player3col:z-[1] player3col:w-[25%] player3col:min-h-0 player3col:overflow-y-auto player3col:overflow-x-hidden player3col:overscroll-y-contain player3col:pl-[30px] player3col:pr-[8px] player3col:py-0 player3col:px-0"
                 )}
                 role="region"
                 aria-label="Thông tin phim"
               >
-                <DetailFilm dataMovie={movie} />
+                <DetailFilm dataMovie={movie} data={data} isWatchParty={isWatchParty} />
               </div>
             </div>
           </div>

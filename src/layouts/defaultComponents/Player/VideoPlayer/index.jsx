@@ -11,7 +11,7 @@ import { PlayIconCustom } from "../../../../icons";
 import Video from "../../../../components/Video";
 import BarPlayer from "./BarPlayer";
 
-function VideoPlayer({ dataEpisodes = [], dataMovie = {} }) {
+function VideoPlayer({ dataEpisodes = [], dataMovie = {}, isWatchParty = false }) {
   const [showPoster, setShowPoster] = useState(true);
 
   const videoPlayerState = useSelector(videoPlayerSelector);
@@ -53,7 +53,7 @@ function VideoPlayer({ dataEpisodes = [], dataMovie = {} }) {
   };
 
   return (
-    <div className="relative w-[100%] pl-[300px] slm:w-[100%] 2xlm:w-[100%] slm:pl-0">
+    <div className={`relative w-[100%] slm:w-[100%] 2xlm:w-[100%] slm:pl-0 ${isWatchParty ? "pl-0" : "pl-[300px]"}`}>
       <div className="relative">
         <div className="relative z-[5] pb-[56.25%] 2xls:pb-[460px] 2xlm:pb-[56.25%] slm:pb-[56.25%] h-0 leading-0">
           {showPoster ? (

@@ -1,4 +1,6 @@
 import ContinueWatching from "./ContinueWatching";
+import WatchPartyRoom from "./WatchPartyRoom";
+import WatchPartyLobby from "./WatchPartyLobby";
 import PhimHoatHinh from "./PhimHoatHinh";
 import DetailsFilm from "./DetailsFilm";
 import WatchList from "./WatchList";
@@ -15,8 +17,6 @@ import Home from "./Home";
 const pages = {
   ContinueWatching,
   PhimHoatHinh,
-  PhimHoatHinh,
-  PhimHoatHinh,
   DetailsFilm,
   WatchList,
   TheLoai,
@@ -28,6 +28,8 @@ const pages = {
   PhimLe,
   Search,
   Home,
+  WatchPartyRoom,
+  WatchPartyLobby,
 };
 
 export default pages;
