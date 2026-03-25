@@ -449,7 +449,7 @@ function Video({ className, src = "", handleNext = () => {}, ...props }) {
             damping: 10,
             stiffness: 100,
           }}
-          className="w-[100%] bg-bg-bar-controls"
+          className="video-player-chrome w-[100%] bg-bg-bar-controls"
         >
           <BarControls
             src={src}

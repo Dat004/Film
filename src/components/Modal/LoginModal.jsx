@@ -66,7 +66,7 @@ function LoginModal({ onClose = () => {}, isShowModal = false }) {
             transition="duration-300"
             exit="hide"
           >
-            <Container className="mx-auto w-[400px] mdm:w-[85%] kdm:w-[90%] h-[500px]">
+            <Container className="modal-panel-surface mx-auto w-[400px] mdm:w-[85%] kdm:w-[90%] h-[500px] rounded-[10px] overflow-hidden">
               <div className="p-[15px] flex justify-end">
                 <Button onClick={onClose} rounded>
                   <RiCloseLargeFill className="text-[18px]" />
@@ -128,7 +128,7 @@ function LoginModal({ onClose = () => {}, isShowModal = false }) {
                     <p className="relative inline-block px-[12px] text-[12px] text-primary font-medium bg-bg-sidebar z-[2]">
                       Or
                     </p>
-                    <span className="absolute top-[50%] left-0 h-px w-[100%] bg-bg-white translate-y-[-50%] pointer-events-none z-[1]"></span>
+                    <span className="absolute top-[50%] left-0 h-px w-[100%] bg-bd-filed-form-color translate-y-[-50%] pointer-events-none z-[1]"></span>
                   </div>
                   <GoogleButtonLogin
                     type="button"

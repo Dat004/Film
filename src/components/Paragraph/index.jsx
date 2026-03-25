@@ -44,11 +44,12 @@ function Paragraph({ children, className, lineClamp = 5 }) {
     handleShowModal();
   };
 
+  const hasTextColor =
+    typeof className === "string" && className.includes("text-");
   const paragraphStyles = classNames(
-    "leading-[1.3] text-primary whitespace-normal ",
-    {
-      [className]: className,
-    }
+    "leading-[1.3] whitespace-normal",
+    className,
+    !hasTextColor && "text-primary"
   );
 
   return (

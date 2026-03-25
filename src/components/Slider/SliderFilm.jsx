@@ -104,7 +104,7 @@ function SliderFilm({ value = {}, title = "", to = "" }) {
           <Button
             aria-label="next-btn"
             onClick={handleNextSlide}
-            className="text-[30px]"
+            className="text-[30px] !text-primary [text-shadow:0_1px_4px_rgba(0,0,0,0.35)]"
           >
             <GrNext />
           </Button>
@@ -118,7 +118,7 @@ function SliderFilm({ value = {}, title = "", to = "" }) {
           <Button
             aria-label="prev-btn"
             onClick={handlePrevSlide}
-            className="text-[30px]"
+            className="text-[30px] !text-primary [text-shadow:0_1px_4px_rgba(0,0,0,0.35)]"
           >
             <GrPrevious />
           </Button>

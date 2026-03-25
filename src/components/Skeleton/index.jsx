@@ -5,8 +5,8 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 function SkeletonContainer({
   children,
-  baseColor = "#231f1f",
-  highlightColor = "#524c4c",
+  baseColor = "var(--skeleton-base)",
+  highlightColor = "var(--skeleton-highlight)",
   className,
   ...props
 }) {

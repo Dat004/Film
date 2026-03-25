@@ -32,7 +32,7 @@ function ContentModal({
             transition="duration-300"
             exit="hide"
           >
-            <Container className="w-[625px] mdm:w-[85%] min-h-[220px] h-[500px] rounded-[5px] mx-auto">
+            <Container className="modal-panel-surface w-[625px] mdm:w-[85%] min-h-[220px] h-[500px] rounded-[10px] mx-auto overflow-hidden">
               <div className="p-[15px] flex justify-end">
                 <Button onClick={onClose} rounded>
                   <RiCloseLargeFill className="text-[18px]" />

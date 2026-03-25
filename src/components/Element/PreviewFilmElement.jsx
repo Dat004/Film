@@ -61,7 +61,7 @@ function PreviewFilmElement({ className, data = {}, ...props }) {
   }, [isShowMenu]);
 
   const previewClasses = classNames(
-    "!bg-[rgba(81,80,100,0.6)] !rounded-[8px] backdrop-blur-[10px]",
+    "preview-film-card !bg-[var(--bg-preview-glass)] !rounded-[8px] backdrop-blur-[10px] border border-solid border-[var(--preview-border)] shadow-[var(--preview-shadow)]",
     {
       [className]: className,
     }
@@ -159,7 +159,7 @@ function PreviewFilmElement({ className, data = {}, ...props }) {
             <FlexContainer className="mt-[20px]">
               <FlexItems className="!flex-grow !flex-shrink">
                 <Button
-                  className="bg-[#ffbade] w-[100%] gap-x-[8px] py-[8px] rounded-[999px] text-[14px] font-semibold !text-dark"
+                  className="bg-[var(--bg-accent-pink)] w-[100%] gap-x-[8px] py-[8px] rounded-[999px] text-[14px] font-semibold !text-dark"
                   onClick={handleDirectionPage}
                   leftIcon={<FaPlay />}
                 >

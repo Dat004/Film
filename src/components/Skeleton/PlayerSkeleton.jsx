@@ -16,23 +16,23 @@ function PlayerSkeleton() {
             <div className="max-w-[110px] h-[15px]">
               <SkeletonContainer
                 borderRadius={2}
-                baseColor="#504e4e"
-                highlightColor="#756666"
+                baseColor="var(--skeleton-base-strong)"
+                highlightColor="var(--skeleton-highlight-strong)"
               />
             </div>
             <div className="flex items-center w-[100%] my-[12px]">
               <div className="flex-shrink-0 max-w-[30%] h-[20px] flex-grow">
                 <SkeletonContainer
                   borderRadius={2}
-                  baseColor="#504e4e"
-                  highlightColor="#756666"
+                  baseColor="var(--skeleton-base-strong)"
+                  highlightColor="var(--skeleton-highlight-strong)"
                 />
               </div>
               <div className="h-[20px] w-[50%] flex-grow-0 flex-shrink ml-auto">
                 <SkeletonContainer
                   borderRadius={2}
-                  baseColor="#504e4e"
-                  highlightColor="#756666"
+                  baseColor="var(--skeleton-base-strong)"
+                  highlightColor="var(--skeleton-highlight-strong)"
                 />
               </div>
             </div>
@@ -42,23 +42,23 @@ function PlayerSkeleton() {
                   <div className="max-w-[90px] w-[100%] h-[20px] flex-shrink pr-[12px]">
                     <SkeletonContainer
                       borderRadius={2}
-                      baseColor="#504e4e"
-                      highlightColor="#756666"
+                      baseColor="var(--skeleton-base-strong)"
+                      highlightColor="var(--skeleton-highlight-strong)"
                     />
                   </div>
                   <div className="w-[100%] h-[20px] flex-shrink pr-[12px]">
                     <SkeletonContainer
                       borderRadius={2}
-                      baseColor="#504e4e"
-                      highlightColor="#756666"
+                      baseColor="var(--skeleton-base-strong)"
+                      highlightColor="var(--skeleton-highlight-strong)"
                     />
                   </div>
                   <div className="size-[24px] flex-shrink-0">
                     <SkeletonContainer
                       circle
                       borderRadius={2}
-                      baseColor="#504e4e"
-                      highlightColor="#756666"
+                      baseColor="var(--skeleton-base-strong)"
+                      highlightColor="var(--skeleton-highlight-strong)"
                     />
                   </div>
                 </div>
@@ -72,8 +72,8 @@ function PlayerSkeleton() {
               <div className="absolute inset-0">
                 <SkeletonContainer
                   borderRadius={0}
-                  baseColor="#504e4e"
-                  highlightColor="#756666"
+                  baseColor="var(--skeleton-base-strong)"
+                  highlightColor="var(--skeleton-highlight-strong)"
                 />
               </div>
             </div>
@@ -82,8 +82,8 @@ function PlayerSkeleton() {
             <div className="w-[100%] max-w-[80%] h-[35px]">
               <SkeletonContainer
                 borderRadius={2}
-                baseColor="#504e4e"
-                highlightColor="#756666"
+                baseColor="var(--skeleton-base-strong)"
+                highlightColor="var(--skeleton-highlight-strong)"
               />
             </div>
             <div className="hidden 2xlm:block mt-[24px]">
@@ -92,8 +92,8 @@ function PlayerSkeleton() {
                   <div key={i} className="h-[15px] max-w-[70px] min-w-[54px]">
                     <SkeletonContainer
                       borderRadius={2}
-                      baseColor="#504e4e"
-                      highlightColor="#756666"
+                      baseColor="var(--skeleton-base-strong)"
+                      highlightColor="var(--skeleton-highlight-strong)"
                     />
                   </div>
                 ))}
@@ -103,15 +103,15 @@ function PlayerSkeleton() {
               <div className="w-[100%] h-[15px]">
                 <SkeletonContainer
                   borderRadius={2}
-                  baseColor="#504e4e"
-                  highlightColor="#756666"
+                  baseColor="var(--skeleton-base-strong)"
+                  highlightColor="var(--skeleton-highlight-strong)"
                 />
               </div>
               <div className="max-w-[90px] mt-[8px] h-[15px]">
                 <SkeletonContainer
                   borderRadius={2}
-                  baseColor="#504e4e"
-                  highlightColor="#756666"
+                  baseColor="var(--skeleton-base-strong)"
+                  highlightColor="var(--skeleton-highlight-strong)"
                 />
               </div>
             </div>
@@ -121,15 +121,15 @@ function PlayerSkeleton() {
                   <div className="max-w-[110px] min-w-[90px] h-[15px]">
                     <SkeletonContainer
                       borderRadius={2}
-                      baseColor="#504e4e"
-                      highlightColor="#756666"
+                      baseColor="var(--skeleton-base-strong)"
+                      highlightColor="var(--skeleton-highlight-strong)"
                     />
                   </div>
                   <div className="ml-[12px] max-w-[150px] h-[15px] w-[100%]">
                     <SkeletonContainer
                       borderRadius={2}
-                      baseColor="#504e4e"
-                      highlightColor="#756666"
+                      baseColor="var(--skeleton-base-strong)"
+                      highlightColor="var(--skeleton-highlight-strong)"
                     />
                   </div>
                 </div>

@@ -34,7 +34,7 @@ function SliderBanner({ data = {} }) {
             line-height: 20px;
             font-size: 12px;
             opacity: 0.2;
-            background: #fff;
+            background: var(--primary-color);
           }
 
           .swiper-pagination-bullets-dynamic .swiper-pagination-bullet-active-next-next, .swiper-pagination-bullets-dynamic .swiper-pagination-bullet-active-prev-prev {
@@ -47,7 +47,7 @@ function SliderBanner({ data = {} }) {
 
           .swiper-pagination-bullet-active {
             opacity: 1;
-            background: #fff;
+            background: var(--primary-color);
           }
           `,
         ]}
@@ -81,7 +81,7 @@ function SliderBanner({ data = {} }) {
           <Button
             aria-label="prev-btn"
             onClick={handlePrevSlide}
-            className="text-[40px] hover:!text-primary opacity-35 group-hover/btn:opacity-100"
+            className="text-[40px] !text-white opacity-60 hover:!text-white hover:opacity-100 drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)] group-hover/btn:opacity-100"
           >
             <GrPrevious />
           </Button>
@@ -93,7 +93,7 @@ function SliderBanner({ data = {} }) {
           <Button
             aria-label="next-btn"
             onClick={handleNextSlide}
-            className="text-[40px] hover:!text-primary opacity-35 group-hover/btn:opacity-100"
+            className="text-[40px] !text-white opacity-60 hover:!text-white hover:opacity-100 drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)] group-hover/btn:opacity-100"
           >
             <GrNext />
           </Button>

@@ -78,7 +78,7 @@ function AvatarModal({
             transition="duration-300"
             exit="hide"
           >
-            <Container className="mx-auto w-[500px] mdm:w-[85%] kdm:w-[90%] p-[30px]">
+            <Container className="modal-panel-surface mx-auto w-[500px] mdm:w-[85%] kdm:w-[90%] p-[30px] rounded-[10px]">
               <header className="mb-[20px]">
                 <h2 className="text-primary text-center text-[20px] font-bold">
                   Choose Avatar

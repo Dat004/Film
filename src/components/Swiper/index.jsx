@@ -22,9 +22,9 @@ export const Swiper = forwardRef(({ children, ...props }, ref) => {
     <>
       <swiper-container
         style={{
-          "--swiper-preloader-color": "#fff",
-          "--swiper-pagination-color": "#fff",
-          "--swiper-pagination-bullet-inactive-color": "#fff",
+          "--swiper-preloader-color": "var(--primary-color)",
+          "--swiper-pagination-color": "var(--primary-color)",
+          "--swiper-pagination-bullet-inactive-color": "var(--primary-color)",
           "--swiper-pagination-bullet-inactive-opacity": "0.2",
           "--swiper-pagination-bullet-size": "12px",
           "--swiper-pagination-bullet-horizontal-gap": "4px",
