@@ -78,7 +78,7 @@ function Header({
   }, [currentIndexSplitEpisodes, dataPartMovies]);
 
   return (
-    <div className="py-[12px] bg-[rgb(20,21,26)]">
+    <div className="py-[12px] bg-[var(--bg-episodes-header)]">
       <FlexContainer className="items-center px-[15px] mb-[8px] justify-between">
         <FlexItems className="!flex-shrink">
           <p className="text-[12px] text-primary font-medium">

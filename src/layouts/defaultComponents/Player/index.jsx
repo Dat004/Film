@@ -1,4 +1,5 @@
 import { useRef, useEffect } from "react";
+import classNames from "classnames";
 import { useSelector, useDispatch } from "react-redux";
 import { getDatabase, ref, onDisconnect } from "firebase/database";
 
@@ -7,7 +8,6 @@ import {
   resetMovie,
   setMovieData,
 } from "../../../redux/slices/videoPlayerSlice";
-import { FlexContainer, FlexItems } from "../../../components/Flex";
 import { videoPlayerSelector } from "../../../redux/selectors";
 import { UserAuth } from "../../../context/AuthContext";
 import { useRealtimeDbFirebase } from "../../../hooks";
@@ -28,7 +28,8 @@ function Player({ data = {} }) {
 
   const videoPlayerState = useSelector(videoPlayerSelector);
 
-  const { episode, time } = videoPlayerState;
+  const { episode, time, statusMovie } = videoPlayerState;
+  const { isLight } = statusMovie;
   const { currentTime, duration } = time;
   const { currentEpisode } = episode;
   const { episodes, movie } = data;
@@ -149,7 +150,7 @@ function Player({ data = {} }) {
   };
 
   return (
-    <div className="relative px-[15px] clm:px-0">
+    <div className="relative px-[15px]">
       <div className="mx-auto 2xlm:w-width-detail-film-layout-2xlm slm:w-width-detail-film-layout-slm clm:w-width-detail-film-layout-clm">
         <div className="absolute inset-0 overflow-hidden">
           <div
@@ -170,15 +171,27 @@ function Player({ data = {} }) {
               <span>{dataEpisodes[currentEpisode].name}</span>
             </p>
           </div>
-          <FlexContainer className="relative !gap-y-0 2xlm:flex-col">
-            <FlexItems className="relative w-[75%] h-fit 2xlm:w-[auto]">
-              <VideoPlayer dataEpisodes={dataEpisodes} dataMovie={movie} />
-              <EpisodesPlayer dataEpisodes={dataEpisodes} />
-            </FlexItems>
-            <FlexItems className="w-[25%] pl-[30px] 2xlm:pl-0 2xlm:relative 2xlm:py-[35px] clm:py-[25px] 2xlm:w-[100%] clm:px-[15px] flex-shrink-0 ">
-              <DetailFilm dataMovie={movie} />
-            </FlexItems>
-          </FlexContainer>
+          <div
+            className={classNames("relative w-full", isLight && "player-light-stage")}
+          >
+            <div className="relative w-full">
+              <div className="relative h-fit w-full player3col:w-[75%]">
+                <VideoPlayer dataEpisodes={dataEpisodes} dataMovie={movie} />
+                <EpisodesPlayer dataEpisodes={dataEpisodes} />
+              </div>
+              <div
+                className={classNames(
+                  "detail-film-scroll relative z-auto w-full min-h-0 overflow-visible",
+                  "py-[35px] clm:py-[25px] px-[15px]",
+                  "player3col:absolute player3col:top-0 player3col:right-0 player3col:bottom-0 player3col:z-[1] player3col:w-[25%] player3col:min-h-0 player3col:overflow-y-auto player3col:overflow-x-hidden player3col:overscroll-y-contain player3col:pl-[30px] player3col:pr-[8px] player3col:py-0 player3col:px-0"
+                )}
+                role="region"
+                aria-label="Thông tin phim"
+              >
+                <DetailFilm dataMovie={movie} />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <SEO

@@ -25,12 +25,17 @@ function InfoDisplay({ data = [] }) {
   };
 
   return (
-    <>
+    <div className="detail-film-meta-col divide-y divide-bd-filed-form-color">
       {data?.map((items, index) => {
         return (
-          <p key={index} className="text-[14px] text-title">
-            <span>{items?.key}: </span>
-            <span className="text-primary whitespace-pre-wrap">
+          <p
+            key={index}
+            className="flex flex-col gap-[2px] py-[12px] text-[13px] leading-[1.45] sm:flex-row sm:items-baseline sm:gap-[10px] sm:py-[10px]"
+          >
+            <span className="shrink-0 text-[12px] font-medium text-title sm:min-w-[120px]">
+              {items?.key}:
+            </span>
+            <span className="min-w-0 text-primary whitespace-pre-wrap">
               {(items?.value === typeFilm.typeSingle &&
                 dataDisplay.typeFilmDisplay.singleDisplay) ||
                 (items?.value === typeFilm.typeSeries &&
@@ -48,7 +53,7 @@ function InfoDisplay({ data = [] }) {
           </p>
         );
       })}
-    </>
+    </div>
   );
 }
 

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import classNames from "classnames";
 
 import { FlexContainer, FlexItems } from "../../../../components/Flex";
 import { videoPlayerSelector } from "../../../../redux/selectors";
@@ -19,7 +18,7 @@ function VideoPlayer({ dataEpisodes = [], dataMovie = {} }) {
   const dispatch = useDispatch();
 
   const { statusMovie, episode } = videoPlayerState;
-  const { autoPlay, isLight } = statusMovie;
+  const { autoPlay } = statusMovie;
   const { thumb_url, poster_url } = dataMovie;
   const { currentEpisode } = episode;
 
@@ -31,10 +30,6 @@ function VideoPlayer({ dataEpisodes = [], dataMovie = {} }) {
   useEffect(() => {
     if (autoPlay) handlePlayVideo();
   }, [currentEpisode, autoPlay]);
-
-  const videoPlayerClasses = classNames("relative", {
-    "z-[1002]": isLight,
-  });
 
   const handlePlayVideo = () => {
     setShowPoster(false);
@@ -59,7 +54,7 @@ function VideoPlayer({ dataEpisodes = [], dataMovie = {} }) {
 
   return (
     <div className="relative w-[100%] pl-[300px] slm:w-[100%] 2xlm:w-[100%] slm:pl-0">
-      <div className={videoPlayerClasses}>
+      <div className="relative">
         <div className="relative z-[5] pb-[56.25%] 2xls:pb-[460px] 2xlm:pb-[56.25%] slm:pb-[56.25%] h-0 leading-0">
           {showPoster ? (
             <div className="absolute inset-0 z-[100]">
@@ -81,7 +76,7 @@ function VideoPlayer({ dataEpisodes = [], dataMovie = {} }) {
               </FlexContainer>
             </div>
           ) : (
-            <div className="absolute backdrop-blur-[20px] bg-[#ffffff0d] inset-0 z-[120]">
+            <div className="absolute backdrop-blur-[20px] bg-[var(--bg-video-overlay)] inset-0 z-[120]">
               <Video
                 src={dataEpisodes[currentEpisode]?.link_m3u8}
                 handleNext={handleNextEpisode}
@@ -89,7 +84,7 @@ function VideoPlayer({ dataEpisodes = [], dataMovie = {} }) {
             </div>
           )}
         </div>
-        <div className="relative z-[10] bg-[#08090b] py-[5px]">
+        <div className="video-external-controls relative z-[10] bg-[var(--bg-video-controls)] border-t border-solid border-[var(--video-external-bar-border)] py-[8px] shadow-[var(--video-external-bar-shadow)]">
           <BarPlayer
             handleNext={handleNextEpisode}
             handlePrev={handlePrevEpisode}
