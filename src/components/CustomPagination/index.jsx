@@ -96,7 +96,7 @@ function CustomPagination({
           onClick={handleChangeIndex}
           aria-label={activeIndex}
           data-index={activeIndex}
-          className="border-bd-btn-pagination-color hover:bg-bg-btn-hover-active-pagination hover:!text-primary text-[14px] bg-bg-btn-active-pagination p-[4px] min-w-[35px] h-[35px]"
+          className="pagination-page-active border-bd-btn-pagination-color hover:bg-bg-btn-hover-active-pagination hover:!text-primary text-[14px] bg-bg-btn-active-pagination p-[4px] min-w-[35px] h-[35px]"
           outline
         >
           {activeIndex}
@@ -133,7 +133,7 @@ function CustomPagination({
           onClick={onNextIndex}
           aria-label="next-btn"
           disabled={activeIndex >= endIndex}
-          className="border-bd-btn-pagination-color hover:bg-bg-bt,pn-hover-pagination hover:!text-primary text-[14px] p-[4px] min-w-[35px] h-[35px]"
+          className="border-bd-btn-pagination-color hover:bg-bg-btn-hover-pagination hover:!text-primary text-[14px] p-[4px] min-w-[35px] h-[35px]"
           outline
         >
           <i className="text-[18px]">
