@@ -8,10 +8,11 @@ function FieldValue({
   ...props
 }) {
   const fieldClasses = classNames(
-    "bg-bg-white px-[15px] py-[8px] rounded-[5px] mt-[8px]",
+    "px-[15px] py-[8px] rounded-[5px] mt-[8px] border border-solid",
     {
       [className]: className,
-      "cursor-not-allowed !bg-bg-disabled": disabled,
+      "field-value-disabled cursor-not-allowed": disabled,
+      "border-bd-filed-form-color/25 bg-bg-white": !disabled,
     }
   );
 
@@ -25,7 +26,7 @@ function FieldValue({
       </label>
       <div className={fieldClasses}>
         <input
-          className="w-[100%] h-[100%] text-[14px] text-dark font-normal disabled:text-primary disabled:cursor-not-allowed"
+          className="w-[100%] h-[100%] border-0 bg-transparent text-[14px] text-dark font-normal outline-none disabled:cursor-not-allowed disabled:text-secondary"
           disabled={disabled}
           name={fieldName}
           id={fieldName}

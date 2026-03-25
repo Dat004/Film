@@ -23,7 +23,7 @@ function Footer() {
           <FlexItems className="mdm:hidden">
             <Button
               leftIcon={<PcaIcon></PcaIcon>}
-              className="rounded-[5px] w-[100%] min-w-[132px] mdm:min-w-[100px] leading-[1.35] text-[14px] gap-[4px] py-[10px] px-[12px] bg-bg-multiport"
+              className="footer-app-btn rounded-[5px] w-[100%] min-w-[132px] mdm:min-w-[100px] leading-[1.35] text-[14px] gap-[4px] py-[10px] px-[12px] bg-bg-multiport"
             >
               Thiết bị đầu cuối máy tính
             </Button>
@@ -39,7 +39,7 @@ function Footer() {
           <FlexItems className="mdm:flex-shrink-0 mdm:flex-grow-0 mdm:w-[calc(50%-10px)] mdm:mr-auto">
             <Button
               leftIcon={<TvIcon></TvIcon>}
-              className="rounded-[5px] w-[100%] min-w-[132px] mdm:min-w-[100px] leading-[1.35] text-[14px] gap-[4px] py-[10px] px-[12px] bg-bg-multiport"
+              className="footer-app-btn rounded-[5px] w-[100%] min-w-[132px] mdm:min-w-[100px] leading-[1.35] text-[14px] gap-[4px] py-[10px] px-[12px] bg-bg-multiport"
             >
               Trên TV
             </Button>
@@ -47,13 +47,13 @@ function Footer() {
           <FlexItems className="mdm:flex-shrink-0 mdm:flex-grow-0 mdm:w-[calc(50%-10px)] mdm:ml-auto">
             <Button
               leftIcon={<PcIcon></PcIcon>}
-              className="rounded-[5px] w-[100%] min-w-[132px] mdm:min-w-[100px] leading-[1.35] text-[14px] gap-[4px] py-[10px] px-[12px] bg-bg-multiport"
+              className="footer-app-btn rounded-[5px] w-[100%] min-w-[132px] mdm:min-w-[100px] leading-[1.35] text-[14px] gap-[4px] py-[10px] px-[12px] bg-bg-multiport"
             >
               Trên trang web
             </Button>
           </FlexItems>
         </FlexContainer>
-        <div className="w-[100%] h-[1px] bg-[rgba(123,123,123,0.5)]"></div>
+        <div className="w-[100%] h-[1px] bg-[var(--bg-divider-muted)]"></div>
         <div className="hidden clm:block my-[20px]">
           <FlexContainer>
             <FlexItems className="mr-auto">
@@ -86,21 +86,21 @@ function Footer() {
                   <Link
                     aria-label="fb-icon"
                     style={{ backgroundImage: `url(${images.facebookIcon})` }}
-                    className="block w-[30px] h-[30px] bg-center bg-no-repeat bg-cover"
+                    className="footer-social-link block h-[30px] w-[30px] bg-cover bg-center bg-no-repeat"
                   ></Link>
                 </FlexItems>
                 <FlexItems>
                   <Link
                     aria-label="is-icon"
                     style={{ backgroundImage: `url(${images.instagramIcon})` }}
-                    className="block w-[30px] h-[30px] bg-center bg-no-repeat bg-cover"
+                    className="footer-social-link block h-[30px] w-[30px] bg-cover bg-center bg-no-repeat"
                   ></Link>
                 </FlexItems>
                 <FlexItems>
                   <Link
                     aria-label="tw-icon"
                     style={{ backgroundImage: `url(${images.twitterIcon})` }}
-                    className="block w-[30px] h-[30px] bg-center bg-no-repeat bg-cover"
+                    className="footer-social-link block h-[30px] w-[30px] bg-cover bg-center bg-no-repeat"
                   ></Link>
                 </FlexItems>
               </FlexContainer>
@@ -175,21 +175,21 @@ function Footer() {
                 <Link
                   aria-label="fb-icon"
                   style={{ backgroundImage: `url(${images.facebookIcon})` }}
-                  className="block w-[30px] h-[30px] bg-center bg-no-repeat bg-cover"
+                  className="footer-social-link block h-[30px] w-[30px] bg-cover bg-center bg-no-repeat"
                 ></Link>
               </FlexItems>
               <FlexItems>
                 <Link
                   aria-label="is-icon"
                   style={{ backgroundImage: `url(${images.instagramIcon})` }}
-                  className="block w-[30px] h-[30px] bg-center bg-no-repeat bg-cover"
+                  className="footer-social-link block h-[30px] w-[30px] bg-cover bg-center bg-no-repeat"
                 ></Link>
               </FlexItems>
               <FlexItems>
                 <Link
                   aria-label="tw-icon"
                   style={{ backgroundImage: `url(${images.twitterIcon})` }}
-                  className="block w-[30px] h-[30px] bg-center bg-no-repeat bg-cover"
+                  className="footer-social-link block h-[30px] w-[30px] bg-cover bg-center bg-no-repeat"
                 ></Link>
               </FlexItems>
             </FlexContainer>
