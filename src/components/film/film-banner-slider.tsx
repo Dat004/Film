@@ -1,0 +1,118 @@
+"use client";
+
+import * as React from "react";
+import { GrNext, GrPrevious } from "react-icons/gr";
+
+import Button from "@/components/ui/button";
+import { BannerElement } from "@/components/Element";
+import { Swiper, SwiperSlide } from "./film-swiper";
+
+interface FilmBannerSliderProps {
+  data?: Record<string, any>;
+}
+
+export function FilmBannerSlider({ data = {} }: FilmBannerSliderProps) {
+  const swiperRef = React.useRef<any>(null);
+  const { APP_DOMAIN_CDN_IMAGE, itemsBanner } = data;
+
+  const handleNextSlide = () => {
+    swiperRef.current?.swiper?.slideNext(600);
+  };
+
+  const handlePrevSlide = () => {
+    swiperRef.current?.swiper?.slidePrev(600);
+  };
+
+  return (
+    <div className="relative w-full">
+      <Swiper
+        ref={swiperRef}
+        injectStyles={[
+          `
+          swiper-horizontal>.swiper-pagination-bullets.swiper-pagination-bullets-dynamic, .swiper-pagination-horizontal.swiper-pagination-bullets.swiper-pagination-bullets-dynamic {
+            left: calc(100% - 50px);
+          }
+
+          .swiper-pagination-bullet {
+            width: 8px;
+            height: 8px;
+            text-align: center;
+            line-height: 20px;
+            font-size: 12px;
+            opacity: 0.2;
+            background: var(--primary-color);
+          }
+
+          .swiper-pagination-bullets-dynamic .swiper-pagination-bullet-active-next-next, .swiper-pagination-bullets-dynamic .swiper-pagination-bullet-active-prev-prev {
+            transform: scale(0.75);
+          }
+
+          .swiper-pagination-bullets-dynamic .swiper-pagination-bullet-active-next, .swiper-pagination-bullets-dynamic .swiper-pagination-bullet-active-prev {
+            transform: scale(1);
+          }
+
+          .swiper-pagination-bullet-active {
+            opacity: 1;
+            background: var(--primary-color);
+          }
+          `,
+        ]}
+        mousewheel={{ enabled: true, forceToAxis: true, sensitivity: 0.5 }}
+        freeMode={{
+          enabled: true,
+          sticky: true,
+          momentumBounceRatio: 0,
+          minimumVelocity: 0.02,
+          momentumVelocityRatio: 0.05,
+        }}
+        slidesPerView={1}
+        pagination={{
+          dynamicBullets: true,
+          clickable: true,
+          hideOnClick: false,
+        }}
+        loop
+      >
+        {itemsBanner?.map((item: any) => (
+          <SwiperSlide key={item?._id}>
+            <BannerElement data={item} baseUrl={APP_DOMAIN_CDN_IMAGE} />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+      <section className="absolute inset-0 pb-[56.25%] pointer-events-none">
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            handlePrevSlide();
+          }}
+          className="absolute left-0 top-0 group/btn h-full flex items-center justify-center cursor-pointer z-10 px-4 pointer-events-auto"
+        >
+          <Button
+            aria-label="prev-btn"
+            onClick={handlePrevSlide}
+            className="text-[40px] !text-white opacity-60 hover:!text-white hover:opacity-100 drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)] group-hover/btn:opacity-100"
+          >
+            <GrPrevious />
+          </Button>
+        </div>
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            handleNextSlide();
+          }}
+          className="absolute right-0 top-0 group/btn h-full flex items-center justify-center cursor-pointer z-10 px-4 pointer-events-auto"
+        >
+          <Button
+            aria-label="next-btn"
+            onClick={handleNextSlide}
+            className="text-[40px] !text-white opacity-60 hover:!text-white hover:opacity-100 drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)] group-hover/btn:opacity-100"
+          >
+            <GrNext />
+          </Button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+export default FilmBannerSlider;

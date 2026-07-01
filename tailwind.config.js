@@ -86,6 +86,10 @@ export default {
         "width-detail-film-layout-slm": "var(--width-detail-film-layout-slm)",
         "width-detail-film-layout-2xlm": "var(--width-detail-film-layout-2xlm)",
       },
+      fontFamily: {
+        sans: ["var(--font-sf-pro)", "sans-serif"],
+        montserrat: ["var(--font-montserrat)", "sans-serif"],
+      },
     },
   },
   plugins: [
