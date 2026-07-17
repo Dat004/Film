@@ -176,10 +176,10 @@ export const countryFilmService = async (
   });
 };
 
-/** Fetches curated series for the home banner. */
+/** Home banner — cùng nguồn với trang Phim mới (`v1/api/danh-sach`). */
 export async function fetchHomeBannerData() {
   try {
-    const response = await danhSachV1Service('phim-bo', {
+    const response = await danhSachService(undefined, {
       page: 1,
       limit: 24,
       sort_field: 'modified.time',

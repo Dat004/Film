@@ -62,11 +62,8 @@ export function useCategoryFilm({ request, params, bannerQuery }: UseCategoryFil
   const { isError, isFetching, isSuccess } = state;
 
   const isNewFilmList = request.name === 'newFilmService';
-  const reuseGridForBanner =
-    page === 1 &&
-    (request.name === 'categoryFilmService' ||
-      request.name === 'countryFilmService' ||
-      isNewFilmList);
+  // Page 1: banner lấy từ chính list catalog đang hiển thị (Home/Phim mới, phim-bo, …).
+  const reuseGridForBanner = page === 1;
 
   const { newData: bannerRaw, state: bannerState } = useFetchData({
     request: isNewFilmList ? danhSachService : danhSachV1Service,

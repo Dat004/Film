@@ -11,7 +11,10 @@ export interface BannerDanhSachQuery {
 
 export { BANNER_FILM_LIMIT };
 
-/** Map page service → v1 danh-sach query for curated banner. */
+/**
+ * Map catalog service → banner query when page > 1 (page 1 reuses the grid).
+ * Home + Phim mới dùng `danh-sach` không type — xử lý riêng trong useCategoryFilm.
+ */
 export function resolveBannerDanhSachQuery(
   requestName: string,
   slug?: string
@@ -26,6 +29,7 @@ export function resolveBannerDanhSachQuery(
     case 'tvShowService':
       return { type: 'tv-shows' };
     case 'newFilmService':
+      // Fallback only; page 1 reuses grid from danhSachService.
       return { type: 'phim-bo' };
     case 'categoryFilmService':
       return slug ? { type: 'phim-bo', category: slug } : { type: 'phim-bo' };
