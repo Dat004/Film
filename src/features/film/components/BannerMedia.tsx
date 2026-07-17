@@ -47,7 +47,7 @@ const BannerMedia: React.FC<BannerMediaProps> = ({
             }`}
           >
             <LazyLoadImage
-              placeholderSrc={images.imgLoadingVertical?.src || images.imgLoadingVertical}
+              placeholderSrc={images.imgLoadingVertical}
               className="absolute inset-0 h-full w-full object-cover pointer-events-none"
               alt={data?.name}
               src={thumbUrl}

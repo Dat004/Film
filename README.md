@@ -1,104 +1,118 @@
-# Film-NextJS
+# Film
 
-A movie streaming platform built with Next.js 16, React 19, TypeScript, and Firebase.
+Nền tảng xem phim xây bằng **Next.js** (App Router), **React**, **TypeScript** và **Firebase**.
 
-> For the full architectural blueprint see [`docs/ENTERPRISE_ARCHITECTURE.md`](../docs/ENTERPRISE_ARCHITECTURE.md).
+Demo: [film-project-beta.vercel.app](https://film-project-beta.vercel.app/)
 
----
+## Tính năng
 
-## Quick Start
+- Catalog phim (mới, bộ, lẻ, hoạt hình, TV, thể loại, quốc gia, tìm kiếm)
+- Player HLS: đổi tập, resume qua URL (`?ep=` / `?t=`), autoplay / auto-next
+- Continue watching & watchlist (Firebase Auth + Realtime Database)
+- Watch Party: đồng bộ phát/seek/tập, chat, chuyển host khi host offline
+- Theme sáng / tối, skeleton loading, responsive
+
+## Tech stack
+
+| Layer     | Công nghệ                                                   |
+| --------- | ----------------------------------------------------------- |
+| Framework | Next.js 16, React 19, TypeScript                            |
+| UI        | Tailwind CSS, Radix UI, Framer Motion, Swiper               |
+| Data      | TanStack Query, Axios, Zod, nuqs                            |
+| State     | Zustand                                                     |
+| Media     | HLS.js                                                      |
+| Backend   | Firebase Auth, Realtime Database, Cloud Functions           |
+| Quality   | Vitest, Playwright, ESLint, Prettier, Husky, GitHub Actions |
+
+## Cấu trúc
+
+```text
+src/
+├── app/                 # App Router (pages, layouts)
+├── components/          # shared + ui
+├── features/
+│   ├── auth/
+│   ├── film/
+│   ├── player/
+│   └── watch-party/
+├── hooks/
+├── lib/
+├── providers/
+├── services/
+└── types/
+```
+
+Mỗi feature giữ riêng components, hooks, services, store và types.
+
+## Bắt đầu
 
 ```bash
 npm install
-cp .env.example .env.local   # fill in Firebase + API credentials
+cp .env.example .env.local
 npm run dev
 ```
 
----
+Mở [http://localhost:3000](http://localhost:3000).
 
-## Folder & Naming Conventions (Phase 1 deep-refactor)
+## Biến môi trường
 
-```
-src/
-├── app/                    # Next.js App Router pages
-├── components/
-│   ├── shared/             # Cross-feature layout components (Header, Footer, ErrorBoundary)
-│   │   └── index.ts        # barrel — always import from here
-│   └── ui/                 # Stateless UI primitives (Button, Modal, Skeleton, …)
-│       └── index.ts        # barrel — always import from here
-├── features/
-│   ├── auth/
-│   │   ├── lib/            # auth-persistence.ts — cookie & localStorage helpers
-│   │   ├── providers/      # auth-provider.tsx — Firebase listener orchestration
-│   │   ├── store/          # Zustand auth store
-│   │   └── types/
-│   ├── film/
-│   │   ├── components/
-│   │   ├── hooks/          # useCategoryFilm, useSearchPageFilm, …
-│   │   ├── services/       # film.service.ts  ← authoritative location
-│   │   ├── store/          # preview-film-store.ts
-│   │   └── types/
-│   ├── player/
-│   │   ├── components/PlayerContainer/
-│   │   │   ├── VideoPlayer/
-│   │   │   ├── EpisodesPlayer/
-│   │   │   └── DetailFilmPlayer/
-│   │   ├── hooks/          # useHlsPlayer, useVideoFullScreen, useContinueWatchingTracker, useVisibilityDisconnect
-│   │   ├── store/          # video-player-store.ts
-│   │   └── types/
-│   └── watch-party/
-│       ├── components/
-│       │   └── Room/       # RoomDesktopLayout, RoomMobileView, ChatPanel, RoomHeader, …
-│       ├── hooks/          # useRoomSync, useMemberNotifications, useWatchPartyLobby, …
-│       ├── services/
-│       └── types/
-├── hooks/                  # camelCase global hooks (useFetchData, useDebounce, …)
-│   └── index.ts            # barrel
-├── lib/                    # logger, env, utils, error
-├── providers/              # TanStack Query provider
-├── services/               # api-client.ts, firebase-client.ts
-└── types/                  # Shared API types
+Copy từ `.env.example`:
+
+```env
+NEXT_PUBLIC_API_BASE_URL="https://phimapi.com/"
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+NEXT_PUBLIC_FIREBASE_DATABASE_URL=
 ```
 
-### Key Rules
+Giá trị Firebase lấy từ Firebase Console của project của bạn.
 
-| Rule                         | Example                                         |
-| ---------------------------- | ----------------------------------------------- |
-| Hook files use **camelCase** | `useFetchData.ts` ✅                            |
-| Always import from barrel    | `import { Button } from "@/components/ui"` ✅   |
-| Services **throw** on error  | No `catch (e) { return e }` ✅                  |
-| Server data → TanStack Query | No `useEffect` + `useState` for fetching ✅     |
-| Global UI state → Zustand    | `useVideoPlayerStore`, `usePreviewFilmStore` ✅ |
+Static assets (logo, avatar, icon) đặt trong `public/images/` theo cấu trúc:
 
----
+```text
+public/images/
+├── avatars/
+├── icons/
+├── img-loading-vertical.jpg
+└── ...
+```
 
-## Available Scripts
+Nếu thiếu file ảnh, app vẫn chạy nhưng một số icon/avatar có thể không hiển thị.
+
+## Scripts
 
 ```bash
-npm run dev          # Start dev server
+npm run dev          # Dev server
 npm run build        # Production build
-npm run typecheck    # tsc --noEmit
+npm run start        # Chạy bản build
 npm run lint         # ESLint
-npm run format       # Prettier write
-npm run test:run     # Vitest (single run)
-npm run coverage     # Vitest coverage
+npm run typecheck    # TypeScript
+npm run format       # Prettier
+npm run test:run     # Unit tests (Vitest)
+npm run test:e2e     # Smoke E2E (Playwright)
+npm run coverage     # Coverage report
 ```
 
----
+Firebase (optional):
 
-## Environment Variables
+```bash
+npm run firebase:deploy:rules
+npm run firebase:deploy:functions
+```
 
-See `.env.example` for the complete list. Required variables:
+## CI
 
-- `NEXT_PUBLIC_BASE_URL` — film API base URL
-- `NEXT_PUBLIC_FIREBASE_*` — Firebase project config
+Mỗi push / PR vào `main` hoặc `master` chạy:
 
----
+1. Lint + typecheck + unit tests
+2. Build + Playwright smoke (home → xem phim, auth gate watch-party)
 
-## Architecture Decisions
+## Ghi chú
 
-- **Feature-Sliced Design** — each feature owns its components, hooks, services, store, and types.
-- **TanStack Query** — all remote data fetching; no manual `useEffect`+`useState` fetch loops.
-- **Zustand** — only for global UI state (player status, preview overlay).
-- **Error contract** — service functions throw `AppError`; pages/consumers wrap in `try/catch` or rely on `error.tsx`.
-- **Proxy (middleware)** — `src/proxy.ts` guards authenticated routes via the `is_logged_session` cookie.
+- Catalog gọi API công khai [phimapi.com](https://phimapi.com/).
+- Watch Party và continue watching cần Firebase đã cấu hình đúng rules / database URL.
+- Branch `refactor` trên GitHub giữ bản React cũ (trước khi migrate Next.js).

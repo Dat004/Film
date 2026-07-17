@@ -69,7 +69,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose = () => {}, isShowModal
 
             <div className="absolute inset-0 flex items-end px-7 pb-5">
               <Image
-                src={images.logo.src}
+                src={images.logo}
                 alt="Logo"
                 className="!h-9 !w-auto drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
               />

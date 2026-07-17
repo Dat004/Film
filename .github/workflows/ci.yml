@@ -47,6 +47,12 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Install Firebase functions dependencies
+        run: npm ci --prefix firebase/functions
+
+      - name: Typecheck Firebase functions
+        run: npm run typecheck:firebase
+
       - name: Unit tests
         run: npm run test:run
 

@@ -9,7 +9,8 @@ const eslintConfig = defineConfig([
 
   // TypeScript + import rules
   {
-    files: ["**/*.ts", "**/*.tsx"],
+    // Lint only app/test code. Firebase Functions is built/typed in its own tsconfig.
+    files: ["src/**/*.{ts,tsx}", "e2e/**/*.{ts,tsx}"],
     languageOptions: {
       parser: tsparser,
       parserOptions: {
@@ -86,6 +87,7 @@ const eslintConfig = defineConfig([
     "playwright.config.ts",
     "playwright-report/**",
     "test-results/**",
+    "firebase/functions/**",
   ]),
 ]);
 
