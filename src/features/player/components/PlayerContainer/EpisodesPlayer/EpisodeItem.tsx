@@ -1,0 +1,76 @@
+'use client';
+
+import React, { useRef, useEffect } from 'react';
+
+import FlexContainer from '@/components/ui/FlexContainer';
+import FlexItems from '@/components/ui/FlexItems';
+import { PlayIconCustom } from '@/icons';
+import { cn } from '@/lib/utils';
+
+export interface EpisodeItemProps extends React.HTMLAttributes<HTMLDivElement> {
+  data?: any;
+  isHadFound?: boolean;
+  currentEpisode?: boolean;
+  isOdd?: boolean;
+  isEven?: boolean;
+}
+
+const EpisodeItem: React.FC<EpisodeItemProps> = ({
+  data = {},
+  isHadFound = false,
+  currentEpisode = false,
+  isOdd = false,
+  isEven = false,
+  ...props
+}) => {
+  const episodeRef = useRef<HTMLDivElement>(null);
+
+  const episodeStyles = cn('relative border-l-[4px] border-solid cursor-pointer', {
+    'border-bd-active bg-bg-select-color text-primary': currentEpisode,
+    'border-transparent text-title hover:bg-bg-select-color hover:text-primary': !currentEpisode,
+    'bg-transparent': isEven && !currentEpisode,
+    'bg-bg-odd-color': isOdd && !currentEpisode,
+  });
+
+  const flickerClasses = cn({
+    'flicker-frame': isHadFound,
+    '': !isHadFound,
+  });
+
+  useEffect(() => {
+    if (isHadFound || currentEpisode) {
+      episodeRef?.current?.scrollIntoView({
+        block: 'end',
+        behavior: 'smooth',
+      });
+    }
+  }, [isHadFound, currentEpisode]);
+
+  return (
+    <div ref={episodeRef} className={episodeStyles} {...props}>
+      <div className={flickerClasses}></div>
+      <FlexContainer className="items-center px-[15px] py-[7px]">
+        <FlexItems className="flex-grow-0 flex-shrink-0 mr-[24px]">
+          <span className="text-[12px] font-semibold">{data?.name}</span>
+        </FlexItems>
+        <FlexItems className="w-[0] flex-grow flex-shrink">
+          <p className="text-[12px] font-normal">
+            <span>{data?.filename}</span>
+          </p>
+        </FlexItems>
+        {currentEpisode && (
+          <FlexItems className="flex-grow-0 flex-shrink-0 ml-[24px]">
+            <PlayIconCustom
+              data-episode={data?.name}
+              widthContainer="24px"
+              heightContainer="24px"
+              className="size-[18px] pl-[2px]"
+            />
+          </FlexItems>
+        )}
+      </FlexContainer>
+    </div>
+  );
+};
+
+export default EpisodeItem;

@@ -1,0 +1,56 @@
+<svg width="420" height="450" viewBox="0 0 420 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Đang tải thumbnail">
+  <defs>
+    <linearGradient id="bg-thumb" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c1c20"/>
+      <stop offset="100%" stop-color="#101013"/>
+    </linearGradient>
+    <linearGradient id="shimmer-thumb" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2f2f36" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#414149" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#2f2f36" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="overlay-thumb" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="55%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.65"/>
+    </linearGradient>
+    <style>
+      .shimmer-band-v { animation: shimmer-move-v 1.7s ease-in-out infinite; }
+      @keyframes shimmer-move-v {
+        0%   { transform: translateY(-50%); }
+        100% { transform: translateY(50%); }
+      }
+      .pulse { animation: pulse-op 1.7s ease-in-out infinite; }
+      @keyframes pulse-op {
+        0%, 100% { opacity: 0.55; }
+        50% { opacity: 1; }
+      }
+    </style>
+  </defs>
+
+  <rect width="420" height="450" rx="10" fill="url(#bg-thumb)"/>
+
+  <g class="shimmer-band-v">
+    <rect x="0" y="-320" width="420" height="640" fill="url(#shimmer-thumb)"/>
+  </g>
+
+  <!-- image / play icon -->
+  <g class="pulse" transform="translate(210,200)">
+    <circle r="32" fill="none" stroke="#4a4a52" stroke-width="3"/>
+    <path d="M-9,-15 L18,0 L-9,15 Z" fill="#4a4a52"/>
+  </g>
+
+  <!-- top-left badges (FHD / VIETSUB) -->
+  <rect x="16" y="16" width="42" height="20" rx="4" fill="#232328"/>
+  <rect x="64" y="16" width="112" height="20" rx="4" fill="#232328"/>
+  <!-- top-right rating badge -->
+  <rect x="360" y="16" width="44" height="20" rx="4" fill="#232328"/>
+
+  <!-- bottom gradient overlay with title/meta, matches real card style -->
+  <rect x="0" y="290" width="420" height="160" fill="url(#overlay-thumb)"/>
+  <rect x="16" y="392" width="220" height="16" rx="5" fill="#3a3a41"/>
+  <rect x="16" y="416" width="80" height="12" rx="5" fill="#2c2c33"/>
+  <rect x="330" y="414" width="70" height="16" rx="4" fill="#2c2c33"/>
+
+  <rect x="0" y="0" width="420" height="450" rx="10" fill="none" stroke="#232328" stroke-width="2"/>
+</svg>

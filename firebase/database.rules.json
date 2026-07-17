@@ -1,0 +1,97 @@
+{
+  "rules": {
+    "users": {
+      "$user_id": {
+        ".read": "auth != null && auth.uid === $user_id",
+        ".write": "auth != null && auth.uid === $user_id"
+      }
+    },
+    "continue_watching": {
+      "$user_id": {
+        ".read": "auth != null && auth.uid === $user_id",
+        ".write": "auth != null && auth.uid === $user_id"
+      }
+    },
+    "list_video": {
+      "$user_id": {
+        ".read": "auth != null && auth.uid === $user_id",
+        ".write": "auth != null && auth.uid === $user_id"
+      }
+    },
+    "watch_party_lobby": {
+      ".read": "auth != null",
+      ".indexOn": ["createdAt"],
+      "$roomId": {
+        ".write": "auth != null && ((!data.exists() && newData.child('hostId').val() === auth.uid) || (data.exists() && !newData.exists() && (data.child('hostId').val() === auth.uid || (data.child('hostConnected').val() === false && data.child('hostDisconnectedAt').isNumber() && data.child('hostDisconnectedAt').val() < (now - 900000)))) || (data.exists() && newData.exists() && (data.child('hostId').val() === auth.uid || root.child('watch_party_rooms').child($roomId).child('members').child(auth.uid).exists())))",
+        ".validate": "!newData.exists() || (newData.hasChildren(['hostId', 'filmId', 'roomId', 'memberCount']) && (!data.exists() || (newData.child('filmId').val() === data.child('filmId').val() && newData.child('roomId').val() === data.child('roomId').val() && newData.child('isPrivate').val() === data.child('isPrivate').val() && newData.child('createdAt').val() === data.child('createdAt').val())))",
+        "memberCount": {
+          ".write": "auth != null && (root.child('watch_party_lobby').child($roomId).child('hostId').val() === auth.uid || root.child('watch_party_rooms').child($roomId).child('members').child(auth.uid).exists())",
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 20"
+        },
+        "hostId": {
+          ".write": "auth != null && root.child('watch_party_rooms').child($roomId).child('members').child(auth.uid).exists()"
+        },
+        "hostName": {
+          ".write": "auth != null && root.child('watch_party_rooms').child($roomId).child('members').child(auth.uid).exists()"
+        },
+        "hostPhoto": {
+          ".write": "auth != null && root.child('watch_party_rooms').child($roomId).child('members').child(auth.uid).exists()"
+        },
+        "hostConnected": {
+          ".write": "auth != null && (root.child('watch_party_lobby').child($roomId).child('hostId').val() === auth.uid || root.child('watch_party_rooms').child($roomId).child('members').child(auth.uid).exists())",
+          ".validate": "newData.isBoolean()"
+        },
+        "hostDisconnectedAt": {
+          ".write": "auth != null && (root.child('watch_party_lobby').child($roomId).child('hostId').val() === auth.uid || root.child('watch_party_rooms').child($roomId).child('members').child(auth.uid).exists())",
+          ".validate": "newData.val() === null || newData.isNumber()"
+        }
+      }
+    },
+    "watch_party_rooms": {
+      ".indexOn": ["createdAt"],
+      "$roomId": {
+        ".read": "auth != null && (data.child('members').child(auth.uid).exists() || data.child('isPrivate').val() != true)",
+        ".write": "auth != null && ((!data.exists() && newData.child('hostId').val() === auth.uid) || (data.exists() && newData.exists() && data.child('hostId').val() === auth.uid) || (data.exists() && !newData.exists() && (data.child('hostId').val() === auth.uid || (data.child('members').child(data.child('hostId').val()).child('connected').val() === false && data.child('members').child(data.child('hostId').val()).child('disconnectedAt').isNumber() && data.child('members').child(data.child('hostId').val()).child('disconnectedAt').val() < (now - 900000)))))",
+
+        "hostId": {
+          ".write": "auth != null && root.child('watch_party_rooms').child($roomId).child('members').child(auth.uid).exists() && (data.val() === auth.uid || !root.child('watch_party_rooms').child($roomId).child('members').child(data.val()).exists() || (root.child('watch_party_rooms').child($roomId).child('members').child(data.val()).child('connected').val() === false && root.child('watch_party_rooms').child($roomId).child('members').child(data.val()).child('disconnectedAt').isNumber() && root.child('watch_party_rooms').child($roomId).child('members').child(data.val()).child('disconnectedAt').val() < (now - 900000)))"
+        },
+
+        "passwordHash": {
+          ".read": "false",
+          ".write": "false"
+        },
+
+        "joinGate": {
+          ".read": "auth != null && root.child('watch_party_rooms').child($roomId).child('isPrivate').val() === true",
+          ".write": "auth != null && root.child('watch_party_rooms').child($roomId).child('hostId').val() === auth.uid"
+        },
+
+        "members": {
+          "$uid": {
+            ".read": "auth != null && auth.uid === $uid",
+            ".write": "auth != null && (($uid === auth.uid && (!data.exists() ? root.child('watch_party_lobby').child($roomId).child('memberCount').val() < 20 : true)) || data.parent().parent().child('hostId').val() === auth.uid)"
+          }
+        },
+
+        "status": {
+          ".write": "auth != null && (data.parent().child('hostId').val() === auth.uid || (!data.exists() && newData.parent().child('hostId').val() === auth.uid))"
+        },
+
+        "messages": {
+          "$msgId": {
+            ".write": "auth != null && (newData.child('uid').val() === auth.uid || (newData.child('uid').val() === 'system' && newData.child('type').val() === 'system' && root.child('watch_party_rooms').child($roomId).child('members').child(auth.uid).exists()))",
+            ".validate": "newData.hasChildren(['uid', 'text', 'timestamp']) && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 500"
+          }
+        },
+
+        "reactions": {
+          "$reactionId": {
+            ".write": "auth != null && newData.child('uid').val() === auth.uid && root.child('watch_party_rooms').child($roomId).child('members').child(auth.uid).exists()",
+            ".validate": "newData.hasChildren(['uid', 'emoji', 'timestamp']) && newData.child('emoji').isString() && newData.child('emoji').val().length > 0 && newData.child('emoji').val().length <= 8"
+          }
+        }
+      }
+    }
+  }
+}
