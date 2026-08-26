@@ -12,6 +12,7 @@ import { useCategoryFilm } from '../../hooks/useCategoryFilm';
 import type { Film } from '../../types/film.types';
 import BannerSkeleton from '../BannerSkeleton';
 import FilmElement from '../FilmElement';
+import { FilterBar } from '../FilterBar';
 import SliderBanner from '../SliderBanner';
 
 export interface CategoryFilmScreenProps {
@@ -37,6 +38,10 @@ const CategoryFilmScreenContent: React.FC<CategoryFilmScreenProps> = ({
     handleChangePage,
     handleNextPage,
     handlePrevPage,
+    filters,
+    filterCount,
+    setFilter,
+    resetFilters,
   } = useCategoryFilm({ request, params: params || slug });
 
   type FilmListData = {
@@ -90,6 +95,12 @@ const CategoryFilmScreenContent: React.FC<CategoryFilmScreenProps> = ({
   return (
     <div className="mb-[40px]">
       <div className="mb-[40px]">{memolizedBanner}</div>
+      <FilterBar
+        filters={filters}
+        activeCount={filterCount}
+        onFilterChange={setFilter}
+        onReset={resetFilters}
+      />
       {(!isFetching || !isError) && isSuccess ? (
         <>
           <FlexContainer className="mx-[-12px] pb-[24px] items-start" isWrap>

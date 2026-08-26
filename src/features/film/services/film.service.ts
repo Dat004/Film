@@ -1,4 +1,4 @@
-import type { AxiosResponse } from 'axios';
+import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import { extractListItems } from '@/lib/api-normalize';
 import { getRequest, getAllRequest } from '@/services/api-client';
@@ -83,17 +83,21 @@ export const filmImagesService = async (slug: string): Promise<unknown> => {
   return response.data;
 };
 
-export const searchFilmService = async ({
-  keyword,
-  limit = 10,
-  page = 1,
-}: {
-  keyword: string;
-  limit?: number;
-  page?: number;
-}): Promise<AxiosResponse> => {
+export const searchFilmService = async (
+  {
+    keyword,
+    limit = 10,
+    page = 1,
+  }: {
+    keyword: string;
+    limit?: number;
+    page?: number;
+  },
+  options: AxiosRequestConfig = {}
+): Promise<AxiosResponse> => {
   return getRequest('v1/api/tim-kiem', {
-    params: { keyword, limit, page },
+    ...options,
+    params: { keyword, limit, page, ...options.params },
   });
 };
 
@@ -114,30 +118,30 @@ export const newFilmService = async (
 
 export const singleFilmService = async (
   _: unknown,
-  { page = 1, limit = 20 }: FilmQueryOptions = {}
+  options: DanhSachV1QueryOptions = {}
 ): Promise<AxiosResponse> => {
-  return getRequest('v1/api/danh-sach/phim-le', { params: { page, limit } });
+  return danhSachV1Service('phim-le', options);
 };
 
 export const seriesFilmService = async (
   _: unknown,
-  { page = 1, limit = 20 }: FilmQueryOptions = {}
+  options: DanhSachV1QueryOptions = {}
 ): Promise<AxiosResponse> => {
-  return getRequest('v1/api/danh-sach/phim-bo', { params: { page, limit } });
+  return danhSachV1Service('phim-bo', options);
 };
 
 export const cartoonService = async (
   _: unknown,
-  { page = 1, limit = 20 }: FilmQueryOptions = {}
+  options: DanhSachV1QueryOptions = {}
 ): Promise<AxiosResponse> => {
-  return getRequest('v1/api/danh-sach/hoat-hinh', { params: { page, limit } });
+  return danhSachV1Service('hoat-hinh', options);
 };
 
 export const tvShowService = async (
   _: unknown,
-  { page = 1, limit = 20 }: FilmQueryOptions = {}
+  options: DanhSachV1QueryOptions = {}
 ): Promise<AxiosResponse> => {
-  return getRequest('v1/api/danh-sach/tv-shows', { params: { page, limit } });
+  return danhSachV1Service('tv-shows', options);
 };
 
 /** Fetches a curated v1 list with catalog filters. */
@@ -151,28 +155,42 @@ export const danhSachV1Service = async (
 /** Fetches films filtered by category. */
 export const categoryFilmService = async (
   _: unknown,
-  { slug = 'hanh-dong', page = 1, limit = 20 }: CategoryFilmQueryOptions = {}
+  {
+    slug = 'hanh-dong',
+    page = 1,
+    limit = 20,
+    ...filterOpts
+  }: CategoryFilmQueryOptions & DanhSachV1QueryOptions = {}
 ): Promise<AxiosResponse> => {
   return danhSachV1Service('phim-bo', {
     page,
     limit,
     category: slug,
-    sort_field: 'modified.time',
-    sort_type: 'desc',
+    sort_field: filterOpts.sort_field ?? 'modified.time',
+    sort_type: filterOpts.sort_type ?? 'desc',
+    ...(filterOpts.sort_lang ? { sort_lang: filterOpts.sort_lang } : {}),
+    ...(filterOpts.year !== undefined ? { year: filterOpts.year } : {}),
   });
 };
 
 /** Fetches films filtered by country. */
 export const countryFilmService = async (
   _: unknown,
-  { slug = 'viet-nam', page = 1, limit = 20 }: CountryFilmQueryOptions = {}
+  {
+    slug = 'viet-nam',
+    page = 1,
+    limit = 20,
+    ...filterOpts
+  }: CountryFilmQueryOptions & DanhSachV1QueryOptions = {}
 ): Promise<AxiosResponse> => {
   return danhSachV1Service('phim-le', {
     page,
     limit,
     country: slug,
-    sort_field: 'modified.time',
-    sort_type: 'desc',
+    sort_field: filterOpts.sort_field ?? 'modified.time',
+    sort_type: filterOpts.sort_type ?? 'desc',
+    ...(filterOpts.sort_lang ? { sort_lang: filterOpts.sort_lang } : {}),
+    ...(filterOpts.year !== undefined ? { year: filterOpts.year } : {}),
   });
 };
 

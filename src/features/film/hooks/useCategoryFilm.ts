@@ -1,5 +1,5 @@
 import { useQueryState, parseAsInteger } from 'nuqs';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 
 import { useFetchData } from '@/hooks';
 import type { FetchRequest } from '@/hooks/useFetchData';
@@ -11,6 +11,8 @@ import {
   type BannerDataPayload,
 } from '../lib/banner-films';
 import { danhSachService, danhSachV1Service } from '../services/film.service';
+
+import { useCatalogFilters } from './useCatalogFilters';
 
 export interface UseCategoryFilmProps {
   request: FetchRequest;
@@ -45,6 +47,26 @@ export function useCategoryFilm({ request, params, bannerQuery }: UseCategoryFil
 
   const [endPage, setEndPage] = useState<Record<string, unknown> | null>(null);
 
+  // Catalog filters (synced to URL)
+  const {
+    filters,
+    queryOptions: filterQueryOptions,
+    activeCount: filterCount,
+    setFilter,
+    resetFilters,
+  } = useCatalogFilters();
+
+  // Reset page to 1 whenever filter params change.
+  const prevFilterKeyRef = useRef(JSON.stringify(filterQueryOptions));
+  useEffect(() => {
+    const key = JSON.stringify(filterQueryOptions);
+    if (prevFilterKeyRef.current !== key) {
+      prevFilterKeyRef.current = key;
+      setEndPage(null);
+      setPage(1);
+    }
+  }, [filterQueryOptions, setPage]);
+
   const resolvedBannerQuery = useMemo(
     () => bannerQuery ?? resolveBannerDanhSachQuery(request.name, params),
     [bannerQuery, request.name, params]
@@ -56,8 +78,9 @@ export function useCategoryFilm({ request, params, bannerQuery }: UseCategoryFil
       slug: params,
       page,
       limit,
+      ...filterQueryOptions,
     },
-    dependencies: [page, limit, params],
+    dependencies: [page, limit, params, filterQueryOptions],
   });
   const { isError, isFetching, isSuccess } = state;
 
@@ -148,6 +171,11 @@ export function useCategoryFilm({ request, params, bannerQuery }: UseCategoryFil
     handleChangePage,
     handleNextPage,
     handlePrevPage,
+    // Filter support
+    filters,
+    filterCount,
+    setFilter,
+    resetFilters,
   };
 }
 
