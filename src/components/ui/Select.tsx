@@ -17,14 +17,14 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      'flex h-9 w-full items-center justify-between rounded-[8px] border border-bd-filed-form-color bg-bg-layout px-3 py-2 text-sm text-primary outline-none focus:border-[var(--primary-color)] disabled:cursor-not-allowed disabled:opacity-50',
+      'flex h-9 w-full items-center justify-between rounded-[4px] border border-solid border-bd-filed-form-color bg-bg-search-form px-3 py-1.5 text-[13px] text-primary outline-none transition-colors hover:border-bd-select-menu focus:border-[var(--hover-color)] disabled:cursor-not-allowed disabled:opacity-50 select-none',
       className
     )}
     {...props}
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <ChevronDown className="h-4 w-4 opacity-50" />
+      <ChevronDown className="h-4 w-4 shrink-0 text-title opacity-70 transition-transform duration-200 group-data-[state=open]:rotate-180" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));
@@ -38,7 +38,7 @@ const SelectContent = React.forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        'relative z-[1100] max-h-96 min-w-[8rem] overflow-hidden rounded-[8px] border border-bd-filed-form-color bg-bg-layout text-primary shadow-md',
+        'relative z-[1300] max-h-80 min-w-[8rem] overflow-hidden rounded-[4px] border border-solid border-bd-filed-form-color bg-bg-sidebar text-primary shadow-xl backdrop-blur-md',
         'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
         position === 'popper' &&
           'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
@@ -68,16 +68,16 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex w-full cursor-pointer select-none items-center rounded-sm py-2 pl-8 pr-2 text-[12px] font-medium outline-none',
-      'focus:bg-bg-odd-color focus:text-primary data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-      'data-[state=checked]:bg-bg-select-color data-[state=checked]:text-primary',
+      'relative flex w-full cursor-pointer select-none items-center rounded-[2px] py-1.5 pl-7 pr-2.5 text-[12px] font-medium outline-none transition-colors',
+      'focus:bg-bg-odd-color focus:text-primary data-[disabled]:pointer-events-none data-[disabled]:opacity-40',
+      'data-[state=checked]:bg-bg-select-color data-[state=checked]:text-primary font-semibold',
       className
     )}
     {...props}
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <SelectPrimitive.ItemIndicator>
-        <Check className="h-4 w-4" />
+        <Check className="h-3.5 w-3.5 text-[var(--hover-color)]" />
       </SelectPrimitive.ItemIndicator>
     </span>
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>

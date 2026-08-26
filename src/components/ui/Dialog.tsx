@@ -40,6 +40,8 @@ const DialogContent = React.forwardRef<
       title = 'Modal',
       description = 'Modal Content',
       position = 'center',
+      onPointerDownOutside,
+      onInteractOutside,
       ...props
     },
     ref
@@ -55,6 +57,30 @@ const DialogContent = React.forwardRef<
         <DialogPrimitive.Content
           ref={ref}
           className={cn('pointer-events-auto outline-none', className)}
+          onPointerDownOutside={(e) => {
+            const target = e.target as HTMLElement | null;
+            if (
+              target?.closest?.('[data-radix-portal]') ||
+              target?.closest?.('[role="listbox"]') ||
+              target?.closest?.('[role="option"]')
+            ) {
+              e.preventDefault();
+              return;
+            }
+            onPointerDownOutside?.(e);
+          }}
+          onInteractOutside={(e) => {
+            const target = e.target as HTMLElement | null;
+            if (
+              target?.closest?.('[data-radix-portal]') ||
+              target?.closest?.('[role="listbox"]') ||
+              target?.closest?.('[role="option"]')
+            ) {
+              e.preventDefault();
+              return;
+            }
+            onInteractOutside?.(e);
+          }}
           {...props}
         >
           {hideTitle ? (
