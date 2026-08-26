@@ -67,4 +67,20 @@ export { useFilmExtras } from './hooks/useFilmExtras';
 export { useContinueWatchingActions } from './hooks/useContinueWatchingActions';
 
 export * from './constants';
+export * from './constants/filter.constants';
 export { mapApiMovieToFilm, mapApiMovieToFilmDetail, mapApiMovieList } from './lib/film-mappers';
+
+export { FilterBar } from './components/FilterBar';
+export type { FilterBarProps } from './components/FilterBar';
+export { useCatalogFilters } from './hooks/useCatalogFilters';
+export type { CatalogFilterParams } from './lib/filter-schemas';
+export {
+  parseCatalogFilters,
+  countActiveFilters,
+  filtersToQueryOptions,
+} from './lib/filter-schemas';
+
+export { default as SearchAutocomplete } from './components/SearchPageFilmScreen/SearchAutocomplete';
+export { useSearchAutocomplete } from './hooks/useSearchAutocomplete';
+export { useRecentSearchStore } from './store/recent-search-store';
+export { highlightText } from './lib/highlight-text';
