@@ -3,17 +3,14 @@
 import React, { useMemo } from 'react';
 
 import CatalogSkeleton from '@/components/ui/CatalogSkeleton';
-import CustomPagination from '@/components/ui/CustomPagination';
-import FlexContainer from '@/components/ui/FlexContainer';
-import FlexItems from '@/components/ui/FlexItems';
 import type { FetchRequest } from '@/hooks/useFetchData';
 
 import { useCategoryFilm } from '../../hooks/useCategoryFilm';
 import type { Film } from '../../types/film.types';
 import BannerSkeleton from '../BannerSkeleton';
-import FilmElement from '../FilmElement';
 import { FilterBar } from '../FilterBar';
 import SliderBanner from '../SliderBanner';
+import VirtualFilmGrid from '../VirtualFilmGrid';
 
 export interface CategoryFilmScreenProps {
   request: FetchRequest;
@@ -29,15 +26,14 @@ const CategoryFilmScreenContent: React.FC<CategoryFilmScreenProps> = ({
   const {
     page,
     data,
-    endPage,
+    accumulatedItems,
+    hasMore,
     dataBanner,
     isBannerLoading,
     isError,
     isFetching,
     isSuccess,
-    handleChangePage,
-    handleNextPage,
-    handlePrevPage,
+    handleLoadMore,
     filters,
     filterCount,
     setFilter,
@@ -49,9 +45,7 @@ const CategoryFilmScreenContent: React.FC<CategoryFilmScreenProps> = ({
     APP_DOMAIN_CDN_IMAGE?: string;
     [key: string]: unknown;
   };
-  type PaginationData = { totalPages: number };
   const typedData = data as FilmListData | null;
-  const typedEndPage = endPage as PaginationData | null;
   const typedBanner = dataBanner as {
     itemsBanner: Partial<Film>[] | null;
     APP_DOMAIN_CDN_IMAGE?: string;
@@ -62,35 +56,17 @@ const CategoryFilmScreenContent: React.FC<CategoryFilmScreenProps> = ({
     [typedBanner.itemsBanner]
   );
 
-  const gridItems = useMemo(
-    () => typedData?.items?.filter((film) => !film?.slug || !bannerSlugs.has(film.slug)) ?? [],
-    [typedData?.items, bannerSlugs]
-  );
+  // Filter out items present in banner
+  const gridItems = useMemo(() => {
+    const list = accumulatedItems.length > 0 ? accumulatedItems : (typedData?.items ?? []);
+    return list.filter((film) => !film?.slug || !bannerSlugs.has(film.slug));
+  }, [accumulatedItems, typedData?.items, bannerSlugs]);
 
   const showBannerSkeleton = isBannerLoading || !typedBanner.itemsBanner?.length;
 
   const memolizedBanner = useMemo(() => {
     return showBannerSkeleton ? <BannerSkeleton /> : <SliderBanner data={typedBanner} />;
   }, [showBannerSkeleton, typedBanner]);
-
-  const memolizedPagination = useMemo(() => {
-    return (
-      <>
-        {!typedEndPage ? null : (
-          <CustomPagination
-            activeIndex={page}
-            countsPrev={3}
-            countsNext={3}
-            startIndex={1}
-            endIndex={typedEndPage.totalPages}
-            onIndex={handleChangePage}
-            onNextIndex={handleNextPage}
-            onPrevIndex={handlePrevPage}
-          />
-        )}
-      </>
-    );
-  }, [typedEndPage, page, handleChangePage, handleNextPage, handlePrevPage]);
 
   return (
     <div className="mb-[40px]">
@@ -101,26 +77,19 @@ const CategoryFilmScreenContent: React.FC<CategoryFilmScreenProps> = ({
         onFilterChange={setFilter}
         onReset={resetFilters}
       />
-      {(!isFetching || !isError) && isSuccess ? (
-        <>
-          <FlexContainer className="mx-[-12px] pb-[24px] items-start" isWrap>
-            {gridItems.map((items) => (
-              <FlexItems
-                // Breakpoints project: *m = max-width. Desktop-first: 3 → 2 → 1
-                className="w-[calc(100%/3)] mdm:w-[calc(100%/2)] ssm:w-[100%] px-[12px]"
-                key={items?._id}
-              >
-                <FilmElement data={items} baseUrl={typedData?.APP_DOMAIN_CDN_IMAGE} />
-              </FlexItems>
-            ))}
-          </FlexContainer>
-        </>
+      {(!isFetching || !isError || gridItems.length > 0) && isSuccess ? (
+        <VirtualFilmGrid
+          items={gridItems}
+          baseUrl={typedData?.APP_DOMAIN_CDN_IMAGE}
+          isLoadingMore={isFetching && page > 1}
+          hasMore={hasMore}
+          onLoadMore={handleLoadMore}
+        />
       ) : (
         <div className="relative min-h-[calc(100dvh-90px)] mt-[40px] mask-loading">
           <CatalogSkeleton />
         </div>
       )}
-      <>{memolizedPagination}</>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { useQueryState, parseAsInteger } from 'nuqs';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 
 import { useFetchData } from '@/hooks';
 import type { FetchRequest } from '@/hooks/useFetchData';
@@ -11,6 +11,7 @@ import {
   type BannerDataPayload,
 } from '../lib/banner-films';
 import { danhSachService, danhSachV1Service } from '../services/film.service';
+import type { Film } from '../types/film.types';
 
 import { useCatalogFilters } from './useCatalogFilters';
 
@@ -46,6 +47,7 @@ export function useCategoryFilm({ request, params, bannerQuery }: UseCategoryFil
   );
 
   const [endPage, setEndPage] = useState<Record<string, unknown> | null>(null);
+  const [accumulatedItems, setAccumulatedItems] = useState<Partial<Film>[]>([]);
 
   // Catalog filters (synced to URL)
   const {
@@ -56,13 +58,14 @@ export function useCategoryFilm({ request, params, bannerQuery }: UseCategoryFil
     resetFilters,
   } = useCatalogFilters();
 
-  // Reset page to 1 whenever filter params change.
+  // Reset page & accumulated items whenever filter params change.
   const prevFilterKeyRef = useRef(JSON.stringify(filterQueryOptions));
   useEffect(() => {
     const key = JSON.stringify(filterQueryOptions);
     if (prevFilterKeyRef.current !== key) {
       prevFilterKeyRef.current = key;
       setEndPage(null);
+      setAccumulatedItems([]);
       setPage(1);
     }
   }, [filterQueryOptions, setPage]);
@@ -127,33 +130,56 @@ export function useCategoryFilm({ request, params, bannerQuery }: UseCategoryFil
   useEffect(() => {
     if (params) {
       setEndPage(null);
+      setAccumulatedItems([]);
       setPage(1);
     }
   }, [params, setPage]);
 
+  // Accumulate items for virtualized infinite scroll grid
   useEffect(() => {
     if (newData) {
       const nd = newData as Record<string, unknown>;
+      const items = (nd['items'] as Partial<Film>[]) || [];
+
       if (!endPage) {
         const apiParams = nd['params'] as Record<string, unknown> | undefined;
         setEndPage(normalizePagination(apiParams?.['pagination'] as Record<string, unknown>));
       }
+
+      setAccumulatedItems((prev) => {
+        if (page === 1) return items;
+        // Avoid duplicate items by slug/_id
+        const existingSlugs = new Set(prev.map((f) => f.slug || f._id));
+        const newItems = items.filter((f) => !existingSlugs.has(f.slug || f._id));
+        return [...prev, ...newItems];
+      });
     }
-  }, [newData, endPage]);
+  }, [newData, endPage, page]);
+
+  const totalPages = (endPage?.['totalPages'] as number) ?? 0;
+  const hasMore = page < totalPages;
+
+  const handleLoadMore = useCallback(() => {
+    if (hasMore && !isFetching) {
+      setPage((prev) => prev + 1);
+    }
+  }, [hasMore, isFetching, setPage]);
 
   const handleChangePage = (index: number) => {
+    setAccumulatedItems([]);
     setPage(index);
   };
 
   const handleNextPage = () => {
-    const totalPages = (endPage?.['totalPages'] as number) ?? 0;
     if (page < totalPages) {
+      setAccumulatedItems([]);
       setPage(page + 1);
     }
   };
 
   const handlePrevPage = () => {
     if (page > 1) {
+      setAccumulatedItems([]);
       setPage(page - 1);
     }
   };
@@ -162,12 +188,15 @@ export function useCategoryFilm({ request, params, bannerQuery }: UseCategoryFil
     page,
     limit,
     data: newData as Record<string, unknown> | null,
+    accumulatedItems,
     endPage,
+    hasMore,
     dataBanner,
     isBannerLoading,
     isError,
     isFetching,
     isSuccess,
+    handleLoadMore,
     handleChangePage,
     handleNextPage,
     handlePrevPage,
