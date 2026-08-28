@@ -132,7 +132,7 @@ const DetailFilm: React.FC<DetailFilmProps> = ({ dataMovie = {}, isWatchParty = 
         <FilmHtmlContent html={content} lineClamp={2} />
       </section>
 
-      {(notify || showtimes || chieurap) && (
+      {/* {(notify || showtimes || chieurap) && (
         <div className="mt-[14px] rounded-[8px] border border-bd-filed-form-color bg-bg-sidebar p-[12px] text-[13px] text-secondary leading-relaxed">
           {chieurap ? (
             <p className="font-medium text-primary mb-[4px]">{PLAYER_UI_COPY.theatricalNote}</p>
@@ -140,7 +140,7 @@ const DetailFilm: React.FC<DetailFilmProps> = ({ dataMovie = {}, isWatchParty = 
           {notify ? <p>{notify}</p> : null}
           {showtimes ? <p className="mt-[4px]">{showtimes}</p> : null}
         </div>
-      )}
+      )} */}
 
       <div className="detail-film-meta-section mt-[20px] pt-[20px] border-t border-solid border-bd-filed-form-color">
         <div className="grid grid-cols-1 min-[520px]:grid-cols-2 gap-x-[28px] gap-y-0">
