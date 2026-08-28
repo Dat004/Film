@@ -22,6 +22,7 @@ import { useVideoKeyboard } from '../hooks/useVideoKeyboard';
 import { useVideoPlaybackSync } from '../hooks/useVideoPlaybackSync';
 import { useVideoPlayerStore, setStatusMovie, setTimeVideo } from '../store/video-player-store';
 
+import KeyboardShortcutsModal from './KeyboardShortcutsModal';
 import BarControls from './PlayerContainer/VideoPlayer/BarControls';
 
 export interface VideoProps extends React.VideoHTMLAttributes<HTMLVideoElement> {
@@ -58,6 +59,7 @@ const Video: React.FC<VideoProps> = ({
   const [hlsReloadKey, setHlsReloadKey] = useState(0);
   const [showController, setShowController] = useState(false);
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
+  const [shortcutsModalOpen, setShortcutsModalOpen] = useState(false);
   const [isPiPActive, setIsPiPActive] = useState(false);
   const [qualityLevels, setQualityLevels] = useState<HlsQualityLevel[]>([]);
   const [currentQualityLevel, setCurrentQualityLevel] = useState(-1);
@@ -235,6 +237,7 @@ const Video: React.FC<VideoProps> = ({
     revealControls,
     applyDoubleTapSeek,
     handleToggleFullScreen,
+    onToggleShortcutsModal: () => setShortcutsModalOpen((prev) => !prev),
   });
 
   const handleTogglePiP = useCallback(async () => {
@@ -484,6 +487,7 @@ const Video: React.FC<VideoProps> = ({
               currentQualityLevel={currentQualityLevel}
               onQualityChange={handleQualityChange}
               onSettingsOpenChange={setSettingsMenuOpen}
+              onOpenShortcutsModal={() => setShortcutsModalOpen(true)}
               onInteraction={revealControls}
               controlsVisible={controlsVisible}
               playbackLocked={playbackLocked}
@@ -492,6 +496,9 @@ const Video: React.FC<VideoProps> = ({
           </div>
         </motion.div>
       </div>
+
+      {/* Keyboard Shortcuts Guide Modal */}
+      <KeyboardShortcutsModal open={shortcutsModalOpen} onOpenChange={setShortcutsModalOpen} />
     </div>
   );
 };

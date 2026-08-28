@@ -11,6 +11,7 @@ import {
   PictureInPicture2,
   Check,
   Settings2,
+  Keyboard,
 } from 'lucide-react';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -38,6 +39,7 @@ export interface BarControlsProps {
   currentQualityLevel?: number;
   onQualityChange?: (index: number) => void;
   onSettingsOpenChange?: (open: boolean) => void;
+  onOpenShortcutsModal?: () => void;
   /** Keep chrome visible (scrub / volume / menu). */
   onInteraction?: () => void;
   /** Clears the seek preview when the controls hide. */
@@ -88,6 +90,7 @@ const BarControls: React.FC<BarControlsProps> = ({
   currentQualityLevel = -1,
   onQualityChange = () => {},
   onSettingsOpenChange,
+  onOpenShortcutsModal,
   onInteraction = () => {},
   controlsVisible = true,
   playbackLocked = false,
@@ -407,6 +410,19 @@ const BarControls: React.FC<BarControlsProps> = ({
         </div>
 
         <div className="flex shrink-0 items-center gap-x-[2px]">
+          <button
+            type="button"
+            title="Hướng dẫn phím tắt ( ? )"
+            aria-label="Hướng dẫn phím tắt ( ? )"
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenShortcutsModal?.();
+            }}
+            className={iconBtnClass}
+          >
+            <Keyboard className="size-[17px] detail769:size-[18px]" strokeWidth={1.75} />
+          </button>
+
           <button
             ref={settingsButtonRef}
             type="button"
