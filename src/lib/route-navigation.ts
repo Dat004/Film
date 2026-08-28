@@ -29,19 +29,35 @@ function isSameAppPath(href: string): boolean {
   }
 }
 
+/** Execute route navigation with Native View Transitions API when supported */
+function navigateWithViewTransition(action: () => void): void {
+  if (
+    typeof document !== 'undefined' &&
+    'startViewTransition' in document &&
+    typeof (document as unknown as { startViewTransition?: (cb: () => void) => void })
+      .startViewTransition === 'function'
+  ) {
+    (document as unknown as { startViewTransition: (cb: () => void) => void }).startViewTransition(
+      action
+    );
+  } else {
+    action();
+  }
+}
+
 export function pushRoute(router: { push: (href: string) => void }, href: string): void {
   if (isSameAppPath(href)) return;
   startRouteNavigation();
-  router.push(href);
+  navigateWithViewTransition(() => router.push(href));
 }
 
 export function replaceRoute(router: { replace: (href: string) => void }, href: string): void {
   if (isSameAppPath(href)) return;
   startRouteNavigation();
-  router.replace(href);
+  navigateWithViewTransition(() => router.replace(href));
 }
 
 export function backRoute(router: { back: () => void }): void {
   startRouteNavigation();
-  router.back();
+  navigateWithViewTransition(() => router.back());
 }
