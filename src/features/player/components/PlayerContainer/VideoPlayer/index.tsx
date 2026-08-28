@@ -7,9 +7,11 @@ import { useShallow } from 'zustand/react/shallow';
 import FlexContainer from '@/components/ui/FlexContainer';
 import FlexItems from '@/components/ui/FlexItems';
 import { PlayIconCustom } from '@/icons';
+import { resolveFilmImageUrl } from '@/lib/film-detail';
 import { cn } from '@/lib/utils';
 
 import { usePlaybackIntent } from '../../../hooks/usePlaybackIntent';
+import { usePlayerIntersection } from '../../../hooks/usePlayerIntersection';
 import { usePlayerUrlState } from '../../../hooks/usePlayerUrlState';
 import { syncEpisodeQueryToWindow } from '../../../lib/player-url';
 import {
@@ -19,6 +21,7 @@ import {
 } from '../../../store/video-player-store';
 
 import BarPlayer from './BarPlayer';
+import FloatingMiniPlayer from '../../FloatingMiniPlayer';
 
 const Video = dynamic(() => import('../../Video'), { ssr: false });
 
@@ -55,6 +58,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const filmKey = String(dataMovie?._id ?? dataMovie?.slug ?? '');
 
   const videoRef = React.useRef<HTMLVideoElement | null>(null);
+  const playerWrapperRef = React.useRef<HTMLDivElement | null>(null);
+
+  const { isFloating, setIsClosed, restoreToPlayer } = usePlayerIntersection(playerWrapperRef);
 
   const { requestPlay, requestPause, onMediaReady } = usePlaybackIntent({
     videoRef,
@@ -138,6 +144,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   return (
     <div
+      ref={playerWrapperRef}
       className={cn(
         'relative w-[100%] slm:w-[100%] 2xlm:w-[100%] slm:pl-0',
         isWatchParty || isTheater ? 'pl-0' : 'pl-[300px]',
@@ -187,6 +194,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           />
         </div>
       </div>
+
+      {/* Floating Mini Player when scrolling away */}
+      <FloatingMiniPlayer
+        isFloating={isFloating}
+        onRestore={restoreToPlayer}
+        onClose={() => setIsClosed(true)}
+        filmTitle={dataMovie?.name || 'Phim đang xem'}
+        episodeName={episodeName ? `Tập ${episodeName}` : ''}
+        posterUrl={resolveFilmImageUrl(dataMovie?.poster_url || dataMovie?.thumb_url)}
+      />
     </div>
   );
 };
