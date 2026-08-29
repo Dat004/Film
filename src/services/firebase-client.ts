@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getDatabase } from 'firebase/database';
+import { getDatabase, ref, onValue } from 'firebase/database';
 import { getStorage } from 'firebase/storage';
 
 import { env } from '@/lib/env';
@@ -23,4 +23,18 @@ const storage = getStorage(app);
 const database = getDatabase(app);
 const provider = new GoogleAuthProvider();
 
+// Track server time offset for more accurate timekeeping
+let serverTimeOffset = 0;
+if (typeof window !== 'undefined') {
+  const offsetRef = ref(database, '.info/serverTimeOffset');
+  onValue(offsetRef, (snap) => {
+    serverTimeOffset = (snap.val() as number) || 0;
+  });
+}
+
+export function getServerTimeOffset(): number {
+  return serverTimeOffset;
+}
+
 export { app, auth, provider, storage, database };
+
