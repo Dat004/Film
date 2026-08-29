@@ -3,23 +3,15 @@
 import React from 'react';
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
+import WatchPartyCanvasReactions from '../WatchPartyCanvasReactions';
 import { Player, EpisodesPlayer } from '@/features/player';
 import { sanitizeFilmHtml } from '@/lib/film-detail';
 
 import type { UserParam } from '../../services/watch-party.service';
-import type { WatchPartyRoom } from '../../types/watch-party.types';
+import type { WatchPartyRoom, RoomReaction } from '../../types/watch-party.types';
 
 import ChatPanel from './ChatPanel';
 import type { ChatPanelProps } from './ChatPanel';
-
-interface Reaction {
-  id: string;
-  emoji: string;
-  left: number;
-  duration: number;
-  size: number;
-  rotation: number;
-}
 
 export interface RoomMobileViewProps {
   activeTab: string;
@@ -31,7 +23,7 @@ export interface RoomMobileViewProps {
   user: UserParam | null;
   sharedChatProps: Omit<ChatPanelProps, 'isChatOpen' | 'isMobile' | 'chatWidth' | 'setIsChatOpen'>;
   filmData: Record<string, unknown>;
-  reactions: Reaction[];
+  reactions?: Record<string, RoomReaction> | null;
   isChatOpen: boolean;
   isHost: boolean;
 }
@@ -48,9 +40,9 @@ const RoomMobileView: React.FC<RoomMobileViewProps> = ({
   movieData,
   episodeItem,
   dataEpisodes,
+  roomData,
   sharedChatProps,
   filmData,
-  reactions,
   isChatOpen,
   isHost,
 }) => {
@@ -58,29 +50,7 @@ const RoomMobileView: React.FC<RoomMobileViewProps> = ({
     <div className="relative flex-1 h-full bg-black flex flex-col min-h-0 overflow-hidden">
       <div className="relative w-full aspect-video bg-black shrink-0">
         <Player data={filmData} isWatchParty={true} isChatOpen={isChatOpen} isHost={isHost} />
-
-        <div className="absolute inset-x-0 bottom-16 top-[60%] pointer-events-none z-[999] overflow-hidden">
-          {reactions.map((r) => (
-            <div
-              key={r.id}
-              className="absolute bottom-0 pointer-events-none"
-              style={{
-                left: `${r.left}%`,
-                animation: `floatUp ${r.duration}s ease-out forwards`,
-              }}
-            >
-              <span
-                className="block select-none"
-                style={{
-                  fontSize: `${r.size}px`,
-                  transform: `rotate(${r.rotation}deg)`,
-                }}
-              >
-                {r.emoji}
-              </span>
-            </div>
-          ))}
-        </div>
+        <WatchPartyCanvasReactions reactions={roomData?.reactions} />
       </div>
 
       <div className="flex-1 min-h-0 hidden 2xlm:flex flex-col bg-bg-layout">

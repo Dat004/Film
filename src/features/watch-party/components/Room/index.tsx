@@ -151,7 +151,6 @@ const WatchPartyRoom: React.FC = () => {
             user={watchPartyUser}
             sharedChatProps={sharedChatProps}
             filmData={filmData}
-            reactions={reactions}
             isChatOpen={isChatOpen}
             isHost={isHost}
           />
