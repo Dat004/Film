@@ -12,6 +12,8 @@ import { cn } from '@/lib/utils';
 import { AUTO_HIDE_MS } from '../constants/playback.constants';
 import { PLAYER_UI_COPY } from '../constants/player-ui.constants';
 import { useHlsPlayer, type HlsQualityLevel } from '../hooks/useHlsPlayer';
+import { useMediaPrefetch } from '../hooks/useMediaPrefetch';
+import { useNetworkAdaptiveQuality } from '../hooks/useNetworkAdaptiveQuality';
 import {
   useVideoFullScreen,
   enterVideoFullscreen,
@@ -20,7 +22,6 @@ import {
 import { useVideoGestures } from '../hooks/useVideoGestures';
 import { useVideoKeyboard } from '../hooks/useVideoKeyboard';
 import { useVideoPlaybackSync } from '../hooks/useVideoPlaybackSync';
-import { useMediaPrefetch } from '../hooks/useMediaPrefetch';
 import { useVideoPlayerStore, setStatusMovie, setTimeVideo } from '../store/video-player-store';
 
 import KeyboardShortcutsModal from './KeyboardShortcutsModal';
@@ -95,6 +96,9 @@ const Video: React.FC<VideoProps> = ({
     }))
   );
   const duration = useVideoPlayerStore((s) => s.time.duration);
+
+  // Network-Aware Adaptive Quality Manager
+  const adaptiveConfig = useNetworkAdaptiveQuality();
 
   // Media Segment Prefetching via Service Worker
   useMediaPrefetch({ nextEpisodeM3u8Url: nextEpisodeSrc });
@@ -189,6 +193,7 @@ const Video: React.FC<VideoProps> = ({
     videoRef,
     src,
     reloadKey: hlsReloadKey,
+    adaptiveConfig,
     onReady: handleStarting,
     onError: handleError,
     onTimeReset: () => {

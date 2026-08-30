@@ -13,6 +13,9 @@ import {
   Hls as HlsClass,
 } from '../services/hls.factory';
 
+import type { NetworkAdaptiveConfig } from './useNetworkAdaptiveQuality';
+import { getAdaptiveCapLevelIndex } from './useNetworkAdaptiveQuality';
+
 export interface HlsQualityLevel {
   index: number;
   label: string;
@@ -30,6 +33,7 @@ interface UseHlsPlayerOptions {
   src: string;
   /** Bump to tear down & re-attach HLS without resetting playback time. */
   reloadKey?: number;
+  adaptiveConfig?: NetworkAdaptiveConfig;
   onReady: () => void;
   onError: (message: string) => void;
   onTimeReset: () => void;
@@ -40,12 +44,14 @@ export function useHlsPlayer({
   videoRef,
   src,
   reloadKey = 0,
+  adaptiveConfig,
   onReady,
   onError,
   onTimeReset,
   onQualityReady,
 }: UseHlsPlayerOptions) {
   const prevSrcRef = useRef(src);
+  const hlsInstanceRef = useRef<Hls | null>(null);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -61,12 +67,39 @@ export function useHlsPlayer({
     const onNativeLoadedMetadata = () => onReady();
 
     if (isHlsJsSupported()) {
-      hls = createHlsInstance(HLS_MAIN_CONFIG);
+      const dynamicConfig = {
+        ...HLS_MAIN_CONFIG,
+        ...(adaptiveConfig
+          ? {
+              maxBufferLength: adaptiveConfig.maxBufferLength,
+              maxMaxBufferLength: adaptiveConfig.maxMaxBufferLength,
+            }
+          : {}),
+      };
+
+      hls = createHlsInstance(dynamicConfig);
+      hlsInstanceRef.current = hls;
       hls.attachMedia(video);
       hls.loadSource(src);
 
       hls.on(HlsClass.Events.MANIFEST_PARSED, () => {
         onReady();
+
+        if (hls) {
+          logger.info('[NetworkAdaptive] HLS Manifest parsed', {
+            totalLevels: hls.levels.length,
+            availableHeights: hls.levels.map((l) => l.height ?? 0),
+          });
+
+          if (adaptiveConfig?.capMaxHeight) {
+            const rawLevels = hls.levels.map((l, idx) => ({ index: idx, height: l.height ?? 0 }));
+            const capIdx = getAdaptiveCapLevelIndex(rawLevels, adaptiveConfig.capMaxHeight);
+            if (capIdx !== -1) {
+              hls.autoLevelCapping = capIdx;
+            }
+          }
+        }
+
         if (onQualityReady && hls) {
           const levels: HlsQualityLevel[] = hls.levels
             .map((level, index) => ({
@@ -99,6 +132,7 @@ export function useHlsPlayer({
             default:
               destroyHlsInstance(hls);
               hls = null;
+              hlsInstanceRef.current = null;
               onError(PLAYER_UI_COPY.errorGeneric);
               break;
           }
@@ -120,7 +154,33 @@ export function useHlsPlayer({
         video.load();
       }
       destroyHlsInstance(hls);
+      hlsInstanceRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src, reloadKey]);
+
+  // Dynamically update active HLS buffer & level capping when network condition changes live
+  useEffect(() => {
+    const hls = hlsInstanceRef.current;
+    if (!hls || !adaptiveConfig) return;
+
+    hls.config.maxBufferLength = adaptiveConfig.maxBufferLength;
+    hls.config.maxMaxBufferLength = adaptiveConfig.maxMaxBufferLength;
+
+    if (hls.levels && hls.levels.length > 0) {
+      const rawLevels = hls.levels.map((l, idx) => ({ index: idx, height: l.height ?? 0 }));
+      if (adaptiveConfig.capMaxHeight) {
+        const capIdx = getAdaptiveCapLevelIndex(rawLevels, adaptiveConfig.capMaxHeight);
+        if (capIdx !== -1) {
+          hls.autoLevelCapping = capIdx;
+          logger.info('[NetworkAdaptive] Dynamic cap applied live', {
+            capMaxHeight: adaptiveConfig.capMaxHeight,
+            autoLevelCapping: capIdx,
+          });
+        }
+      } else {
+        hls.autoLevelCapping = -1; // Uncapped
+      }
+    }
+  }, [adaptiveConfig]);
 }
