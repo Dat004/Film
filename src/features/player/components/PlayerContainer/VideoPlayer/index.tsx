@@ -174,6 +174,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             <div className="absolute backdrop-blur-[20px] bg-[var(--bg-video-overlay)] inset-0 z-[120] overflow-visible">
               <Video
                 src={dataEpisodes[currentEpisode]?.link_m3u8}
+                nextEpisodeSrc={dataEpisodes[currentEpisode + 1]?.link_m3u8}
                 handleNext={handleNextEpisode}
                 playbackLocked={playbackLocked}
                 videoRef={videoRef}

@@ -20,6 +20,7 @@ import {
 import { useVideoGestures } from '../hooks/useVideoGestures';
 import { useVideoKeyboard } from '../hooks/useVideoKeyboard';
 import { useVideoPlaybackSync } from '../hooks/useVideoPlaybackSync';
+import { useMediaPrefetch } from '../hooks/useMediaPrefetch';
 import { useVideoPlayerStore, setStatusMovie, setTimeVideo } from '../store/video-player-store';
 
 import KeyboardShortcutsModal from './KeyboardShortcutsModal';
@@ -28,6 +29,7 @@ import BarControls from './PlayerContainer/VideoPlayer/BarControls';
 export interface VideoProps extends React.VideoHTMLAttributes<HTMLVideoElement> {
   className?: string;
   src?: string;
+  nextEpisodeSrc?: string;
   handleNext?: () => void;
   playbackLocked?: boolean;
   videoRef?: React.RefObject<HTMLVideoElement | null>;
@@ -42,6 +44,7 @@ const controllerVariants = {
 const Video: React.FC<VideoProps> = ({
   className,
   src = '',
+  nextEpisodeSrc,
   handleNext = () => {},
   playbackLocked = false,
   videoRef: videoRefProp,
@@ -92,6 +95,9 @@ const Video: React.FC<VideoProps> = ({
     }))
   );
   const duration = useVideoPlayerStore((s) => s.time.duration);
+
+  // Media Segment Prefetching via Service Worker
+  useMediaPrefetch({ nextEpisodeM3u8Url: nextEpisodeSrc });
 
   const controlsVisible = showController || settingsMenuOpen;
 
