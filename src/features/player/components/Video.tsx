@@ -14,6 +14,7 @@ import { PLAYER_UI_COPY } from '../constants/player-ui.constants';
 import { useHlsPlayer, type HlsQualityLevel } from '../hooks/useHlsPlayer';
 import { useMediaPrefetch } from '../hooks/useMediaPrefetch';
 import { useNetworkAdaptiveQuality } from '../hooks/useNetworkAdaptiveQuality';
+import { useP2PStats } from '../hooks/useP2PStats';
 import {
   useVideoFullScreen,
   enterVideoFullscreen,
@@ -26,6 +27,7 @@ import { useVideoPlayerStore, setStatusMovie, setTimeVideo } from '../store/vide
 
 import KeyboardShortcutsModal from './KeyboardShortcutsModal';
 import BarControls from './PlayerContainer/VideoPlayer/BarControls';
+import VideoP2PStats from './VideoP2PStats';
 
 export interface VideoProps extends React.VideoHTMLAttributes<HTMLVideoElement> {
   className?: string;
@@ -35,6 +37,8 @@ export interface VideoProps extends React.VideoHTMLAttributes<HTMLVideoElement> 
   playbackLocked?: boolean;
   videoRef?: React.RefObject<HTMLVideoElement | null>;
   onMediaReady?: () => void;
+  /** Watch Party roomId — activates P2P segment sharing */
+  p2pSwarmId?: string | undefined;
 }
 
 const controllerVariants = {
@@ -50,11 +54,14 @@ const Video: React.FC<VideoProps> = ({
   playbackLocked = false,
   videoRef: videoRefProp,
   onMediaReady,
+  p2pSwarmId,
   ...props
 }) => {
   const mouseMoveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const changeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const videoWrapperRef = useRef<HTMLDivElement>(null);
+
+  const { stats, handleStatsUpdate } = useP2PStats();
   const internalVideoRef = useRef<HTMLVideoElement>(null);
   const videoRef = (videoRefProp ?? internalVideoRef) as React.RefObject<HTMLVideoElement>;
 
@@ -194,6 +201,8 @@ const Video: React.FC<VideoProps> = ({
     src,
     reloadKey: hlsReloadKey,
     adaptiveConfig,
+    p2pSwarmId,
+    onP2PStatsUpdate: handleStatsUpdate,
     onReady: handleStarting,
     onError: handleError,
     onTimeReset: () => {
@@ -464,6 +473,13 @@ const Video: React.FC<VideoProps> = ({
           </div>
         </div>
       )}
+
+      {/* P2P Stats overlay (tạm ẩn) */}
+      {/* Boolean(p2pSwarmId) && (
+        <div className="absolute top-3 left-3 z-[200] pointer-events-auto select-none">
+          <VideoP2PStats stats={stats} />
+        </div>
+      ) */}
 
       <div
         className={cn(

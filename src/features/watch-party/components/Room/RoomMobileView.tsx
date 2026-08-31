@@ -3,12 +3,12 @@
 import React from 'react';
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
-import WatchPartyCanvasReactions from '../WatchPartyCanvasReactions';
 import { Player, EpisodesPlayer } from '@/features/player';
 import { sanitizeFilmHtml } from '@/lib/film-detail';
 
 import type { UserParam } from '../../services/watch-party.service';
 import type { WatchPartyRoom, RoomReaction } from '../../types/watch-party.types';
+import WatchPartyCanvasReactions from '../WatchPartyCanvasReactions';
 
 import ChatPanel from './ChatPanel';
 import type { ChatPanelProps } from './ChatPanel';
@@ -49,7 +49,13 @@ const RoomMobileView: React.FC<RoomMobileViewProps> = ({
   return (
     <div className="relative flex-1 h-full bg-black flex flex-col min-h-0 overflow-hidden">
       <div className="relative w-full aspect-video bg-black shrink-0">
-        <Player data={filmData} isWatchParty={true} isChatOpen={isChatOpen} isHost={isHost} />
+        <Player
+          data={filmData}
+          isWatchParty={true}
+          isChatOpen={isChatOpen}
+          isHost={isHost}
+          p2pSwarmId={roomData?.roomId}
+        />
         <WatchPartyCanvasReactions reactions={roomData?.reactions} />
       </div>
 

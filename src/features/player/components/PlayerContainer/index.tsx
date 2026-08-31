@@ -28,6 +28,7 @@ export interface PlayerProps {
   isWatchParty?: boolean;
   isChatOpen?: boolean;
   isHost?: boolean;
+  p2pSwarmId?: string | undefined;
 }
 
 function resolveEpisodeIndex(
@@ -48,6 +49,7 @@ const Player: React.FC<PlayerProps> = ({
   isWatchParty = false,
   isChatOpen = false,
   isHost = true,
+  p2pSwarmId,
 }) => {
   const { isLogged, uid, continueWatching } = useAuth();
 
@@ -153,6 +155,7 @@ const Player: React.FC<PlayerProps> = ({
           dataMovie={movie}
           isWatchParty={true}
           isHost={isHost}
+          p2pSwarmId={p2pSwarmId}
         />
       </div>
     );
@@ -206,7 +209,11 @@ const Player: React.FC<PlayerProps> = ({
                 {isWatchParty && !isHost && (
                   <div className="absolute inset-0 z-[50]" title="Điều khiển video · theo Host" />
                 )}
-                <VideoPlayer dataEpisodes={dataEpisodes} dataMovie={movie} />
+                <VideoPlayer
+                  dataEpisodes={dataEpisodes}
+                  dataMovie={movie}
+                  p2pSwarmId={p2pSwarmId}
+                />
                 {!isWatchParty && (
                   <EpisodesPlayer
                     dataEpisodes={dataEpisodes}

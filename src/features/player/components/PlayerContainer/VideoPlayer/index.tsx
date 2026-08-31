@@ -19,9 +19,9 @@ import {
   selectEpisode,
   setStatusMovie,
 } from '../../../store/video-player-store';
+import FloatingMiniPlayer from '../../FloatingMiniPlayer';
 
 import BarPlayer from './BarPlayer';
-import FloatingMiniPlayer from '../../FloatingMiniPlayer';
 
 const Video = dynamic(() => import('../../Video'), { ssr: false });
 
@@ -30,6 +30,7 @@ export interface VideoPlayerProps {
   dataMovie?: any;
   isWatchParty?: boolean;
   isHost?: boolean;
+  p2pSwarmId?: string | undefined;
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({
@@ -37,6 +38,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   dataMovie = {},
   isWatchParty = false,
   isHost = true,
+  p2pSwarmId,
 }) => {
   const playbackLocked = isWatchParty && !isHost;
   const [showPoster, setShowPoster] = useState(true);
@@ -179,6 +181,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 playbackLocked={playbackLocked}
                 videoRef={videoRef}
                 onMediaReady={onMediaReady}
+                p2pSwarmId={p2pSwarmId}
               />
             </div>
           )}
