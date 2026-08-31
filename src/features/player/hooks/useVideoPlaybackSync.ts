@@ -90,6 +90,24 @@ export function useVideoPlaybackSync(options: {
     }
   }, [playbackRate, srcEpoch, videoRef]);
 
+  // Smooth playback ticker: iOS WebKit throttles native timeupdate to 1Hz (1s interval).
+  // Reading video.currentTime every 150ms keeps mobile UI progress bars silky smooth.
+  useEffect(() => {
+    if (!isPlay) return;
+
+    const interval = setInterval(() => {
+      const video = videoRef.current;
+      if (!video || video.paused || video.seeking || video.readyState <= 3) return;
+
+      const storeTime = useVideoPlayerStore.getState().time.currentTime;
+      if (Math.abs(video.currentTime - storeTime) >= 0.1) {
+        setTimeVideo({ key: 'currentTime', value: video.currentTime });
+      }
+    }, 150);
+
+    return () => clearInterval(interval);
+  }, [isPlay, videoRef]);
+
   const handleTimeUpdate = useCallback(
     (e: SyntheticEvent<HTMLVideoElement>) => {
       const target = e.target as HTMLVideoElement;
@@ -98,7 +116,6 @@ export function useVideoPlaybackSync(options: {
 
       if (isPlay) {
         const storeTime = useVideoPlayerStore.getState().time.currentTime;
-        // Avoid store set() on every sub-frame tick (≥ 0.05s)
         if (Math.abs(target.currentTime - storeTime) >= 0.05) {
           setTimeVideo({ key: 'currentTime', value: target.currentTime });
         }
