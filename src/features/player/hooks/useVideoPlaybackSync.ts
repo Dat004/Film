@@ -37,14 +37,15 @@ export function useVideoPlaybackSync(options: {
     const video = videoRef.current;
     if (!video || !Number.isFinite(currentTime)) return;
     if (video.seeking) return;
-    if (Math.abs(video.currentTime - currentTime) > PLAYBACK_DRIFT_SYNC_S) {
+    const threshold = playbackLocked ? PLAYBACK_LOCKED_DRIFT_S : PLAYBACK_DRIFT_SYNC_S;
+    if (Math.abs(video.currentTime - currentTime) > threshold) {
       try {
         video.currentTime = currentTime;
       } catch {
         /* HLS may reject */
       }
     }
-  }, [currentTime, videoRef]);
+  }, [currentTime, playbackLocked, videoRef]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -93,26 +94,17 @@ export function useVideoPlaybackSync(options: {
     (e: SyntheticEvent<HTMLVideoElement>) => {
       const target = e.target as HTMLVideoElement;
       if (!videoRef.current || videoRef.current.readyState <= 3) return;
-
-      if (playbackLocked) {
-        if (target.seeking) return;
-        const storeTime = useVideoPlayerStore.getState().time.currentTime;
-        const drift = Math.abs(target.currentTime - storeTime);
-        if (drift > PLAYBACK_LOCKED_DRIFT_S) {
-          target.currentTime = storeTime;
-          return;
-        }
-        if (isPlay) {
-          setTimeVideo({ key: 'currentTime', value: target.currentTime });
-        }
-        return;
-      }
+      if (target.seeking) return;
 
       if (isPlay) {
-        setTimeVideo({ key: 'currentTime', value: target.currentTime });
+        const storeTime = useVideoPlayerStore.getState().time.currentTime;
+        // Avoid store set() on every sub-frame tick (≥ 0.05s)
+        if (Math.abs(target.currentTime - storeTime) >= 0.05) {
+          setTimeVideo({ key: 'currentTime', value: target.currentTime });
+        }
       }
     },
-    [playbackLocked, isPlay, videoRef]
+    [isPlay, videoRef]
   );
 
   const handleChangeTime = useCallback(

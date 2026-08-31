@@ -13,6 +13,9 @@ const MIN_ADAPTIVE_RATE = 0.85;
 const MAX_ADAPTIVE_RATE = 1.2;
 const SYNC_LOOP_INTERVAL_MS = 400;
 
+/** Cooldown (ms) after hard-seek to let video settle. */
+const HARD_SEEK_COOLDOWN_MS = 1800;
+
 export function estimateHostTime(status: RoomStatus): number {
   const base = status.currentTime ?? 0;
   if (!status.isPlaying || !status.updatedAt) return base;
@@ -37,6 +40,12 @@ export function useVideoSync(
   const lastHostTimeRef = useRef(time.currentTime);
   const lastAppliedSeekSeqRef = useRef<number | null>(null);
   const [seekSeq, setSeekSeq] = useState(0);
+
+  const lastHardSeekTsRef = useRef(0);
+  const roomDataStatusRef = useRef(roomDataStatus); // Fresh ref for ticker to avoid stale closure
+  useEffect(() => {
+    roomDataStatusRef.current = roomDataStatus;
+  }, [roomDataStatus]);
 
   useEffect(() => {
     timeRef.current = time.currentTime;
@@ -119,9 +128,15 @@ export function useVideoSync(
     const deltaT = timeRef.current - targetTime; // >0 means guest ahead, <0 means guest behind
     const absDrift = Math.abs(deltaT);
 
-    if (forcedSeek || absDrift > HARD_SEEK_THRESHOLD_SEC) {
+    // Respect cooldown unless this is a forced seek from an explicit host scrub
+    const inCooldown =
+      !forcedSeek && Date.now() - lastHardSeekTsRef.current < HARD_SEEK_COOLDOWN_MS;
+
+    if (forcedSeek || (!inCooldown && absDrift > HARD_SEEK_THRESHOLD_SEC)) {
       setTimeVideo({ key: 'currentTime', value: targetTime });
       setStatusMovie({ key: 'playbackRate', value: baseHostRate });
+      timeRef.current = targetTime;
+      lastHardSeekTsRef.current = Date.now();
       if (typeof seekSeqRemote === 'number') {
         lastAppliedSeekSeqRef.current = seekSeqRemote;
       }
@@ -130,9 +145,16 @@ export function useVideoSync(
         Math.max(baseHostRate - PROPORTIONAL_GAIN_KP * deltaT, MIN_ADAPTIVE_RATE),
         MAX_ADAPTIVE_RATE
       );
-      setStatusMovie({ key: 'playbackRate', value: Math.round(targetRate * 100) / 100 });
+      const rounded = Math.round(targetRate * 100) / 100;
+      const currentRate = useVideoPlayerStore.getState().statusMovie.playbackRate;
+      if (rounded !== currentRate) {
+        setStatusMovie({ key: 'playbackRate', value: rounded });
+      }
     } else {
-      setStatusMovie({ key: 'playbackRate', value: baseHostRate });
+      const currentRate = useVideoPlayerStore.getState().statusMovie.playbackRate;
+      if (currentRate !== baseHostRate) {
+        setStatusMovie({ key: 'playbackRate', value: baseHostRate });
+      }
     }
   }, [
     isHost,
@@ -151,24 +173,36 @@ export function useVideoSync(
     if (isHost || isInitializing || !roomDataStatus) return;
 
     const interval = setInterval(() => {
-      if (roomDataStatus.currentTime === undefined || !roomDataStatus.isPlaying) return;
+      const status = roomDataStatusRef.current;
+      if (!status || status.currentTime === undefined || !status.isPlaying) return;
 
-      const baseHostRate = roomDataStatus.playbackRate ?? 1.0;
-      const targetTime = estimateHostTime(roomDataStatus);
+      if (Date.now() - lastHardSeekTsRef.current < HARD_SEEK_COOLDOWN_MS) return;
+
+      const baseHostRate = status.playbackRate ?? 1.0;
+      const targetTime = estimateHostTime(status);
       const deltaT = timeRef.current - targetTime;
       const absDrift = Math.abs(deltaT);
 
       if (absDrift > HARD_SEEK_THRESHOLD_SEC) {
         setTimeVideo({ key: 'currentTime', value: targetTime });
         setStatusMovie({ key: 'playbackRate', value: baseHostRate });
+        timeRef.current = targetTime;
+        lastHardSeekTsRef.current = Date.now();
       } else if (absDrift > 0.15) {
         const targetRate = Math.min(
           Math.max(baseHostRate - PROPORTIONAL_GAIN_KP * deltaT, MIN_ADAPTIVE_RATE),
           MAX_ADAPTIVE_RATE
         );
-        setStatusMovie({ key: 'playbackRate', value: Math.round(targetRate * 100) / 100 });
+        const rounded = Math.round(targetRate * 100) / 100;
+        const currentRate = useVideoPlayerStore.getState().statusMovie.playbackRate;
+        if (rounded !== currentRate) {
+          setStatusMovie({ key: 'playbackRate', value: rounded });
+        }
       } else {
-        setStatusMovie({ key: 'playbackRate', value: baseHostRate });
+        const currentRate = useVideoPlayerStore.getState().statusMovie.playbackRate;
+        if (currentRate !== baseHostRate) {
+          setStatusMovie({ key: 'playbackRate', value: baseHostRate });
+        }
       }
     }, SYNC_LOOP_INTERVAL_MS);
 
@@ -177,4 +211,3 @@ export function useVideoSync(
 }
 
 export default useVideoSync;
-

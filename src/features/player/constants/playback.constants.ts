@@ -7,7 +7,8 @@ export const SEEK_STEP_S = 10;
 export const SEEK_CHANGE_DEBOUNCE_MS = 500;
 export const PLAY_FLASH_MS = 650;
 export const PLAYBACK_DRIFT_SYNC_S = 0.75;
-export const PLAYBACK_LOCKED_DRIFT_S = 1.5;
+/** Hard-seek threshold for watch-party guest (seconds). */
+export const PLAYBACK_LOCKED_DRIFT_S = 1.2;
 /** Only persist continue-watching after this many seconds watched. */
 export const CONTINUE_WATCHING_PROGRESS_MIN_S = 10;
 export const CONTINUE_WATCHING_PATH_PREFIX = '/continue_watching';
