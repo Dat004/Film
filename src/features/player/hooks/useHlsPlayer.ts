@@ -1,14 +1,18 @@
 import type Hls from 'hls.js';
+import type { HlsJsP2PEngine } from 'p2p-media-loader-hlsjs';
 import { useEffect, useRef } from 'react';
 
 import { logger } from '@/lib/logger';
 
 import { HLS_MAIN_CONFIG } from '../constants/hls.constants';
 import { PLAYER_UI_COPY } from '../constants/player-ui.constants';
+import type { P2PStats } from '../lib/p2p-hls-config';
 import {
   canPlayNativeHls,
   createHlsInstance,
+  createHlsInstanceWithP2P,
   destroyHlsInstance,
+  destroyP2PEngine,
   isHlsJsSupported,
   Hls as HlsClass,
 } from '../services/hls.factory';
@@ -34,6 +38,8 @@ interface UseHlsPlayerOptions {
   /** Bump to tear down & re-attach HLS without resetting playback time. */
   reloadKey?: number;
   adaptiveConfig?: NetworkAdaptiveConfig;
+  p2pSwarmId?: string | undefined;
+  onP2PStatsUpdate?: ((stats: P2PStats) => void) | undefined;
   onReady: () => void;
   onError: (message: string) => void;
   onTimeReset: () => void;
@@ -45,6 +51,8 @@ export function useHlsPlayer({
   src,
   reloadKey = 0,
   adaptiveConfig,
+  p2pSwarmId,
+  onP2PStatsUpdate,
   onReady,
   onError,
   onTimeReset,
@@ -52,6 +60,7 @@ export function useHlsPlayer({
 }: UseHlsPlayerOptions) {
   const prevSrcRef = useRef(src);
   const hlsInstanceRef = useRef<Hls | null>(null);
+  const p2pEngineRef = useRef<HlsJsP2PEngine | null>(null);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -77,7 +86,17 @@ export function useHlsPlayer({
           : {}),
       };
 
-      hls = createHlsInstance(dynamicConfig);
+      // Dùng P2P loader trong watch-party
+      if (p2pSwarmId) {
+        const result = createHlsInstanceWithP2P(dynamicConfig, {
+          swarmId: p2pSwarmId,
+          onStatsUpdate: onP2PStatsUpdate,
+        });
+        hls = result.hls;
+        p2pEngineRef.current = result.engine;
+      } else {
+        hls = createHlsInstance(dynamicConfig);
+      }
       hlsInstanceRef.current = hls;
       hls.attachMedia(video);
       hls.loadSource(src);
@@ -153,6 +172,8 @@ export function useHlsPlayer({
         video.removeAttribute('src');
         video.load();
       }
+      destroyP2PEngine(p2pEngineRef.current);
+      p2pEngineRef.current = null;
       destroyHlsInstance(hls);
       hlsInstanceRef.current = null;
     };
