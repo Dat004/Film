@@ -6,7 +6,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
 import { Player, EpisodesPlayer } from '@/features/player';
 import { sanitizeFilmHtml } from '@/lib/film-detail';
 
-import type { UserParam } from '../../services/watch-party.service';
+import type { UserParam } from '../../services';
 import type { WatchPartyRoom, RoomReaction } from '../../types/watch-party.types';
 import WatchPartyCanvasReactions from '../WatchPartyCanvasReactions';
 

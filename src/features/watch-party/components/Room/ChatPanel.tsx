@@ -10,8 +10,8 @@ import {
   COUNTER_THRESHOLD,
   REACTIONS,
 } from '../../constants/watch-party.constants';
-import { sendMessage } from '../../services/watch-party.service';
-import type { UserParam } from '../../services/watch-party.service';
+import { sendMessage } from '../../services';
+import type { UserParam } from '../../services';
 import type { RoomMessage, RoomMember } from '../../types/watch-party.types';
 
 import { ChatMessage } from './ChatMessage';

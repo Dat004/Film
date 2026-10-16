@@ -4,7 +4,7 @@ import { useVideoPlayerStore, setTimeVideo, setStatusMovie } from '@/features/pl
 import { getServerTimeOffset } from '@/services/firebase-client';
 
 import { SYNC_DEBOUNCE_MS } from '../constants/watch-party.constants';
-import { updateVideoSync } from '../services/watch-party.service';
+import { updateVideoSync } from '../services';
 import type { RoomStatus } from '../types/watch-party.types';
 
 const HARD_SEEK_THRESHOLD_SEC = 1.2;

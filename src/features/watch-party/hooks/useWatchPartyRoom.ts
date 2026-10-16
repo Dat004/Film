@@ -7,13 +7,8 @@ import { copyTextToClipboard } from '@/lib/clipboard';
 import { logger } from '@/lib/logger';
 import { pushRoute } from '@/lib/route-navigation';
 
-import type { UserParam } from '../services/watch-party.service';
-import {
-  destroyRoom,
-  kickMember,
-  transferHost,
-  sendReaction,
-} from '../services/watch-party.service';
+import type { UserParam } from '../services';
+import { destroyRoom, kickMember, transferHost, sendReaction } from '../services';
 
 import { useChatResize } from './useChatResize';
 import { useRoomSync } from './useRoomSync';

@@ -10,7 +10,7 @@ import { useAuth } from '@/features/auth';
 import { logger } from '@/lib/logger';
 import { pushRoute } from '@/lib/route-navigation';
 
-import { createRoom } from '../services/watch-party.service';
+import { createRoom } from '../services';
 import type { WatchPartyFilmMeta } from '../types/watch-party.types';
 
 export interface CreateWatchPartyButtonProps {

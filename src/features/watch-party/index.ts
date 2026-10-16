@@ -17,5 +17,5 @@ export {
   getPublicRooms,
   reconcileStaleWatchPartyRoom,
   reconcileStaleLobbyRooms,
-} from './services/watch-party.service';
+} from './services';
 export type * from './types/watch-party.types';

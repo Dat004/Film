@@ -14,8 +14,8 @@ import {
   repairOrphanHost,
   setLobbyMemberCount,
   reconcileStaleWatchPartyRoom,
-} from '../services/watch-party.service';
-import type { UserParam } from '../services/watch-party.service';
+} from '../services';
+import type { UserParam } from '../services';
 import type { WatchPartyRoom, RoomMessage, RoomMember } from '../types/watch-party.types';
 
 import { useMemberNotifications } from './useMemberNotifications';

@@ -4,7 +4,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 import { MAX_MEMBERS } from '../../constants/watch-party.constants';
-import type { UserParam } from '../../services/watch-party.service';
+import type { UserParam } from '../../services';
 import type { RoomMember } from '../../types/watch-party.types';
 
 import PartyAvatar from './PartyAvatar';

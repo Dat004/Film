@@ -1,7 +1,7 @@
 import { getDatabase, ref, onValue, query, orderByChild, limitToLast } from 'firebase/database';
 import { useState, useEffect, useRef } from 'react';
 
-import { reconcileStaleLobbyRooms } from '../services/watch-party.service';
+import { reconcileStaleLobbyRooms } from '../services';
 import type { WatchPartyLobbyEntry } from '../types/watch-party.types';
 
 export function useWatchPartyLobby() {
