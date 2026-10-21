@@ -8,6 +8,39 @@ export const HLS_MAIN_CONFIG: PartialHlsConfig = {
   frontBufferFlushThreshold: Infinity,
   maxBufferSize: 120 * 1000 * 1000,
   maxBufferHole: 0.1,
+  // Fast failover retry policies to hand over control promptly to Self-Healing FSM
+  fragLoadPolicy: {
+    default: {
+      maxTimeToFirstByteMs: 8000,
+      maxLoadTimeMs: 10000,
+      timeoutRetry: {
+        maxNumRetry: 2,
+        retryDelayMs: 500,
+        maxRetryDelayMs: 2000,
+      },
+      errorRetry: {
+        maxNumRetry: 2,
+        retryDelayMs: 1000,
+        maxRetryDelayMs: 2000,
+      },
+    },
+  },
+  manifestLoadPolicy: {
+    default: {
+      maxTimeToFirstByteMs: 8000,
+      maxLoadTimeMs: 10000,
+      timeoutRetry: {
+        maxNumRetry: 2,
+        retryDelayMs: 500,
+        maxRetryDelayMs: 2000,
+      },
+      errorRetry: {
+        maxNumRetry: 2,
+        retryDelayMs: 1000,
+        maxRetryDelayMs: 2000,
+      },
+    },
+  },
 };
 
 /** Scrub-preview thumbnail HLS profile (lighter). */

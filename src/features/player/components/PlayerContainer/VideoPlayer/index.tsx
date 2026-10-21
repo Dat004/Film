@@ -20,6 +20,7 @@ import {
   setStatusMovie,
 } from '../../../store/video-player-store';
 import FloatingMiniPlayer from '../../FloatingMiniPlayer';
+import PlayerErrorBoundary from '../../PlayerErrorBoundary';
 
 import BarPlayer from './BarPlayer';
 
@@ -174,15 +175,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             </div>
           ) : (
             <div className="absolute backdrop-blur-[20px] bg-[var(--bg-video-overlay)] inset-0 z-[120] overflow-visible">
-              <Video
-                src={dataEpisodes[currentEpisode]?.link_m3u8}
-                nextEpisodeSrc={dataEpisodes[currentEpisode + 1]?.link_m3u8}
-                handleNext={handleNextEpisode}
-                playbackLocked={playbackLocked}
-                videoRef={videoRef}
-                onMediaReady={onMediaReady}
-                p2pSwarmId={p2pSwarmId}
-              />
+              <PlayerErrorBoundary onReset={() => setStatusMovie({ key: 'isPlay', value: true })}>
+                <Video
+                  src={dataEpisodes[currentEpisode]?.link_m3u8}
+                  nextEpisodeSrc={dataEpisodes[currentEpisode + 1]?.link_m3u8}
+                  handleNext={handleNextEpisode}
+                  playbackLocked={playbackLocked}
+                  videoRef={videoRef}
+                  onMediaReady={onMediaReady}
+                  p2pSwarmId={p2pSwarmId}
+                />
+              </PlayerErrorBoundary>
             </div>
           )}
         </div>

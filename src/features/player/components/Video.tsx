@@ -11,7 +11,11 @@ import { cn } from '@/lib/utils';
 
 import { AUTO_HIDE_MS } from '../constants/playback.constants';
 import { PLAYER_UI_COPY } from '../constants/player-ui.constants';
-import { useHlsPlayer, type HlsQualityLevel } from '../hooks/useHlsPlayer';
+import {
+  useHlsPlayer,
+  type HlsQualityLevel,
+  type PlayerRecoveryStatus,
+} from '../hooks/useHlsPlayer';
 import { useMediaPrefetch } from '../hooks/useMediaPrefetch';
 import { useNetworkAdaptiveQuality } from '../hooks/useNetworkAdaptiveQuality';
 import { useP2PStats } from '../hooks/useP2PStats';
@@ -74,6 +78,7 @@ const Video: React.FC<VideoProps> = ({
   const [isPiPActive, setIsPiPActive] = useState(false);
   const [qualityLevels, setQualityLevels] = useState<HlsQualityLevel[]>([]);
   const [currentQualityLevel, setCurrentQualityLevel] = useState(-1);
+  const [recoveryStatus, setRecoveryStatus] = useState<PlayerRecoveryStatus | null>(null);
 
   const isVideoFocusedRef = useRef(false);
   const setHlsLevelRef = useRef<(index: number) => void>(() => {});
@@ -191,6 +196,7 @@ const Video: React.FC<VideoProps> = ({
 
   const handleRetryPlayback = useCallback(() => {
     resumeAfterReloadRef.current = useVideoPlayerStore.getState().time.currentTime;
+    setRecoveryStatus(null);
     setIsError(false);
     setIsLoading(true);
     setHlsReloadKey((k) => k + 1);
@@ -205,6 +211,7 @@ const Video: React.FC<VideoProps> = ({
     onP2PStatsUpdate: handleStatsUpdate,
     onReady: handleStarting,
     onError: handleError,
+    onRecoveryStateChange: setRecoveryStatus,
     onTimeReset: () => {
       setIsError(false);
       setQualityLevels([]);
@@ -445,9 +452,23 @@ const Video: React.FC<VideoProps> = ({
         </motion.div>
       </div>
 
-      {isLoading && (
-        <div className="absolute inset-0 z-[999] flex cursor-default items-center justify-center bg-bg-layout-loading">
+      {(isLoading ||
+        (recoveryStatus &&
+          recoveryStatus.state !== 'idle' &&
+          recoveryStatus.state !== 'fatal_error')) && (
+        <div className="absolute inset-0 z-[999] flex flex-col cursor-default items-center justify-center bg-black/40 backdrop-blur-[2px] transition-all select-none">
           <div className="loader" />
+          {recoveryStatus &&
+            recoveryStatus.state !== 'idle' &&
+            recoveryStatus.state !== 'fatal_error' && (
+              <span
+                role="status"
+                aria-live="polite"
+                className="mt-3.5 text-xs detail769:text-[13px] font-medium text-white/90 tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)]"
+              >
+                {recoveryStatus.message}
+              </span>
+            )}
         </div>
       )}
 
@@ -466,7 +487,7 @@ const Video: React.FC<VideoProps> = ({
                 e.stopPropagation();
                 handleRetryPlayback();
               }}
-              className="mt-[4px] inline-flex h-[40px] items-center justify-center rounded-[10px] bg-white px-[18px] text-[13px] font-semibold text-black transition-opacity hover:opacity-90 active:opacity-80"
+              className="mt-[4px] inline-flex h-[40px] items-center justify-center rounded-[10px] bg-white px-[18px] text-[13px] font-semibold text-black transition-opacity hover:opacity-90 active:opacity-80 cursor-pointer"
             >
               {PLAYER_UI_COPY.errorRetryAction}
             </button>
